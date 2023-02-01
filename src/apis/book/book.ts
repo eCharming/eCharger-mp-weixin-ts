@@ -24,3 +24,11 @@ export function paySharing(bookReq: BookReq) {
         data: bookReq
     })
 }
+
+export function orderStatusQuery(bookReq: BookReq) {
+    return request({
+        url: "TODO",
+        method: "GET",
+        data: bookReq
+    })
+}

@@ -2,35 +2,32 @@
   <view>
     <view class="biglabel">{{ alphabet }}</view>
     <view class="card">
-      <view v-if="alist.length!=0" v-for='(item,index) in list' :key='index' class="display" @tap="changeCity(item)">
+      <view v-if="list.length!==0" v-for='(item,index) in list' :key='index' class="display" @tap="changeCity(item)">
         <view class="labeltext">{{ item.name }}</view>
-        <view v-if="index!=list.length-1" class="divLine"></view>
+        <view v-if="index!==list.length-1" class="divLine"></view>
       </view>
     </view>
   </view>
 </template>
 
-<script>
-export default {
-  props: {
-    alphabet: {
-      type: String,
-    },
-    list: {
-      type: Array,
-      default: () => []
-    }
-  },
-  data() {
-    return {};
-  },
-  methods: {
-    changeCity(item) {
-      let poploc = item.location;
-      poploc.name = item.name;
-      this.$store.commit('setCityLocation', poploc)
-      uni.navigateBack({})
-    }
+<script lang="ts">
+import {Component, Prop, Vue} from "vue-property-decorator";
+
+@Component
+export default class CityCard extends Vue {
+  @Prop()
+  alphabet!: string;
+  @Prop({
+    type: Array,
+    default: () => []
+  })
+  list!: Array<{ location: any; name: any; }>
+
+  public changeCity(item: { location: any; name: any; }): void {
+    let poploc = item.location;
+    poploc.name = item.name;
+    this.$store.commit('setCityLocation', poploc)
+    wx.navigateBack()
   }
 }
 </script>

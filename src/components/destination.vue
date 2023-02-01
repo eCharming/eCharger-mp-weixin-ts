@@ -19,8 +19,8 @@
 
     <view class="destination"
           @tap="navigate()">
-      <image :src="src1" :class="changeImg==0?'image1':'image1_none'"></image>
-      <image :src="src2" :class="changeImg==0?'image1_none':'image1'"></image>
+      <image :src="src1" :class="changeImg===0?'image1':'image1_none'"></image>
+      <image :src="src2" :class="changeImg===0?'image1_none':'image1'"></image>
       <image class="image1" :src="src"></image>
       <text class="text2" :style="{'color':color}">{{ destination }}</text>
 
@@ -28,90 +28,91 @@
   </view>
 </template>
 
-<script>
-export default {
-  components: {},
-  data() {
-    return {
-      month: 0,
-      date: 0,
-      day: 0,
-      minTime1: '00:00',
-      maxTime1: '24:00',
-      minTime2: '00:00',
-      maxTime2: '24:00',
-      text1: this.$store.state.startTime,
-      text2: this.$store.state.endTime,
-      opacity1: this.$store.state.startTime == "起始时间" ? 0.5 : 1,
-      opacity2: this.$store.state.endTime == "结束时间" ? 0.5 : 1,
-      destination: "请输入你的目的地",
-      color: "rgba(0,0,0,0.5)",
-      dayColor: "rgb(102,205,170)",
-      src1: "../static/image/lightning_green.png",
-      src2: "../static/image/lightning_blue.png",
-      changeImg: 0,
-    }
-  },
-  methods: {
-    changetime1(e) {
-      var time1 = e.detail.value;
-      this.text1 = time1;
-      this.minTime2 = time1;
-      this.opacity1 = 1;
-      this.$store.commit('setStartTime', this.text1);
-    },
-    changetime2(e) {
-      var time2 = e.detail.value;
-      this.text2 = time2;
-      this.maxTime1 = time2;
-      this.opacity2 = 1;
-      this.$store.commit('setEndTime', this.text2);
-    },
-    navigate() {
-      uni.navigateTo({
-        url: '../search/search',
-      });
-    }
-  },
-  mounted() {
-    var date = new Date();
+<script lang="ts">
+import {Component, Vue, Watch} from "vue-property-decorator";
+
+@Component
+export default class Destination extends Vue {
+  public month: number = 0;
+  public date: number = 0;
+  public day: string = "";
+  public minTime1: string = "00:00";
+  public maxTime1: string = "24:00";
+  public minTime2: string = "00:00";
+  public maxTime2: string = "24:00";
+  public text1: string = this.$store.state.startTime;
+  public text2: string = this.$store.state.endTime;
+  public opacity1: number = this.$store.state.startTime === "起始时间" ? 0.5 : 1;
+  public opacity2: number = this.$store.state.endTime === "结束时间" ? 0.5 : 1;
+  public destination: string = "请输入你的目的地";
+  public color: string = "rgba(0,0,0,0.5)";
+  dayColor: string = "rgb(102,205,170)";
+  src1: string = "../static/image/lightning_green.png";
+  src2: string = "../static/image/lightning_blue.png";
+  changeImg: number = 0;
+
+  public changetime1(e: { detail: { value: any } }): void {
+    let time1 = e.detail.value;
+    this.text1 = time1;
+    this.minTime2 = time1;
+    this.opacity1 = 1;
+    this.$store.commit('setStartTime', this.text1);
+  }
+
+  public changetime2(e: { detail: { value: any } }): void {
+    let time2 = e.detail.value;
+    this.text2 = time2;
+    this.maxTime1 = time2;
+    this.opacity2 = 1;
+    this.$store.commit('setEndTime', this.text2);
+  }
+
+  public navigate(): void {
+    wx.navigateTo({
+      url: '../search/search',
+    });
+  }
+
+  public mounted(): void {
+    let date = new Date();
     this.month = date.getMonth() + 1;
     this.date = date.getDate();
-    this.day = date.getDay();
-    if (this.day === 0) this.day = "日";
-    else if (this.day === 1) this.day = "一";
-    else if (this.day === 2) this.day = "二";
-    else if (this.day === 3) this.day = "三";
-    else if (this.day === 4) this.day = "四";
-    else if (this.day === 5) this.day = "五";
-    else if (this.day === 6) this.day = "六";
-  },
-  watch: {
-    '$store.state.destination'() {
-      if (this.$store.state.destination != null) { //按下locationbutton重置回到自己位置，destination置为空
-        this.destination = this.$store.state.destination.title;
-        if (this.$store.state.buttonSelected == 1)
-          this.color = "rgb(102,205,170)";
-        else this.color = this.$store.state.color;
-      } else {
-        this.destination = "请输入你的目的地";
-        this.color = "rgba(0,0,0,0.5)";
-      }
+    let day = date.getDay();
+    if (day === 0) this.day = "日";
+    else if (day === 1) this.day = "一";
+    else if (day === 2) this.day = "二";
+    else if (day === 3) this.day = "三";
+    else if (day === 4) this.day = "四";
+    else if (day === 5) this.day = "五";
+    else if (day === 6) this.day = "六";
+  }
 
-    },
-    '$store.state.buttonSelected'() {
+  @Watch('$store.state.destination')
+  public stateDestination(newValue: string, oldValue: string) {
+    if (this.$store.state.destination != null) { //按下locationbutton重置回到自己位置，destination置为空
+      this.destination = this.$store.state.destination.title;
+      if (this.$store.state.buttonSelected == 1)
+        this.color = "rgb(102,205,170)";
+      else this.color = this.$store.state.color;
+    } else {
+      this.destination = "请输入你的目的地";
+      this.color = "rgba(0,0,0,0.5)";
+    }
+  }
+
+  @Watch('$store.state.buttonSelected')
+  public stateButtonSelected(newValue: string, oldValue: string) {
+    if (this.$store.state.buttonSelected == 1) {
+      this.dayColor = "rgb(102,205,170)";
+      this.changeImg = 0;
+    } else {
+      this.dayColor = this.$store.state.color;
+      this.changeImg = 1;
+    }
+    if (this.color != "rgba(0,0,0,0.5)") {
       if (this.$store.state.buttonSelected == 1) {
-        this.dayColor = "rgb(102,205,170)";
-        this.changeImg = 0;
-      } else {
-        this.dayColor = this.$store.state.color;
-        this.changeImg = 1;
-      }
-      if (this.color != "rgba(0,0,0,0.5)") {
-        if (this.$store.state.buttonSelected == 1) {
-          this.color = "rgb(102,205,170)";
-        } else this.color = this.$store.state.color;
-      }
+        this.color = "rgb(102,205,170)";
+      } else this.color = this.$store.state.color;
     }
   }
 }
