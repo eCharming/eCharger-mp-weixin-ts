@@ -27,99 +27,89 @@
   </movable-area>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      originX: 0,
-      isRight: true,
-      currentX: 0,
-      newMessageNumLocal: 0,
-      hasNewLocal: false,
-    }
-  },
-  props: {
-    avatarUrl: {
-      type: String,
-    },
-    name: {
-      type: String,
-    },
-    lastTime: {
-      type: String,
-    },
-    lastWord: {
-      type: String,
-    },
-    hasNew: {
-      type: Boolean,
-    },
-    newMessageNum: {
-      type: String,
-    },
-  },
-  methods: {
-    start(e) {
+<script lang="ts">
+import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 
-      this.originX = e.changedTouches[0].pageX;
+@Component
+export default class FriendList extends Vue {
+  public originX: number = 0;
+  public isRight: boolean = true;
+  public currentX: number = 0;
+  public newMessageNumLocal: number = 0;
+  public hasNewLocal: boolean = false;
 
-    },
-    end(e) {
+  @Prop()
+  avatarUrl!: string;
+  @Prop()
+  name!: string;
+  @Prop()
+  lastTime!: string;
+  @Prop()
+  lastWord!: string;
+  @Prop()
+  hasNew!: boolean;
+  @Prop()
+  newMessageNum!: number;
 
+  public start(e: { changedTouches: { pageX: number }[] }): void {
+    this.originX = e.changedTouches[0].pageX;
+  }
 
-      var lastX = e.changedTouches[0].pageX;
-      var moveWidth = uni.upx2px(250);
-      var liveX = this.isRight ? this.originX - lastX : lastX - this.originX;
-      var percent = liveX / moveWidth;
-      if (this.isRight == true) { //初始在低位的情况
-        if (percent >= 0.4) { //上拉超过上下限的40%则移向高位 因为位置改变了也即currentX改变组件可以监听变化所以不用nextTick
-          this.isRight = false;
-          this.currentX = uni.upx2px(-250);
-        } else { //上拉未超过上下限的40%则回到低位 因为位置没有改变也即currentX没有改变组件无法监听变化所以使用nextTickchangedTouches[0].pageX;
-          if (Math.abs(liveX) > 5) { //用于防止点击事件穿透触发touchend
-            this.currentX = -1;
-            this.$nextTick(() => {
-              this.currentX = 0;
-            })
-          }
-        }
-      } else { //初始在高位的情况
-        if (percent >= 0.4) { //下拉超过上下限的40%则移向低位 因为位置改变了也即currentX改变组件可以监听变化所以不用nextTick
-          this.isRight = true;
-          this.currentX = 0;
-        } else { //下拉未超过上下限的40%则回到高位 因为位置没有改变也即currentX没有改变组件无法监听变化所以使用nextTick
-          if (Math.abs(liveX) > 5) { //用于防止点击事件穿透触发touchend
-            this.currentX = -251;
-            this.$nextTick(() => {
-              this.currentX = uni.upx2px(-250);
-            })
-          }
+  public end(e: { changedTouches: { pageX: any; }[] }): void {
+    let lastX = e.changedTouches[0].pageX;
+    let moveWidth = uni.upx2px(250);
+    let liveX = this.isRight ? this.originX - lastX : lastX - this.originX;
+    let percent = liveX / moveWidth;
+    if (this.isRight) { //初始在低位的情况
+      if (percent >= 0.4) { //上拉超过上下限的40%则移向高位 因为位置改变了也即currentX改变组件可以监听变化所以不用nextTick
+        this.isRight = false;
+        this.currentX = uni.upx2px(-250);
+      } else { //上拉未超过上下限的40%则回到低位 因为位置没有改变也即currentX没有改变组件无法监听变化所以使用nextTickchangedTouches[0].pageX;
+        if (Math.abs(liveX) > 5) { //用于防止点击事件穿透触发touchend
+          this.currentX = -1;
+          this.$nextTick(() => {
+            this.currentX = 0;
+          })
         }
       }
-
-
-    },
-    click() {
-      this.$emit('clickMessage');
-    },
-    deleteFriend() {
-      uni.showModal({
-        title: "确定删除好友？",
-        success: (res) => {
-          if (res.confirm) {
-            this.$emit('deleteFriends')
-          }
+    } else { //初始在高位的情况
+      if (percent >= 0.4) { //下拉超过上下限的40%则移向低位 因为位置改变了也即currentX改变组件可以监听变化所以不用nextTick
+        this.isRight = true;
+        this.currentX = 0;
+      } else { //下拉未超过上下限的40%则回到高位 因为位置没有改变也即currentX没有改变组件无法监听变化所以使用nextTick
+        if (Math.abs(liveX) > 5) { //用于防止点击事件穿透触发touchend
+          this.currentX = -251;
+          this.$nextTick(() => {
+            this.currentX = uni.upx2px(-250);
+          })
         }
-      })
+      }
     }
-  },
-  watch: {
-    'hasNew'() {
-      this.hasNewLocal = this.hasNew;
-    },
-    'newMessageNum'() {
-      this.newMessageNumLocal = this.newMessageNum;
-    }
+  }
+
+  public click(): void {
+    this.$emit('clickMessage');
+  }
+
+  public deleteFriend(): void {
+    uni.showModal({
+      title: "确定删除好友？",
+      success: (res) => {
+        if (res.confirm) {
+          this.$emit('deleteFriends')
+        }
+      }
+    })
+  }
+
+  @Watch('hasNew')
+  public watchHasNew() {
+    this.hasNewLocal = this.hasNew;
+  }
+
+  @Watch('newMessageNum')
+  public watchNewMessageNum() {
+    this.newMessageNumLocal = this.newMessageNum;
   }
 }
 </script>

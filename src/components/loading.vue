@@ -7,11 +7,9 @@
           style="position: absolute;height: 100vh;top: 0;width: 100%;transform-origin:top;transition: all 1.5s;perspective: 1000upx;perspective-origin: 50% 25%;"
           :style="{'transform':'rotateX('+backRotate4+'deg)'}">
 
-
         <view
             style="position: absolute;height: 75vh;top: 25%;width: 100%;transition: all 1.5s;transform-origin:top;perspective: 1000upx;perspective-origin: 50% 33%;"
             :style="{'transform':'rotateX('+backRotate3+'deg)'}">
-
 
           <view
               style="position: absolute;height: 50vh;top: 33.3%;width: 100%;transform-origin:top;transition: all 1.5s;perspective: 1000upx;perspective-origin: 50% 50%;"
@@ -42,61 +40,52 @@
       </view>
     </view>
 
-
     <view style="transform: translateZ(450upx);height: 700upx;width: 700upx;">
       <view style="height: 700upx;width: 700upx;clip-path: polygon(25% 53%, 50% 0, 81% 0, 53% 40%, 77% 40%, 33% 100%, 52% 53%);position: absolute;
 			transition: all .7s cubic-bezier(.52,-0.46,.46,1.01);background-color: #f7f14b;"
             :style="{'transform':'scale('+scale+')'}"
       >
-        <!-- <view class="lightning" style="height: 750upx;width: 750upx;background-color: #f7f14b;"></view> -->
         <view class="view1" :style="{'bottom':bottom+'rpx','transform':'rotate('+rotate+'deg)'}"></view>
         <view class="view2" :style="{'bottom':bottom+'rpx','transform':'rotate('+rotate+'deg)'}"></view>
 
       </view>
     </view>
 
-
   </view>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      rotate: 0,
-      bottom: 0,
-      backRotate1: 0,
-      backRotate2: 0,
-      backRotate3: 0,
-      backRotate4: 0,
-      isAvailable: true,
-      scale: 1,
-    }
-  },
-  mounted() {
+<script lang="ts">
+import {Component, Vue} from "vue-property-decorator";
+
+@Component
+export default class Loading extends Vue {
+  public rotate: number = 0;
+  public bottom: number = 0;
+  public backRotate1: number = 0;
+  public backRotate2: number = 0;
+  public backRotate3: number = 0;
+  public backRotate4: number = 0;
+  public isAvailable: boolean = false;
+  public scale: number = 1;
+
+  public mounted(): void {
     setTimeout(() => {
       this.rotate = 360;
       this.bottom = 750;
-
     }, 400)
     setTimeout(() => {
-
       this.scale = 0;
     }, 4300)
     setTimeout(() => {
-
       this.backRotate1 = -180;
     }, 4800)
     setTimeout(() => {
-
       this.backRotate2 = -180;
     }, 5250)
     setTimeout(() => {
-
       this.backRotate3 = -180;
     }, 5700)
     setTimeout(() => {
-
       this.backRotate4 = -180;
     }, 6150)
   }

@@ -88,7 +88,7 @@ export default class Destination extends Vue {
   }
 
   @Watch('$store.state.destination')
-  public stateDestination(newValue: string, oldValue: string) {
+  public watchStateDestination() {
     if (this.$store.state.destination != null) { //按下locationbutton重置回到自己位置，destination置为空
       this.destination = this.$store.state.destination.title;
       if (this.$store.state.buttonSelected == 1)
@@ -101,7 +101,7 @@ export default class Destination extends Vue {
   }
 
   @Watch('$store.state.buttonSelected')
-  public stateButtonSelected(newValue: string, oldValue: string) {
+  public watchStateButtonSelected() {
     if (this.$store.state.buttonSelected == 1) {
       this.dayColor = "rgb(102,205,170)";
       this.changeImg = 0;

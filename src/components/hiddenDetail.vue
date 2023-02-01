@@ -4,29 +4,25 @@
   </view>
 </template>
 
-<script>
-export default {
-  props: {
-    isLow: {
-      type: Boolean
-    },
-  },
-  data() {
-    return {
-      top: -130,
-      opacity: 1,
+<script lang="ts">
+import {Component, Prop, Vue, Watch} from "vue-property-decorator";
+
+@Component
+export default class HiddenDetail extends Vue {
+  public top: number = -130;
+  public opacity: number = 1;
+  @Prop()
+  isLow!: boolean;
+
+  @Watch("isLow")
+  public watchIsLow() {
+    if (this.isLow) {
+      this.top = -130;
+      this.opacity = 1;
+    } else {
+      this.top = -30;
+      this.opacity = 0;
     }
-  },
-  watch: {
-    'isLow'() {
-      if (this.isLow) {
-        this.top = -130;
-        this.opacity = 1;
-      } else {
-        this.top = -30;
-        this.opacity = 0;
-      }
-    },
   }
 }
 </script>

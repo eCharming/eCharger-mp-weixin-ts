@@ -5,48 +5,51 @@
   </view>
 </template>
 
-<script>
-export default {
-  props: {
-    isLow: {
-      type: Boolean
-    },
-  },
-  data() {
-    return {
-      text1: '在附近搜索电桩',
-      text2: '',
-      color: 'rgb(102,205,170)',
-      top: -30,
-      opacity: 0,
+<script lang="ts">
+import {Component, Prop, Vue, Watch} from "vue-property-decorator";
+
+@Component
+export default class HiddenCard extends Vue {
+  public text1: string = "在附近搜索电桩";
+  public text2: string = "";
+  public color: string = "rgb(102,205,170)";
+  public top: number = -30;
+  public opacity: number = 0;
+
+  @Prop()
+  isLow!: boolean;
+
+  @Watch("isLow")
+  public watchIsLow() {
+    if (this.isLow) {
+      this.top = -30;
+      this.opacity = 0;
+    } else {
+      this.top = -130;
+      this.opacity = 1;
     }
-  },
-  watch: {
-    'isLow'() {
-      if (this.isLow) {
-        this.top = -30;
-        this.opacity = 0;
-      } else {
-        this.top = -130;
-        this.opacity = 1;
-      }
-    },
-    '$store.state.destination'() {
-      if (this.$store.state.destination != null) {
-        this.text1 = '距离目的地';
-        if (this.$store.state.buttonSelected == 1)
-          this.color = 'rgb(102,205,170)';
-        else this.color = this.$store.state.color;
-        this.text2 = '车程约' + this.$store.state.destination.distance + 'km';
-      } else { //按下locationbutton重置回到自己位置，destination置为空
-        this.text1 = "在附近搜索电桩";
-        this.text2 = '';
-      }
-    },
-    '$store.state.buttonSelected'() {
-      if (this.$store.state.buttonSelected == 1) {
-        this.color = "rgb(102,205,170)";
-      } else this.color = this.$store.state.color;
+  }
+
+  @Watch("$store.state.destination")
+  public watchStateDestination() {
+    if (this.$store.state.destination != null) {
+      this.text1 = '距离目的地';
+      if (this.$store.state.buttonSelected === 1)
+        this.color = 'rgb(102,205,170)';
+      else this.color = this.$store.state.color;
+      this.text2 = '车程约' + this.$store.state.destination.distance + 'km';
+    } else { //按下locationbutton重置回到自己位置，destination置为空
+      this.text1 = "在附近搜索电桩";
+      this.text2 = '';
+    }
+  }
+
+  @Watch('$store.state.buttonSelected')
+  public watchStateButtonSelected() {
+    if (this.$store.state.buttonSelected == 1) {
+      this.color = "rgb(102,205,170)";
+    } else {
+      this.color = this.$store.state.color;
     }
   }
 }
