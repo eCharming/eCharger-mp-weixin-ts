@@ -13,13 +13,13 @@ import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 
 @Component
 export default class InfoButton extends Vue {
+  @Prop()
+  isLow!: boolean;
+
   public src: string = "../static/image/person_1.gif";
   public pointerEvents: string = "auto";
   public opacity: number = 1;
   public logInStatus: boolean = false;
-
-  @Prop()
-  isLow!: boolean;
 
   public info(): void {
     if (!this.logInStatus) {

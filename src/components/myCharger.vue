@@ -64,148 +64,126 @@
   </view>
 </template>
 
-<script>
-export default {
-  props: {
-    address: {
-      type: String
-    },
-    location: {
-      type: String
-    },
-    state: {
-      type: Boolean
-    },
-    price: {
-      type: String
-    },
-    cid: {
-      type: String
-    },
-    time: {
-      type: Array,
-      default: () => []
-    },
-    windowWidth: {
-      type: Number
-    },
-    detail: {
-      type: Boolean
-    },
-  },
-  data() {
-    return {
-      boxshadow: "",
+<script lang="ts">
+import {Component, Prop, Vue, Watch} from "vue-property-decorator";
+import showModal from "@/apis/wx/showModal";
+import {chargerDelete, chargerPicDelete} from "@/apis/charger/charger";
 
-      height: 300,
-      translate: 'translate(' + (this.windowWidth - uni.upx2px(160) + 10) + 'px,-' + uni.upx2px(300) + 'px)',
-      rotate: 0,
-      buttonRotate: 0,
-      buttonOpacitty: 1,
-      bookRotate: -90,
+@Component
+export default class MyCharger extends Vue {
+  @Prop()
+  address!: string;
+  @Prop()
+  location!: string;
+  @Prop()
+  state!: boolean;
+  @Prop()
+  price!: string;
+  @Prop()
+  cid!: string;
+  @Prop({
+    type: Array,
+    default: () => []
+  })
+  time!: Array<string>;
+  @Prop()
+  windowWidth!: number;
+  @Prop()
+  detail!: boolean;
+
+  public height: number = 300;
+  public rotate: number = 0;
+  public buttonRotate: number = 0;
+  public buttonOpacity: number = 1;
+  public bookRotate: number = -90;
+
+  public get showTime() {
+    let tempDate = new Date();
+    let days = tempDate.getDay();
+    if (days == 0) {
+      days = 7;
     }
-  },
-  computed: {
-    showTime() {
-      var tempDate = new Date();
-      var days = tempDate.getDay();
-      if (days == 0) {
-        days = 7;
+    let showTime: string;
+    if (this.time[days - 1] == "") {
+      showTime = "-"
+    } else {
+      showTime = this.time[days - 1]
+    }
+    return showTime;
+  }
+
+  public get width() {
+    return (this.windowWidth - uni.upx2px(160));
+  }
+
+  public untap(): void {
+    this.$emit('chargerUndetail')
+  }
+
+  public editCharger(): void {
+    if (!this.state) {
+      wx.showToast({
+        title: "无法修改！",
+        icon: 'error'
+      })
+      return;
+    }
+    this.$store.commit('setChargerCardDefault')
+    wx.navigateTo({
+      url: '../editCharger/editCharger?cid=' + this.cid,
+    });
+  }
+
+  public deleteCharger(): void {
+    showModal("确认要删除该电桩", "提示").then(res => {
+      if (res.confirm) {
+        return chargerDelete({
+          id: Number(this.cid)
+        })
       }
-      var showTime = "";
-      if (this.time[days - 1] == "") {
-        showTime = "-"
-      } else {
-        showTime = this.time[days - 1]
-      }
-      return showTime;
-    },
-    width() {
-      return (this.windowWidth - uni.upx2px(160))
-    },
-  },
-  methods: {
-    untap() {
-      this.$emit('chargerUndetail')
-    },
-    editCharger() {
-      if (this.state == false) {
+    }).then(res => {
+      // TODO
+      if (res.result == "charger unavailable") {
         wx.showToast({
-          title: "无法修改！",
+          title: "删除失败！",
           icon: 'error',
           complete: () => {
-
+            this.$store.commit('setChargerCardDefault')
+            this.$store.commit('setGetChargers')
           }
-        })
-        return;
-      }
-      this.$store.commit('setChargerCardDefault')
-      uni.navigateTo({
-        url: '../editCharger/editCharger?cid=' + this.cid,
-      });
-    },
-    deleteCharger() {
-      wx.showModal({
-        title: '提⽰',
-        content: '确认要删除该电桩?',
-        success: res => {
-          if (res.confirm) {
-            wx.cloud.callFunction({ //输入订单
-              name: 'chargerDelete',
-              data: {
-                _id: Number(this.cid)
-              }
-            }).then(
-                res => {
-                  if (res.result == "charger unavailable") {
-                    wx.showToast({
-                      title: "删除失败！",
-                      icon: 'error',
-                      complete: () => {
-                        this.$store.commit('setChargerCardDefault')
-                        this.$store.commit('setGetChargers')
-                      }
-                    })
-                  } else {
-                    wx.request({
-                      url: "https://ws.healtool.cn/deletePic/" + this.cid,
-                      method: "POST",
-                      success: res => {
-                        //如果图片删除失败也不管了
-                        wx.showToast({
-                          title: "删除成功！",
-                          icon: 'success',
-                          complete: () => {
-                            this.$store.commit('setChargerCardDefault')
-                            this.$store.commit('setGetChargers')
-                          }
-                        })
-                      }
-                    })
-
-                  }
-                }
-            )
-          }
-        }
-      })
-    }
-  },
-  watch: {
-    'detail'() {
-      if (this.detail == true) {
-        this.$nextTick(function () {
-          this.rotate = -90;
         })
       } else {
-        this.$nextTick(function () {
-          this.rotate = 0;
-          this.bookRotate = -90;
-          this.height = 300;
-          this.buttonRotate = 0;
-          this.buttonOpacitty = 1;
+        return chargerPicDelete({
+          id: Number(this.cid)
         })
       }
+    }).then(res => {
+      //如果图片删除失败也不管了
+      wx.showToast({
+        title: "删除成功！",
+        icon: 'success',
+        complete: () => {
+          this.$store.commit('setChargerCardDefault')
+          this.$store.commit('setGetChargers')
+        }
+      })
+    })
+  }
+
+  @Watch("detail")
+  public watchDetail() {
+    if (this.detail) {
+      this.$nextTick(function () {
+        this.rotate = -90;
+      })
+    } else {
+      this.$nextTick(function () {
+        this.rotate = 0;
+        this.bookRotate = -90;
+        this.height = 300;
+        this.buttonRotate = 0;
+        this.buttonOpacity = 1;
+      })
     }
   }
 }
@@ -232,8 +210,7 @@ export default {
 .view2 {
   display: flex;
   justify-content: space-between;
-  margin: 15upx;
-  margin-top: 60upx;
+  margin: 60upx 15upx 15upx;
 }
 
 .location {
@@ -257,14 +234,12 @@ export default {
 }
 
 .state1 {
-  margin: 15upx;
-  margin-top: 20upx;
+  margin: 20upx 15upx 15upx;
   color: rgb(50, 200, 210);
 }
 
 .state2 {
-  margin: 15upx;
-  margin-top: 20upx;
+  margin: 20upx 15upx 15upx;
   color: rgb(255, 99, 71);
 }
 

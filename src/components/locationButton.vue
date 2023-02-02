@@ -12,16 +12,16 @@ import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 
 @Component
 export default class LocationButton extends Vue {
+  @Prop()
+  isLow!: boolean;
+
   public src: string = "../static/image/location.png";
   public pointerEvents: string = "auto";
   public opacity: number = 1;
 
-  @Prop()
-  isLow!: boolean;
-
   public relocate(): void {
     wx.startLocationUpdate({})
-    uni.getLocation({
+    wx.getLocation({
       type: "gcj02",
       success: res => {
         this.$store.commit('setLocationRes', res);

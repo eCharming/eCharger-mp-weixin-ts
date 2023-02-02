@@ -9,10 +9,11 @@ import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 
 @Component
 export default class HiddenDetail extends Vue {
-  public top: number = -130;
-  public opacity: number = 1;
   @Prop()
   isLow!: boolean;
+
+  public top: number = -130;
+  public opacity: number = 1;
 
   @Watch("isLow")
   public watchIsLow() {

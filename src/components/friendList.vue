@@ -32,12 +32,6 @@ import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 
 @Component
 export default class FriendList extends Vue {
-  public originX: number = 0;
-  public isRight: boolean = true;
-  public currentX: number = 0;
-  public newMessageNumLocal: number = 0;
-  public hasNewLocal: boolean = false;
-
   @Prop()
   avatarUrl!: string;
   @Prop()
@@ -50,6 +44,12 @@ export default class FriendList extends Vue {
   hasNew!: boolean;
   @Prop()
   newMessageNum!: number;
+
+  public originX: number = 0;
+  public isRight: boolean = true;
+  public currentX: number = 0;
+  public newMessageNumLocal: number = 0;
+  public hasNewLocal: boolean = false;
 
   public start(e: { changedTouches: { pageX: number }[] }): void {
     this.originX = e.changedTouches[0].pageX;

@@ -79,16 +79,6 @@ import {socketClose, socketSend} from "@/apis/wx/socket";
 
 @Component
 export default class BorrowOrderHistory extends Vue {
-  public status: number = -3;
-  public statusText: string = "";
-  public statusColor: string = "";
-  public checkStatus: string = "";
-  public checkColor: string = "";
-  public timeText: string = "";
-  public timeCount: number = -1;
-  public socketTask: SocketTask | undefined = undefined;
-  public timeRemain: string = "";
-
   @Prop()
   uid!: string;
   @Prop()
@@ -112,6 +102,16 @@ export default class BorrowOrderHistory extends Vue {
   @Prop()
   statusContext!: number;
 
+  public status: number = -3;
+  public statusText: string = "";
+  public statusColor: string = "";
+  public checkStatus: string = "";
+  public checkColor: string = "";
+  public timeText: string = "";
+  public timeCount: number = -1;
+  public socketTask: SocketTask | undefined = undefined;
+  public timeRemain: string = "";
+
   public detail(): void {
     wx.navigateTo({
       url: '../detail/detail?cid=' + this.cid
@@ -133,46 +133,46 @@ export default class BorrowOrderHistory extends Vue {
           this.statusText = '预约已确定';
           this.statusColor = 'rgb(50,200,210)';
 
-          paySharing({
+          return paySharing({
             oid: this.oid,
-          }).then(res => {
-            return orderStatusChange({
-              oid: this.oid,
-              status: 1,
-            })
-          }).then(res => {
-            let data = JSON.stringify({
-              oid: this.oid,
-              uid: this.uid,
-              toUid: this.toUid,
-              message: '1'
-            });
-            return socketSend(this.socketTask, data)
-          }).then(res => {
-            return socketClose(this.socketTask)
-          }).then(res => {
-            this.socketTask = undefined;
-            wx.hideLoading();
-            wx.showToast({
-              title: "已确定预约",
-              icon: 'success',
-              complete: () => {
-                setTimeout(() => {
-                  wx.navigateTo({
-                    url: '../communication/chat?toUid=' + this.uid,
-                    success: res => {
-                      res.eventChannel.emit('sendStatus', {
-                        data: {
-                          message: '已确定预约'
-                        }
-                      })
-                    }
-                  });
-                }, 500)
-              }
-            })
           })
         }
+      }).then(res => {
+        return orderStatusChange({
+          oid: this.oid,
+          status: 1,
+        })
+      }).then(res => {
+        let data = JSON.stringify({
+          oid: this.oid,
+          uid: this.uid,
+          toUid: this.toUid,
+          message: '1'
+        });
+        return socketSend(this.socketTask, data)
+      }).then(res => {
+        return socketClose(this.socketTask)
+      }).then(res => {
+        this.socketTask = undefined;
+        wx.hideLoading();
+        wx.showToast({
+          title: "已确定预约",
+          icon: 'success',
+          complete: () => {
+            setTimeout(() => {
+              wx.navigateTo({
+                url: '../communication/chat?toUid=' + this.uid,
+                success: res => {
+                  res.eventChannel.emit('sendStatus', {
+                    data: {
+                      message: '已确定预约'
+                    }
+                  })
+                }
+              });
+            }, 500)
+          }
+        })
       })
     }
   }

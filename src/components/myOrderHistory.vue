@@ -70,162 +70,127 @@
   </view>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      status: '',
-      statusText: '',
-      statusColor: '',
-      checkStatus: '',
-      checkColor: '',
-      timeText: '',
-      timeCount: null,
-      socketTask: null,
-      timeRemain: '',
-    }
-  },
-  props: {
-    uid: {
-      type: String
-    },
-    toUid: {
-      type: String
-    },
-    cid: {
-      type: String
-    },
-    oid: {
-      type: String
-    },
-    address: {
-      type: String
-    },
-    location: {
-      type: String
-    },
-    startTime: {
-      type: String
-    },
-    endTime: {
-      type: String
-    },
-    timeStamp: {
-      type: String
-    },
-    predictedPrice: {
-      type: String
-    },
-    statusContext: {
-      type: String
-    },
-  },
-  methods: {
-    detail() {
-      uni.navigateTo({
-        url: '../detail/detail?cid=' + this.cid,
-      })
-    },
-    check() {
-      if (this.status == 0) {
-        wx.showModal({
-          content: '确定取消预约？',
-          success: (res) => {
-            if (res.confirm) {
-              wx.showLoading({
-                title: "请稍候",
-                mask: true
-              })
-              this.status = -1;
-              this.timeRemain = '订单完成';
-              this.checkStatus = '预约已取消';
-              this.checkColor = 'rgba(0,0,0,0.5)';
-              this.statusText = '预约已取消';
-              this.statusColor = '#be0e0e';
+<script lang="ts">
+import {Component, Prop, Vue} from "vue-property-decorator";
+import showModal from "@/apis/wx/showModal";
+import {orderRefund, orderStatusChange} from "@/apis/book/book";
+import {socketClose, socketSend} from "@/apis/wx/socket";
+import SocketTask = WechatMiniprogram.SocketTask;
 
-              wx.cloud.callFunction({
-                name: 'orderRefund',
-                data: {
-                  oid: this.oid,
-                },
+@Component
+export default class MyOrderHistory extends Vue {
+  @Prop()
+  uid!: string;
+  @Prop()
+  toUid!: string;
+  @Prop()
+  cid!: number;
+  @Prop()
+  oid!: number;
+  @Prop()
+  address!: string;
+  @Prop()
+  location!: string;
+  @Prop()
+  startTime!: string;
+  @Prop()
+  endTime!: string;
+  @Prop()
+  timeStamp!: string;
+  @Prop()
+  predictedPrice!: string;
+  @Prop()
+  statusContext!: number;
+
+  public status: number = -3;
+  public statusText: string = "";
+  public statusColor: string = "";
+  public checkStatus: string = "";
+  public checkColor: string = "";
+  public timeText: string = "";
+  public timeCount: number = -1;
+  public socketTask: SocketTask | undefined = undefined;
+  public timeRemain: string = "";
+
+  public detail(): void {
+    wx.navigateTo({
+      url: '../detail/detail?cid=' + this.cid,
+    })
+  }
+
+  public check(): void {
+    if (this.status === 0) {
+      showModal("确定取消预约？").then(res => {
+        if (res.confirm) {
+          wx.showLoading({
+            title: "请稍候",
+            mask: true
+          })
+          this.status = -1;
+          this.timeRemain = '订单完成';
+          this.checkStatus = '预约已取消';
+          this.checkColor = 'rgba(0,0,0,0.5)';
+          this.statusText = '预约已取消';
+          this.statusColor = '#be0e0e';
+
+          return orderRefund({
+            oid: this.oid,
+          })
+        }
+      }).then(res => {
+        return orderStatusChange({
+          oid: this.oid,
+          status: -1,
+        })
+      }).then(res => {
+        let data = JSON.stringify({
+          oid: this.oid,
+          uid: this.uid,
+          toUid: this.toUid,
+          message: '-1'
+        });
+        return socketSend(this.socketTask, data)
+      }).then(res => {
+        return socketClose(this.socketTask)
+      }).then(res => {
+        this.socketTask = undefined;
+        wx.hideLoading();
+        wx.showToast({
+          title: "已取消预约",
+          icon: 'success',
+          complete: () => {
+            setTimeout(() => {
+              wx.navigateTo({
+                url: '../communication/chat?toUid=' + this.toUid,
                 success: (res) => {
-                  if (res.result.returnCode == "SUCCESS" && res.result.resultCode == "SUCCESS") {
-                    wx.cloud.callFunction({ //更改order的状态
-                      name: 'orderStatusChange',
-                      data: {
-                        oid: this.oid,
-                        status: -1,
-                      }
-                    }).then(res => {
-                      var data = {
-                        oid: this.oid,
-                        uid: this.uid,
-                        toUid: this.toUid,
-                        message: '-1'
-                      };
-                      data = JSON.stringify(data);
-                      this.socketTask.send({
-                        data: data,
-                        success: () => {
-
-
-                          this.socketTask.close({
-                            success: () => {
-                              this.socketTask = null;
-                              wx.hideLoading();
-                              wx.showToast({
-                                title: "已取消预约",
-                                icon: 'success',
-                                complete: () => {
-                                  setTimeout(() => {
-                                    uni.navigateTo({
-                                      url: '../communication/chat?toUid=' + this.toUid,
-                                      success: (res) => {
-                                        res.eventChannel.emit('sendStatus', {
-                                          data: {
-                                            message: '已取消预约'
-                                          }
-                                        })
-                                      }
-                                    });
-                                  }, 500)
-                                }
-                              })
-                            }
-                          });
-                        }
-                      })
-
-                    })
-                  } else {
-                    wx.showToast({
-                      title: "预约取消失败！",
-                      icon: 'error',
-                      complete: () => {
-
-                      }
-                    })
-                  }
-
+                  res.eventChannel.emit('sendStatus', {
+                    data: {
+                      message: '已取消预约'
+                    }
+                  })
                 }
-              })
-            }
+              });
+            }, 500)
           }
         })
-
-
-      }
+      }).catch(err => {
+        wx.showToast({
+          title: "预约取消失败！",
+          icon: 'error'
+        })
+      })
     }
-  },
-  mounted() {
+  }
+
+  public mounted(): void {
     this.status = this.statusContext;
-    var time = new Date(Number(this.timeStamp));
-    var year = time.getFullYear();
-    var month = time.getMonth() + 1 < 10 ? "0" + (time.getMonth() + 1) : time.getMonth() + 1;
-    var date = time.getDate() < 10 ? "0" + time.getDate() : time.getDate();
-    var hh = time.getHours() < 10 ? "0" + time.getHours() : time.getHours();
-    var mm = time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes();
-    var ss = time.getSeconds() < 10 ? "0" + time.getSeconds() : time.getSeconds();
+    let time = new Date(Number(this.timeStamp));
+    let year = time.getFullYear();
+    let month = time.getMonth() + 1 < 10 ? "0" + (time.getMonth() + 1) : time.getMonth() + 1;
+    let date = time.getDate() < 10 ? "0" + time.getDate() : time.getDate();
+    let hh = time.getHours() < 10 ? "0" + time.getHours() : time.getHours();
+    let mm = time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes();
+    let ss = time.getSeconds() < 10 ? "0" + time.getSeconds() : time.getSeconds();
     this.timeText = year + '年' + month + '月' + date + '日' + hh + ':' + mm + ':' + ss;
     if (this.status == -2) {
       this.timeRemain = '订单完成';
@@ -244,14 +209,12 @@ export default {
       this.checkColor = '#be0e0e';
       this.statusText = '预约已发起';
       this.statusColor = 'rgba(102,205,170,1)';
-
-
       this.timeCount = setInterval(() => {
         if (this.status == 0) {
-          var currentTime = new Date().getTime();
-          var count = 1800 - ((currentTime - this.timeStamp) / 1000).toFixed(0);
-          var mm = parseInt(count / 60);
-          var ss = count % 60;
+          let currentTime = new Date().getTime();
+          let count = 1800 - Math.ceil((currentTime - Number(this.timeStamp)) / 1000);
+          let mm = Math.ceil(count / 60);
+          let ss = count % 60;
 
           this.timeRemain = (mm < 10 ? '0' + mm : mm) + ':' + (ss < 10 ? '0' + ss : ss);
           if (count <= 0) {
@@ -262,11 +225,11 @@ export default {
             this.statusText = '预约已超时';
             this.statusColor = 'rgba(0,0,0,0.5)';
             clearInterval(this.timeCount);
-            this.timeCount = null;
-            if (this.socketTask != null) {
+            this.timeCount = -1;
+            if (this.socketTask !== undefined) {
               this.socketTask.close({
                 success: () => {
-                  this.socketTask = null;
+                  this.socketTask = undefined;
                 }
               });
             }
@@ -275,16 +238,11 @@ export default {
 
       }, 1000);
 
-      this.socketTask = uni.connectSocket({		//打开链接
-        url: 'wss://ws.healtool.cn/websocketapi/Order/' + this.oid + '/' + this.uid + '/' + this.toUid,
-        // url:'ws://127.0.0.1:8080/websocketapi/Order/'+this.oid+'/'+uid+'/'+toUid,
-        success: () => {
-
-        }
+      this.socketTask = wx.connectSocket({		//打开链接
+        url: 'wss://ws.healtool.cn/websocketapi/Order/' + this.oid + '/' + this.uid + '/' + this.toUid
       });
       this.socketTask.onMessage((res) => {
-        var status = (JSON.parse(res.data)).message;
-        this.status = status;
+        this.status = (JSON.parse(<string>res.data)).message;
         if (this.status == -1) {	//我向对方发起预约 电桩是对方的 按下则为取消预约
           this.timeRemain = '订单完成';
           this.checkStatus = '预约已取消';
@@ -299,14 +257,12 @@ export default {
           this.statusText = '预约已确定';
           this.statusColor = 'rgba(102,205,170,1)';
         }
-        this.socketTask.close({
+        this.socketTask?.close({
           success: () => {
-            this.socketTask = null;
+            this.socketTask = undefined;
           }
         });
       });
-
-
     } else if (this.status == 1) {
       this.timeRemain = '订单完成';
       this.checkStatus = '预约已确定';
@@ -314,13 +270,14 @@ export default {
       this.statusText = '预约已确定';
       this.statusColor = 'rgba(102,205,170,1)';
     }
-  },
-  destroyed() {
-    if (this.timeCount != null) {
+  }
+
+  public destroyed(): void {
+    if (this.timeCount !== -1) {
       clearInterval(this.timeCount);
     }
-    if (this.socketTask != null) {
-      this.socketTask.close();
+    if (this.socketTask !== undefined) {
+      this.socketTask.close({});
     }
   }
 }

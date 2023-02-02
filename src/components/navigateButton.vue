@@ -7,45 +7,42 @@
   </view>
 </template>
 
-<script>
-export default {
-  name: "navigateButton",
-  data() {
-    return {
-      src: "../static/image/navigate.png",
-      pointerEvents: 'auto',
-      opacity: 1,
-    };
-  },
-  props: {
-    isLow: {
-      type: Boolean,
-    },
-  },
-  methods: {
-    unnavigate() {
-      if (this.$store.state.isNavigate == true) {
-        this.$store.commit('refreshPolyline');
-        this.$store.commit('setIsNavigate', false);
-      }
+<script lang="ts">
+import {Component, Prop, Vue, Watch} from "vue-property-decorator";
+
+@Component
+export default class NavigateButton extends Vue {
+
+  @Prop()
+  isLow!: boolean;
+  public src: string = "../static/image/navigate.png";
+  public pointerEvents: string = "auto";
+  public opacity: number = 1;
+
+  public unnavigate(): void {
+    if (this.$store.state.isNavigate) {
+      this.$store.commit('refreshPolyline');
+      this.$store.commit('setIsNavigate', false);
     }
-  },
-  watch: {
-    '$store.state.buttonSelected'() {
-      if (this.$store.state.buttonSelected == 1) {
-        this.src = "../static/image/navigate.png";
-      } else {
-        this.src = "../static/image/navigate_blue.png";
-      }
-    },
-    'isLow'() {
-      if (this.isLow) {
-        this.pointerEvents = 'auto';
-        this.opacity = 1;
-      } else {
-        this.pointerEvents = 'none';
-        this.opacity = 0;
-      }
+  }
+
+  @Watch("$store.state.buttonSelected")
+  public watchStoreButtonSelected() {
+    if (this.$store.state.buttonSelected == 1) {
+      this.src = "../static/image/navigate.png";
+    } else {
+      this.src = "../static/image/navigate_blue.png";
+    }
+  }
+
+  @Watch("isLow")
+  public watchStateIsLow() {
+    if (this.isLow) {
+      this.pointerEvents = 'auto';
+      this.opacity = 1;
+    } else {
+      this.pointerEvents = 'none';
+      this.opacity = 0;
     }
   }
 }

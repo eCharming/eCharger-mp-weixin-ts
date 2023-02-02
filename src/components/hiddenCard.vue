@@ -10,14 +10,14 @@ import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 
 @Component
 export default class HiddenCard extends Vue {
+  @Prop()
+  isLow!: boolean;
+
   public text1: string = "在附近搜索电桩";
   public text2: string = "";
   public color: string = "rgb(102,205,170)";
   public top: number = -30;
   public opacity: number = 0;
-
-  @Prop()
-  isLow!: boolean;
 
   @Watch("isLow")
   public watchIsLow() {

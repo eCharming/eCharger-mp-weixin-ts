@@ -149,6 +149,9 @@ import {socketClose, socketSend} from "@/apis/wx/socket";
 
 @Component
 export default class Book extends Vue {
+  @Prop()
+  message!: BookMessage;
+
   public status: number = 0;
   public oid: number = 0;
   public cid: number = 0;
@@ -169,9 +172,6 @@ export default class Book extends Vue {
   public color: string = "rgba(102,205,170,1)"
   public timeCount: number = 0; //倒计时计时器
   public socketTask: SocketTask | undefined = undefined;
-
-  @Prop()
-  message!: BookMessage;
 
   public detail(): void {
     wx.navigateTo({
