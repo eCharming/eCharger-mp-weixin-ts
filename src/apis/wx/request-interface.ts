@@ -9,6 +9,6 @@ export interface ResponseBody {
 export interface RequestBody {
     url: string,
     method: "GET" | "POST" | "PUT" | "DELETE"
-    data: IAnyObject,
+    data?: IAnyObject,
     header?: IAnyObject
 }

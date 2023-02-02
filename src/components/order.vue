@@ -185,508 +185,474 @@
 
 </template>
 
-<script>
-export default {
-  props: {
-    index: {
-      type: Number
-    },
-    cid: {
-      type: Number
-    },
-    uid: {
-      type: Number
-    },
-    longitude: {
-      type: String
-    },
-    latitude: {
-      type: String
-    },
-    address: {
-      type: String
-    },
-    location: {
-      type: String
-    },
-    distance: {
-      type: Number
-    },
-    price: {
-      type: String
-    },
-    time: {
-      type: Array,
-      default: () => []
-    },
-    detail: {
-      type: Boolean
-    },
-    windowWidth: {
-      type: Number
+<script lang="ts">
+import {Component, Prop, Vue, Watch} from "vue-property-decorator";
+import {updateUrl} from "@/apis/user/user";
+import NodesRef = WechatMiniprogram.NodesRef;
+import {orderInput, orderNum, orderPay, payQuery} from "@/apis/order/order";
+import showModal from "@/apis/wx/showModal";
+
+@Component
+export default class Order extends Vue {
+  @Prop()
+  index!: number;
+  @Prop()
+  cid!: number;
+  @Prop()
+  uid!: number;
+  @Prop()
+  longitude!: string;
+  @Prop()
+  latitude!: string;
+  @Prop()
+  address!: string;
+  @Prop()
+  location!: string;
+  @Prop()
+  distance!: number;
+  @Prop()
+  price!: string;
+  @Prop({
+    type: Array,
+    default: () => []
+  })
+  time!: Array<string>
+  @Prop()
+  detail!: boolean;
+  @Prop()
+  windowWidth!: number;
+
+  public height: number = 300;
+  public width: number = 0;
+  public translate: string = 'translate(' + (this.windowWidth - uni.upx2px(160) + 10) + 'px,-' + uni.upx2px(300) + 'px)';
+  public check: boolean = false;
+  public checkOpacity: number = 0;
+  public rotate: number = 0;
+  public checkRight: number = 100;
+  public animationBook: object = {};
+  public animationContact: object = {};
+  public animationNavigate: object = {};
+  public animationDetail: object = {};
+  public buttonRotate: number = 0;
+  public buttonOpacity: number = 1;
+  public bookRotate: number = -90;
+  public minTime1: string = '00:00';
+  public maxTime1: string = '24:00';
+  public minTime2: string = '00:00';
+  public maxTime2: string = '24:00';
+  public text1: string = '起始时间';
+  public text2: string = '结束时间';
+  public opacity1: number = 0.5;
+  public opacity2: number = 0.5;
+  public possiblePrice: string = '0';
+
+  public get showTime() {
+    let tempDate = new Date();
+    let days = tempDate.getDay();
+    if (days === 0) {
+      days = 7;
     }
-  },
-  data() {
-    return {
-      height: 300,
-      width: 0,
-      translate: 'translate(' + (this.windowWidth - uni.upx2px(160) + 10) + 'px,-' + uni.upx2px(300) + 'px)',
-      check: false,
-      checkOpacity: 0,
-      rotate: 0,
-      checkRight: 100,
-      animationBook: {},
-      animationContact: {},
-      animationNavigate: {},
-      animationDetail: {},
-      buttonRotate: 0,
-      buttonOpacitty: 1,
-      bookRotate: -90,
-
-      minTime1: '00:00',
-      maxTime1: '24:00',
-      minTime2: '00:00',
-      maxTime2: '24:00',
-      text1: '起始时间',
-      text2: '结束时间',
-      opacity1: 0.5,
-      opacity2: 0.5,
-      possiblePrice: '0'
+    let showTime: string;
+    if (this.time[days - 1] === "") {
+      showTime = "-"
+    } else {
+      showTime = this.time[days - 1]
     }
-  },
-  computed: {
-    showTime() {
-      var tempDate = new Date();
-      var days = tempDate.getDay();
-      if (days == 0) {
-        days = 7;
-      }
-      var showTime = "";
-      if (this.time[days - 1] == "") {
-        showTime = "-"
-      } else {
-        showTime = this.time[days - 1]
-      }
-      return showTime;
-    },
+    return showTime;
+  }
 
-  },
-  methods: {
-    changetime1(e) {
-      var time1 = e.detail.value;
-      this.text1 = time1;
-      this.minTime2 = time1;
-      this.opacity1 = 1;
-      if (this.text2 != "结束时间") {
-        var sp1 = this.text1.split(":")
-        var sp2 = this.text2.split(":")
-        var time1 = Number(sp1[0]) * 60 + Number(sp1[1])
-        var time2 = Number(sp2[0]) * 60 + Number(sp2[1])
-        this.possiblePrice = ((time2 - time1) / 60 * this.price).toFixed(2)
-      }
-    },
-    changetime2(e) {
-      var time2 = e.detail.value;
-      this.text2 = time2;
-      this.maxTime1 = time2;
-      this.opacity2 = 1;
-      if (this.text1 != "起始时间") {
-        var sp1 = this.text1.split(":")
-        var sp2 = this.text2.split(":")
-        var time1 = Number(sp1[0]) * 60 + Number(sp1[1])
-        var time2 = Number(sp2[0]) * 60 + Number(sp2[1])
-        this.possiblePrice = ((time2 - time1) / 60 * this.price).toFixed(2)
-      }
-    },
-    tap() {
-      this.translate = 'translate(0rpx,-300rpx)';
-      setTimeout(() => {
-        this.translate = 'translate(' + (-this.width) + 'px,0px)';
-      }, 300);
-      setTimeout(() => {
-        this.translate = 'translate(0rpx,284rpx)';
-      }, 600);
-      setTimeout(() => {
-        this.translate = 'translate(0rpx,0rpx)';
-      }, 900);
+  public changetime1(e: { detail: { value: any } }): void {
+    let time1 = e.detail.value;
+    this.text1 = time1;
+    this.minTime2 = time1;
+    this.opacity1 = 1;
+    if (this.text2 !== "结束时间") {
+      let sp1 = this.text1.split(":")
+      let sp2 = this.text2.split(":")
+      let time1 = Number(sp1[0]) * 60 + Number(sp1[1])
+      let time2 = Number(sp2[0]) * 60 + Number(sp2[1])
+      this.possiblePrice = ((time2 - time1) / 60 * Number(this.price)).toFixed(2)
+    }
+  }
 
-      this.check = true;
-      this.$nextTick(function () {
-        this.checkOpacity = 1;
-        this.checkRight = 10;
-      });
-    },
-    untap() {
+  public changetime2(e: { detail: { value: any } }): void {
+    let time2 = e.detail.value;
+    this.text2 = time2;
+    this.maxTime1 = time2;
+    this.opacity2 = 1;
+    if (this.text1 !== "起始时间") {
+      let sp1 = this.text1.split(":")
+      let sp2 = this.text2.split(":")
+      let time1 = Number(sp1[0]) * 60 + Number(sp1[1])
+      let time2 = Number(sp2[0]) * 60 + Number(sp2[1])
+      this.possiblePrice = ((time2 - time1) / 60 * Number(this.price)).toFixed(2)
+    }
+  }
+
+  public tap(): void {
+    this.translate = 'translate(0rpx,-300rpx)';
+    setTimeout(() => {
+      this.translate = 'translate(' + (-this.width) + 'px,0px)';
+    }, 300);
+    setTimeout(() => {
       this.translate = 'translate(0rpx,284rpx)';
-      setTimeout(() => {
-        this.translate = 'translate(' + (-this.width) + 'px,0px)';
-      }, 300);
-      setTimeout(() => {
-        this.translate = 'translate(0rpx,-300rpx)';
-      }, 600);
-      setTimeout(() => {
-        this.translate = 'translate(' + (this.width + 10) + 'px,-' + uni.upx2px(300) + 'px)';
-      }, 900);
+    }, 600);
+    setTimeout(() => {
+      this.translate = 'translate(0rpx,0rpx)';
+    }, 900);
 
-      this.check = false;
-      this.checkOpacity = 0;
-      this.checkRight = 100;
-    },
-    checkMap() {
-      this.$emit('map');
-    },
-    checkDetail() {
-      if (!this.$store.state.logInStatus) {
-        wx.getUserProfile({
-          desc: '获取微信头像以及昵称',
-          success: (res) => {
-            this.$store.commit('setUserName', res.userInfo.nickName,);
-            this.$store.commit('setAvatarUrl', res.userInfo.avatarUrl);
-            this.$store.commit('setLogInStatus', true);
-            wx.cloud.callFunction({ //uid获取
-              name: 'updateUrl',
-              data: {
-                userName: res.userInfo.nickName,
-                avatarUrl: res.userInfo.avatarUrl,
-              }
-            })
-          }
-        })
-      } else this.$emit('detail');
-    },
-    unCheckDetail() {
-      this.$emit('undetail');
-    },
-    navigate() {
-      var animation = uni.createAnimation({
-        duration: 100,
-        timingFunction: 'ease',
-      })
-      animation.scale(0.8).step()
-      this.animationNavigate = animation.export()
-      setTimeout(() => {
-        var animation2 = uni.createAnimation({
-          duration: 100,
-          timingFunction: 'ease',
-        })
-        animation2.scale(1).step()
+    this.check = true;
+    this.$nextTick(function () {
+      this.checkOpacity = 1;
+      this.checkRight = 10;
+    });
+  }
 
-        this.animationNavigate = animation2.export();
-        this.$store.commit('setNavigateSelected', this.index);
-        this.$emit('toLow');
-      }, 100)
+  public untap(): void {
+    this.translate = 'translate(0rpx,284rpx)';
+    setTimeout(() => {
+      this.translate = 'translate(' + (-this.width) + 'px,0px)';
+    }, 300);
+    setTimeout(() => {
+      this.translate = 'translate(0rpx,-300rpx)';
+    }, 600);
+    setTimeout(() => {
+      this.translate = 'translate(' + (this.width + 10) + 'px,-' + uni.upx2px(300) + 'px)';
+    }, 900);
 
+    this.check = false;
+    this.checkOpacity = 0;
+    this.checkRight = 100;
+  }
 
-    },
-    book() {
-      if (this.uid == this.$store.state.uid) {
-        wx.showToast({
-          title: "禁止向自己预约",
-          icon: 'error',
-        })
-        return;
-      }
-      this.buttonRotate = 180;
-      this.buttonOpacitty = 0;
-      var animation = uni.createAnimation({
-        duration: 100,
-        timingFunction: 'ease',
-      })
-      animation.scale(0.8).step()
-      this.animationBook = animation.export()
-      setTimeout(() => {
-        var animation2 = uni.createAnimation({
-          duration: 100,
-          timingFunction: 'ease',
-        })
-        animation2.scale(1).step()
+  public checkMap(): void {
+    this.$emit('map');
+  }
 
-        this.animationBook = animation2.export();
-      }, 100)
-      setTimeout(() => {
-        this.height = 600;
-      }, 200)
-
-      setTimeout(() => {
-        this.bookRotate = 0;
-      }, 400)
-
-    },
-    unbook() {
-      this.bookRotate = -90;
-      setTimeout(() => {
-        this.height = 300;
-      }, 100)
-      setTimeout(() => {
-        this.buttonRotate = 0;
-        this.buttonOpacitty = 1;
-      }, 400)
-    },
-    orderDetail() {
-      var animation = uni.createAnimation({
-        duration: 100,
-        timingFunction: 'ease',
-      })
-      animation.scale(0.8).step()
-      this.animationDetail = animation.export()
-      setTimeout(() => {
-        var animation2 = uni.createAnimation({
-          duration: 100,
-          timingFunction: 'ease',
-        })
-        animation2.scale(1).step()
-
-        this.animationDetail = animation2.export();
-        uni.navigateTo({
-          url: '../detail/detail?cid=' + this.cid,
-        })
-      }, 100)
-
-    },
-    chat() {
-      if (this.uid == this.$store.state.uid) {
-        wx.showToast({
-          title: "禁止联系自己",
-          icon: 'error',
-        })
-        return;
-      }
-      var animation = uni.createAnimation({
-        duration: 100,
-        timingFunction: 'ease',
-      })
-      animation.scale(0.8).step()
-      this.animationContact = animation.export()
-      setTimeout(() => {
-        var animation2 = uni.createAnimation({
-          duration: 100,
-          timingFunction: 'ease',
-        })
-        animation2.scale(1).step()
-
-        this.animationContact = animation2.export();
-        uni.navigateTo({
-          url: '../communication/chat?toUid=' + this.uid,
-        })
-      }, 100)
-    },
-    bookDetail() {
-      uni.navigateTo({
-        url: '../detail/detail?cid=' + this.cid,
-      })
-    },
-    bookOrder() {
-      wx.showModal({
-        content: '确定预约吗？',
+  public checkDetail(): void {
+    if (!this.$store.state.logInStatus) {
+      wx.getUserProfile({
+        desc: '获取微信头像以及昵称',
         success: (res) => {
-          if (res.confirm) {
-            let time1 = this.text1.split(':')
-            let time2 = this.text2.split(':')
-            if (time1.length != 2 || time2.length != 2) {
-              wx.showToast({
-                title: "时间不合法！",
-                icon: 'error',
-              })
-              return;
-            }
-            if (Number(time2[0]) * 60 + Number(time2[1]) - Number(time1[0]) * 60 - Number(time1[1]) < 30) {
-              wx.showToast({
-                title: "预约时间过短！",
-                icon: 'error',
-              })
-              return;
-            }
-            if (Number(this.possiblePrice) < 0.1) {
-              wx.showToast({
-                title: "预约金额过少！",
-                icon: 'error',
-              })
-              return;
-            }
-            wx.showLoading({
-              title: "请稍候",
-              mask: true
-            })
-            wx.cloud.callFunction({ //查询我是否有未完成的订单以及该电桩是否可用
-              name: 'orderNum',
-              data: {
-                uid: this.$store.state.uid,
-                cid: this.cid
-              }
-            }).then(res => {
-              if (res.result == 1) {
-                wx.cloud.callFunction({
-                  name: 'orderPay',
-                  data: {
-                    predictedPrice: Math.round(this.possiblePrice * 100)
-                  },
-                  success: res => {
-                    console.log(res)
-                    if (res.result.returnCode == "SUCCESS" && res.result.resultCode == "SUCCESS") {
-                      var outTradeNo = res.result.outTradeNo;
-                      const payment = res.result.payment
-                      wx.requestPayment({
-                        ...payment,
-                        success: (res) => {
-                          wx.cloud.callFunction({
-                            name: 'payQuery',
-                            data: {
-                              outTradeNo: outTradeNo,
-                            }
-                          }).then(res => {
-                            var transactionId = res.result.transactionId;
-                            var timeStamp = new Date().getTime();
-                            wx.cloud.callFunction({ //输入订单
-                              name: 'orderInput',
+          this.$store.commit('setUserName', res.userInfo.nickName,);
+          this.$store.commit('setAvatarUrl', res.userInfo.avatarUrl);
+          this.$store.commit('setLogInStatus', true);
+          updateUrl({ //uid获取
+            userName: res.userInfo.nickName,
+            avatarUrl: res.userInfo.avatarUrl
+          })
+        }
+      })
+    } else {
+      this.$emit('detail');
+    }
+  }
+
+  public unCheckDetail() {
+    this.$emit('undetail');
+  }
+
+  public navigate() {
+    let animation = wx.createAnimation({
+      duration: 100,
+      timingFunction: 'ease',
+    })
+    animation.scale(0.8).step()
+    this.animationNavigate = animation.export()
+    setTimeout(() => {
+      let animation2 = wx.createAnimation({
+        duration: 100,
+        timingFunction: 'ease',
+      })
+      animation2.scale(1).step()
+
+      this.animationNavigate = animation2.export();
+      this.$store.commit('setNavigateSelected', this.index);
+      this.$emit('toLow');
+    }, 100)
+  }
+
+  public book(): void {
+    if (this.uid === this.$store.state.uid) {
+      wx.showToast({
+        title: "禁止向自己预约",
+        icon: 'error',
+      })
+      return;
+    }
+    this.buttonRotate = 180;
+    this.buttonOpacity = 0;
+    let animation = wx.createAnimation({
+      duration: 100,
+      timingFunction: 'ease',
+    })
+    animation.scale(0.8).step()
+    this.animationBook = animation.export()
+    setTimeout(() => {
+      let animation2 = wx.createAnimation({
+        duration: 100,
+        timingFunction: 'ease',
+      })
+      animation2.scale(1).step()
+
+      this.animationBook = animation2.export();
+    }, 100)
+    setTimeout(() => {
+      this.height = 600;
+    }, 200)
+
+    setTimeout(() => {
+      this.bookRotate = 0;
+    }, 400)
+  }
+
+  public unbook(): void {
+    this.bookRotate = -90;
+    setTimeout(() => {
+      this.height = 300;
+    }, 100)
+    setTimeout(() => {
+      this.buttonRotate = 0;
+      this.buttonOpacity = 1;
+    }, 400)
+  }
+
+  public orderDetail(): void {
+    let animation = wx.createAnimation({
+      duration: 100,
+      timingFunction: 'ease',
+    })
+    animation.scale(0.8).step()
+    this.animationDetail = animation.export()
+    setTimeout(() => {
+      let animation2 = wx.createAnimation({
+        duration: 100,
+        timingFunction: 'ease',
+      })
+      animation2.scale(1).step()
+
+      this.animationDetail = animation2.export();
+      wx.navigateTo({
+        url: '../detail/detail?cid=' + this.cid
+      })
+    }, 100)
+
+  }
+
+  public chat(): void {
+    if (this.uid === this.$store.state.uid) {
+      wx.showToast({
+        title: "禁止联系自己",
+        icon: 'error',
+      })
+      return;
+    }
+    let animation = wx.createAnimation({
+      duration: 100,
+      timingFunction: 'ease',
+    })
+    animation.scale(0.8).step()
+    this.animationContact = animation.export()
+    setTimeout(() => {
+      let animation2 = wx.createAnimation({
+        duration: 100,
+        timingFunction: 'ease',
+      })
+      animation2.scale(1).step()
+
+      this.animationContact = animation2.export();
+      wx.navigateTo({
+        url: '../communication/chat?toUid=' + this.uid
+      })
+    }, 100)
+  }
+
+  public bookDetail(): void {
+    wx.navigateTo({
+      url: '../detail/detail?cid=' + this.cid
+    })
+  }
+
+  public bookOrder(): void {
+    showModal("确定预约吗？").then(res => {
+      if (!res.confirm) {
+        return;
+      }
+      let time1 = this.text1.split(':')
+      let time2 = this.text2.split(':')
+      if (time1.length !== 2 || time2.length !== 2) {
+        wx.showToast({
+          title: "时间不合法！",
+          icon: 'error',
+        })
+        return;
+      }
+      if (Number(time2[0]) * 60 + Number(time2[1]) - Number(time1[0]) * 60 - Number(time1[1]) < 30) {
+        wx.showToast({
+          title: "预约时间过短！",
+          icon: 'error',
+        })
+        return;
+      }
+      if (Number(this.possiblePrice) < 0.1) {
+        wx.showToast({
+          title: "预约金额过少！",
+          icon: 'error',
+        })
+        return;
+      }
+      wx.showLoading({
+        title: "请稍候",
+        mask: true
+      })
+      orderNum({  //查询我是否有未完成的订单以及该电桩是否可用
+        uid: this.$store.state.uid,
+        cid: this.cid
+      }).then(res => {
+        if (res.result === 1) {
+          orderPay({
+            predictedPrice: String(Math.round(Number(this.possiblePrice) * 100))
+          }).then(res => {
+            let outTradeNo = res.result.outTradeNo;
+            const payment = res.result.payment
+            wx.requestPayment({
+              ...payment,
+              success: () => {
+                let timeStamp = new Date().getTime();
+                payQuery({
+                  outTradeNo: outTradeNo
+                }).then(res => {
+                  let transactionId = res.result.transactionId;
+                  return orderInput({
+                    status: 0,
+                    uid: Number(this.$store.state.uid),
+                    toUid: Number(this.uid),
+                    cid: Number(this.cid),
+                    timeStamp: timeStamp,
+                    startTime: this.text1,
+                    endTime: this.text2,
+                    address: this.address,
+                    location: this.location,
+                    predictedPrice: this.possiblePrice,
+                    outTradeNo: outTradeNo,
+                    transactionId: transactionId
+                  })
+                }).then(res => {
+                  let oid = res.result;
+                  wx.hideLoading()
+                  wx.showToast({
+                    title: "预约成功！",
+                    icon: 'success',
+                    complete: () => {
+                      setTimeout(() => {
+                        wx.navigateTo({
+                          url: '../communication/chat?toUid=' + this.uid,
+                          success: (res) => {
+                            res.eventChannel.emit('bookOrder', {
                               data: {
-                                status: 0,
-                                uid: Number(this.$store.state.uid),
-                                toUid: Number(this.uid),
-                                cid: Number(this.cid),
+                                oid: oid,
+                                cid: this.cid,
+                                longitude: this.longitude,
+                                latitude: this.latitude,
+                                address: this.address,
+                                location: this.location,
+                                price: this.possiblePrice,
                                 timeStamp: timeStamp,
                                 startTime: this.text1,
                                 endTime: this.text2,
-                                address: this.address,
-                                location: this.location,
-                                predictedPrice: this.possiblePrice,
-                                outTradeNo: outTradeNo,
-                                transactionId: transactionId,
                               }
-                            }).then(
-                                res => {
-                                  var oid = res.result;
-                                  wx.hideLoading()
-                                  wx.showToast({
-                                    title: "预约成功！",
-                                    icon: 'success',
-                                    complete: () => {
-                                      setTimeout(() => {
-                                        uni.navigateTo({
-                                          url: '../communication/chat?toUid=' +
-                                              this.uid,
-                                          success: (res) => {
-                                            res.eventChannel
-                                                .emit('bookOrder', {
-                                                      data: {
-                                                        oid: oid,
-                                                        cid: this.cid,
-                                                        longitude: this.longitude,
-                                                        latitude: this.latitude,
-                                                        address: this.address,
-                                                        location: this.location,
-                                                        price: this.possiblePrice,
-                                                        timeStamp: timeStamp,
-                                                        startTime: this.text1,
-                                                        endTime: this.text2,
-                                                      }
-                                                    }
-                                                )
-                                          }
-                                        });
-                                        this.$store.commit('setRefresh') //更新order
-                                      }, 500)
-                                    }
-                                  })
-                                }
-                            )
-                          })
-                        },
-                        fail(err) {
-                          wx.hideLoading()
-                          wx.showToast({
-                            title: "支付失败！",
-                            icon: 'error',
-                            complete: () => {
-
-                            }
-                          })
-                        }
-                      })
-                    } else {
-                      wx.hideLoading()
-                      wx.showToast({
-                        title: "预约失败！",
-                        icon: 'error',
-                      })
+                            })
+                          }
+                        });
+                        this.$store.commit('setRefresh') //更新order
+                      }, 500)
                     }
-
-                  },
-                  fail: wx.hideLoading(),
+                  })
                 })
-              } else if (res.result == -1) {
+              },
+              fail: () => {
                 wx.hideLoading()
                 wx.showToast({
-                  title: "您有订单未处理",
-                  icon: 'error',
-                })
-              } else if (res.result == -2) {
-                wx.hideLoading()
-                wx.showToast({
-                  title: "该电桩已被预约",
-                  icon: 'error',
+                  title: "支付失败！",
+                  icon: 'error'
                 })
               }
             })
-          }
+          }).catch(err => {
+            wx.hideLoading();
+            wx.showToast({
+              title: "预约失败！",
+              icon: 'error',
+            })
+          })
+        } else if (res.result === -1) {
+          wx.hideLoading()
+          wx.showToast({
+            title: "您有订单未处理",
+            icon: 'error',
+          })
+        } else if (res.result === -2) {
+          wx.hideLoading()
+          wx.showToast({
+            title: "该电桩已被预约",
+            icon: 'error',
+          })
         }
       })
-
-    }
-  },
-  watch: {
-    'detail'() {
-      if (this.detail == false) {
-        this.$nextTick(function () {
-          this.rotate = 0;
-          this.bookRotate = -90;
-          this.height = 300;
-          this.buttonRotate = 0;
-          this.buttonOpacitty = 1;
-        })
-
-      } else if (this.detail == true) {
-        this.$nextTick(function () {
-          this.rotate = -90;
-        })
-
-      }
-    },
-    'cid': { //监听cid，用于实时更新预约picker
-      immediate: true,
-      handler() {
-        this.text1 = '起始时间'
-        this.text2 = '结束时间'
-        var tempDate = new Date();
-        var days = tempDate.getDay();
-        if (days == 0) {
-          days = 7;
-        }
-        if (this.time[days - 1] != "") {
-          var minMinutes = tempDate.getHours() * 60 + tempDate.getMinutes() + 30
-          var minHours = Math.floor(minMinutes / 60) + ':' + minMinutes % 60
-          var showTime = this.time[days - 1].split("-")
-          this.minTime1 = this.minTime2 = minHours
-          this.maxTime1 = this.maxTime2 = showTime[1]
-        }
-      }
-    }
-  },
-  mounted() {
-    let info = uni.createSelectorQuery().in(this).select("#box");
-    info.boundingClientRect((data) => {
-      this.width = data.width - uni.upx2px(16);
-    }).exec(function (res) {
-
     })
-    var tempDate = new Date();
-    var days = tempDate.getDay();
-    if (days == 0) {
+  }
+
+  @Watch("detail")
+  public watchDetail() {
+    if (!this.detail) {
+      this.$nextTick(function () {
+        this.rotate = 0;
+        this.bookRotate = -90;
+        this.height = 300;
+        this.buttonRotate = 0;
+        this.buttonOpacity = 1;
+      })
+    } else {
+      this.$nextTick(function () {
+        this.rotate = -90;
+      })
+    }
+  }
+
+  @Watch("cid", {
+    immediate: true
+  })
+  public watchCid() {
+    this.text1 = '起始时间'
+    this.text2 = '结束时间'
+    let tempDate = new Date();
+    let days = tempDate.getDay();
+    if (days === 0) {
       days = 7;
     }
-    if (this.time[days - 1] != "") {
-      var minMinutes = tempDate.getHours() * 60 + tempDate.getMinutes() + 30
-      var minHours = Math.floor(minMinutes / 60) + ':' + minMinutes % 60
-      var showTime = this.time[days - 1].split("-")
+    if (this.time[days - 1] !== "") {
+      let minMinutes = tempDate.getHours() * 60 + tempDate.getMinutes() + 30
+      let minHours = Math.floor(minMinutes / 60) + ':' + minMinutes % 60
+      let showTime = this.time[days - 1].split("-")
+      this.minTime1 = this.minTime2 = minHours
+      this.maxTime1 = this.maxTime2 = showTime[1]
+    }
+  }
+
+  public mounted(): void {
+    let info = <NodesRef>uni.createSelectorQuery().in(this).select("#box");
+    info.boundingClientRect((data) => {
+      this.width = data.width - uni.upx2px(16);
+    })
+    let tempDate = new Date();
+    let days = tempDate.getDay();
+    if (days === 0) {
+      days = 7;
+    }
+    if (this.time[days - 1] !== "") {
+      let minMinutes = tempDate.getHours() * 60 + tempDate.getMinutes() + 30
+      let minHours = Math.floor(minMinutes / 60) + ':' + minMinutes % 60
+      let showTime = this.time[days - 1].split("-")
       this.minTime1 = this.minTime2 = minHours
       this.maxTime1 = this.maxTime2 = showTime[1]
     }
@@ -713,8 +679,7 @@ export default {
 .view2 {
   display: flex;
   justify-content: space-between;
-  margin: 15upx;
-  margin-bottom: 0;
+  margin: 15upx 15upx 0;
 }
 
 .location {
@@ -805,7 +770,6 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-
 }
 
 .time1 {

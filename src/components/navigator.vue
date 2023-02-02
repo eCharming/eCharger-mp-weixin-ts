@@ -75,284 +75,296 @@
   </view>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      position: '未定位',
-      weather: '',
-      statusHeight: 0,
-      width: 0,
-      backColor: 'rgb(102,205,170)',
-      secondColor: 'rgb(166,236,146)',
-      bottom: -120,
-      lastBottom: -150,
-      textBottom: -30,
-      imageBottom: [-48, 5, 5, 5],
-      word: [{
-        bottom: -10,
-        opacity: 1,
-      }, {
-        bottom: 35,
-        opacity: 0,
-      }, {
-        bottom: 35,
-        opacity: 0,
-      }, {
-        bottom: 35,
-        opacity: 0,
-      },],
-      opacity: 1,
-      selected: 0,
-      left: 25,
-      pointerEvents: 'auto',
-      length1: 30,
-      length2: 0,
-      markTop: -15,
-      eyeLeft: 0,
-      eyeTop: -8,
-      imgSrc: ["../static/image/order-green.png", "../static/image/connect-green.png", "../static/image/map-green.png", "../static/image/face-green.png"]
+<script lang="ts">
+import {Component, Prop, Vue, Watch} from "vue-property-decorator";
+import {updateUrl} from "@/apis/user/user";
+import {geoCoder} from "@/apis/map/map";
+import GetLocationSuccessCallbackResult = WechatMiniprogram.GetLocationSuccessCallbackResult;
+import {qWeather} from "@/apis/weather/weather";
+
+@Component
+export default class Navigator extends Vue {
+  @Prop()
+  isLow!: number;
+  @Prop()
+  buttonSelected!: boolean;
+
+  public position: string = "未定位";
+  public weather: string = "";
+  public statusHeight: number = 0;
+  public width: number = 0;
+  public backColor: string = "rgb(102,205,170)";
+  public secondColor: string = "rgb(166,236,146)";
+  public bottom: number = -120;
+  public lastBottom: number = -150;
+  public textBottom: number = -30;
+  public imageBottom: Array<number> = [-48, 5, 5, 5];
+  public word: Array<{ bottom: number; opacity: number }> = [{
+    bottom: -10,
+    opacity: 1,
+  }, {
+    bottom: 35,
+    opacity: 0,
+  }, {
+    bottom: 35,
+    opacity: 0,
+  }, {
+    bottom: 35,
+    opacity: 0,
+  }];
+  public opacity: number = 1;
+  public selected: number = 0;
+  public left: number = 25;
+  public pointerEvents: string = "auto";
+  public length1: number = 30;
+  public length2: number = 0;
+  public markTop: number = -15;
+  public eyeLeft: number = 0;
+  public eyeTop: number = -8;
+  public imgSrc: Array<string> = [
+    "../static/image/order-green.png",
+    "../static/image/connect-green.png",
+    "../static/image/map-green.png",
+    "../static/image/face-green.png"];
+
+  public info(): boolean {
+    if (!this.$store.state.logInStatus) {
+      wx.getUserProfile({
+        desc: '获取微信头像以及昵称',
+        success: (res) => {
+          this.$store.commit('setUserName', res.userInfo.nickName,);
+          this.$store.commit('setAvatarUrl', res.userInfo.avatarUrl);
+          this.$store.commit('setLogInStatus', true);
+          updateUrl({ //uid获取
+            userName: res.userInfo.nickName,
+            avatarUrl: res.userInfo.avatarUrl
+          })
+        }
+      })
+      return false;
+    } else {
+      return true;
     }
-  },
-  props: {
-    isLow: {
-      type: Boolean,
-    },
-    buttonSelected: {
-      type: Number,
-    }
-  },
-  methods: {
-    info() {
-      if (!this.$store.state.logInStatus) {
-        wx.getUserProfile({
-          desc: '获取微信头像以及昵称',
-          success: (res) => {
-            this.$store.commit('setUserName', res.userInfo.nickName,);
-            this.$store.commit('setAvatarUrl', res.userInfo.avatarUrl);
-            this.$store.commit('setLogInStatus', true);
-            wx.cloud.callFunction({ //uid获取
-              name: 'updateUrl',
-              data: {
-                userName: res.userInfo.nickName,
-                avatarUrl: res.userInfo.avatarUrl,
-              }
-            })
-          }
-        })
-        return false;
-      } else return true;
-    },
-    navigate() {
-      uni.navigateTo({
-        url: '../search/search',
+  }
+
+  public navigate(): void {
+    wx.navigateTo({
+      url: '../search/search'
+    });
+  }
+
+  public tap(index: number): void {
+    if (index == 4) {
+      wx.navigateTo({
+        url: '../selectCity/selectCity'
       });
-    },
-    tap(index) {
-      if (index == 4) {
-        uni.navigateTo({
-          url: '../selectCity/selectCity',
-        });
-      }
-      if (index == this.selected) {
-        if (index == 0) {
-          if (this.info()) {
-            uni.navigateTo({
-              // url: '../selectCity/selectCity',
-              url: '../orders/ordersHistory',
-            });
-          }
-        } else if (index == 1) {
-          if (this.info()) {
-            uni.navigateTo({
-              url: '../communication/friends',
-            });
-          }
-        } else if (index == 2) {
-          this.$store.commit('setIsWholeCity')
-        } else if (index == 3) {
-          if (this.info()) {
-            uni.navigateTo({
-              url: '../my/my',
-            });
-          }
-        }
-      } else {
-        if (index == 0) {
-          if (this.selected == 1) {
-            this.length2 = 0;
-          } else if (this.selected == 3) {
-            this.eyeLeft = 0;
-            this.eyeTop = -8;
-          } else if (this.selected == 2) {
-            this.markTop = -15
-          }
-
-          this.length1 = 30;
-
-
-          this.left = 25;
-          this.word[0].bottom = -10;
-          this.word[0].opacity = 1;
-          this.word[this.selected].bottom = 35;
-          this.word[this.selected].opacity = 0;
-          this.imageBottom[0] = -48;
-          this.imageBottom[this.selected] = 5;
-          this.selected = 0;
-        } else if (index == 1) {
-          if (this.selected == 0) {
-            this.length1 = 0;
-          } else if (this.selected == 3) {
-            this.eyeLeft = 0;
-            this.eyeTop = -8;
-          } else if (this.selected == 2) {
-            this.markTop = -15
-          }
-          this.length2 = 30;
-          this.left = 210;
-          this.word[1].bottom = -10;
-          this.word[1].opacity = 1;
-          this.word[this.selected].bottom = 35;
-          this.word[this.selected].opacity = 0;
-          this.imageBottom[1] = -48;
-          this.imageBottom[this.selected] = 5;
-          this.selected = 1;
-        } else if (index == 2) {
-          if (this.selected == 0) {
-            this.length1 = 0;
-          } else if (this.selected == 1) {
-            this.length2 = 0;
-          } else if (this.selected == 3) {
-            this.eyeLeft = 0;
-            this.eyeTop = -8;
-          }
-          this.markTop = -8;
-          this.left = 400;
-          this.word[2].bottom = -10;
-          this.word[2].opacity = 1;
-          this.word[this.selected].bottom = 35;
-          this.word[this.selected].opacity = 0;
-          this.imageBottom[2] = -48;
-          this.imageBottom[this.selected] = 5;
-          this.selected = 2;
-        } else if (index == 3) {
-          if (this.selected == 0) {
-            this.length1 = 0;
-          } else if (this.selected == 1) {
-            this.length2 = 0;
-          } else if (this.selected == 2) {
-            this.markTop = -15
-          }
-
-          this.eyeLeft = 7;
-          this.eyeTop = 0;
-          this.left = 590;
-          this.word[3].bottom = -10;
-          this.word[3].opacity = 1;
-          this.word[this.selected].bottom = 35;
-          this.word[this.selected].opacity = 0;
-          this.imageBottom[3] = -48;
-          this.imageBottom[this.selected] = 5;
-          this.selected = 3;
-        }
-      }
-    },
-    updateInfo(res) {
-      uni.request({
-        url: 'https://apis.map.qq.com/ws/geocoder/v1/?location=' + res.latitude + ',' + res.longitude + '&key=ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL',
-        success: (res) => {
-          let position = res.data.result.address_component.city;
-          if (position.endsWith("市") || position.endsWith("盟")) {
-            position = position.substring(0, position.length - 1)
-          } else if (position.endsWith("地区")) {
-            position = position.substring(0, position.length - 2)
-          } else if (position.endsWith("自治州")) {
-            if (position == "西双版纳傣族自治州" || position == "博尔塔拉蒙古自治州" || position == "巴音郭楞蒙古自治州" || position == "克孜勒苏柯尔克孜自治州") {
-              position = position.substring(0, 4)
-            } else {
-              position = position.substring(0, 2)
-            }
-          }
-          this.position = position
-          this.$store.commit("setCity", this.position)
-        }
-      })
-      uni.request({
-        url: 'https://devapi.qweather.com/v7/weather/now?location=' + res.longitude.toFixed(2) + ',' + res.latitude.toFixed(2) + '&key=c999b86fbd1d4b52aced1189c2ffef63',
-        success: (res) => {
-          if (res.data.now) {
-            this.weather = res.data.now.text + ' ' + res.data.now.temp + '℃'
-          }
-        }
-      })
     }
-  },
-  mounted() {
-    this.statusHeight = uni.getSystemInfoSync().statusBarHeight;
-    this.width = uni.getMenuButtonBoundingClientRect().left - 80;
+    if (index == this.selected) {
+      if (index == 0) {
+        if (this.info()) {
+          wx.navigateTo({
+            url: '../orders/ordersHistory'
+          });
+        }
+      } else if (index == 1) {
+        if (this.info()) {
+          wx.navigateTo({
+            url: '../communication/friends'
+          });
+        }
+      } else if (index == 2) {
+        this.$store.commit('setIsWholeCity')
+      } else if (index == 3) {
+        if (this.info()) {
+          wx.navigateTo({
+            url: '../my/my'
+          });
+        }
+      }
+    } else {
+      if (index == 0) {
+        if (this.selected == 1) {
+          this.length2 = 0;
+        } else if (this.selected == 3) {
+          this.eyeLeft = 0;
+          this.eyeTop = -8;
+        } else if (this.selected == 2) {
+          this.markTop = -15
+        }
+        this.length1 = 30;
+        this.left = 25;
+        this.word[0].bottom = -10;
+        this.word[0].opacity = 1;
+        this.word[this.selected].bottom = 35;
+        this.word[this.selected].opacity = 0;
+        this.imageBottom[0] = -48;
+        this.imageBottom[this.selected] = 5;
+        this.selected = 0;
+      } else if (index == 1) {
+        if (this.selected == 0) {
+          this.length1 = 0;
+        } else if (this.selected == 3) {
+          this.eyeLeft = 0;
+          this.eyeTop = -8;
+        } else if (this.selected == 2) {
+          this.markTop = -15
+        }
+        this.length2 = 30;
+        this.left = 210;
+        this.word[1].bottom = -10;
+        this.word[1].opacity = 1;
+        this.word[this.selected].bottom = 35;
+        this.word[this.selected].opacity = 0;
+        this.imageBottom[1] = -48;
+        this.imageBottom[this.selected] = 5;
+        this.selected = 1;
+      } else if (index == 2) {
+        if (this.selected == 0) {
+          this.length1 = 0;
+        } else if (this.selected == 1) {
+          this.length2 = 0;
+        } else if (this.selected == 3) {
+          this.eyeLeft = 0;
+          this.eyeTop = -8;
+        }
+        this.markTop = -8;
+        this.left = 400;
+        this.word[2].bottom = -10;
+        this.word[2].opacity = 1;
+        this.word[this.selected].bottom = 35;
+        this.word[this.selected].opacity = 0;
+        this.imageBottom[2] = -48;
+        this.imageBottom[this.selected] = 5;
+        this.selected = 2;
+      } else if (index == 3) {
+        if (this.selected == 0) {
+          this.length1 = 0;
+        } else if (this.selected == 1) {
+          this.length2 = 0;
+        } else if (this.selected == 2) {
+          this.markTop = -15
+        }
+        this.eyeLeft = 7;
+        this.eyeTop = 0;
+        this.left = 590;
+        this.word[3].bottom = -10;
+        this.word[3].opacity = 1;
+        this.word[this.selected].bottom = 35;
+        this.word[this.selected].opacity = 0;
+        this.imageBottom[3] = -48;
+        this.imageBottom[this.selected] = 5;
+        this.selected = 3;
+      }
+    }
+  }
 
-    uni.getLocation({
+  public updateInfo(res: GetLocationSuccessCallbackResult): void {
+    geoCoder({
+      latitude: res.latitude,
+      longitude: res.longitude,
+      key: "ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL"
+    }).then(data => {
+      let position = <string>data.result.address_component.city;
+      if (position.endsWith("市") || position.endsWith("盟")) {
+        position = position.substring(0, position.length - 1)
+      } else if (position.endsWith("地区")) {
+        position = position.substring(0, position.length - 2)
+      } else if (position.endsWith("自治州")) {
+        if (position == "西双版纳傣族自治州" || position == "博尔塔拉蒙古自治州" || position == "巴音郭楞蒙古自治州" || position == "克孜勒苏柯尔克孜自治州") {
+          position = position.substring(0, 4)
+        } else {
+          position = position.substring(0, 2)
+        }
+      }
+      this.position = position
+      this.$store.commit("setCity", this.position)
+    })
+
+    qWeather({
+      latitude: res.latitude,
+      longitude: res.longitude,
+      key: "c999b86fbd1d4b52aced1189c2ffef63"
+    }).then(data => {
+      if (data.now) {
+        this.weather = data.now.text + ' ' + data.now.temp + '℃'
+      }
+    })
+  }
+
+  public mounted(): void {
+    this.statusHeight = wx.getSystemInfoSync().statusBarHeight;
+    this.width = wx.getMenuButtonBoundingClientRect().left - 80;
+    wx.getLocation({
       type: "gcj02",
       success: res => {
         this.updateInfo(res);
-
-      },
+      }
     });
+  }
 
-  },
-  watch: {
-    '$store.state.buttonSelected'() {
-      if (this.$store.state.buttonSelected == 1) {
-        this.backColor = "rgb(102,205,170)";
-        this.secondColor = 'rgb(166,236,146)';
-        this.imgSrc = ["../static/image/order-green.png", "../static/image/connect-green.png", "../static/image/map-green.png", "../static/image/face-green.png"];
-      } else {
-        this.backColor = this.$store.state.color;
-        this.secondColor = 'rgb(152,245,255)';
-        this.imgSrc = ["../static/image/order-blue.png", "../static/image/connect-blue.png", "../static/image/map-blue.png", "../static/image/face-blue.png"];
+  @Watch("$store.state.buttonSelected")
+  public watchStoreButtonSelected() {
+    if (this.$store.state.buttonSelected == 1) {
+      this.backColor = "rgb(102,205,170)";
+      this.secondColor = 'rgb(166,236,146)';
+      this.imgSrc = ["../static/image/order-green.png",
+        "../static/image/connect-green.png",
+        "../static/image/map-green.png",
+        "../static/image/face-green.png"];
+    } else {
+      this.backColor = this.$store.state.color;
+      this.secondColor = 'rgb(152,245,255)';
+      this.imgSrc = ["../static/image/order-blue.png",
+        "../static/image/connect-blue.png",
+        "../static/image/map-blue.png",
+        "../static/image/face-blue.png"];
+    }
+  }
+
+  @Watch("isLow")
+  public watchIsLow() {
+    if (this.isLow) {
+      this.bottom = -120;
+      this.textBottom = -30;
+      this.lastBottom = -150;
+      this.opacity = 1;
+      this.pointerEvents = 'auto';
+    } else {
+      this.bottom = 0;
+      this.textBottom = 90;
+      this.lastBottom = -30;
+      this.opacity = 0;
+      this.pointerEvents = 'none';
+      if (this.selected == 3) {
+        this.tap(2);
       }
-    },
-    'isLow'() {
-      if (this.isLow) {
-        this.bottom = -120;
-        this.textBottom = -30;
-        this.lastBottom = -150;
-        this.opacity = 1;
-        this.pointerEvents = 'auto';
-      } else {
-        this.bottom = 0;
-        this.textBottom = 90;
-        this.lastBottom = -30;
-        this.opacity = 0;
-        this.pointerEvents = 'none';
-        if (this.selected == 3) {
-          this.tap(2);
+    }
+  }
+
+  @Watch("$store.state.locationres")
+  public watchStateLocationRes() {
+    let res = this.$store.state.locationres;
+    if (res && res != {} && res.errMsg == "getLocation:ok") {
+      this.updateInfo(res);
+    }
+  }
+
+  @Watch("$store.state.cityLocation", {
+    deep: true
+  })
+  public watchStateCityLocation(res: { latitude: number | null; longitude: number | null; name: string; }) {
+    if (res.latitude != null && res.longitude != null) {
+      this.position = res.name
+      this.$store.commit("setCity", this.position)
+      qWeather({
+        latitude: res.latitude,
+        longitude: res.longitude,
+        key: "c999b86fbd1d4b52aced1189c2ffef63"
+      }).then(data => {
+        if (data.now) {
+          this.weather = data.now.text + ' ' + data.now.temp + '℃'
         }
-      }
-      ;
-    },
-    '$store.state.locationres'() {
-      let res = this.$store.state.locationres;
-      if (res && res != {} && res.errMsg == "getLocation:ok") {
-        this.updateInfo(res);
-      }
-    },
-    '$store.state.cityLocation': {
-      deep: true,
-      handler(res) {
-        if (res.latitude != null && res.longitude != null) {
-          this.position = res.name
-          this.$store.commit("setCity", this.position)
-          uni.request({
-            url: 'https://devapi.qweather.com/v7/weather/now?location=' + res.longitude.toFixed(2) + ',' + res.latitude.toFixed(2) + '&key=c999b86fbd1d4b52aced1189c2ffef63',
-            success: (res) => {
-              if (res.data.now) {
-                this.weather = res.data.now.text + ' ' + res.data.now.temp + '℃'
-              }
-            }
-          })
-        }
-      }
+      })
     }
   }
 }

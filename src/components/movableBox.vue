@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import totalbutton from './totalbutton.vue'
+import totalbutton from './totalButton.vue'
 import card from './card.vue'
 import destination from './destination.vue'
 import locationbutton from './locationButton.vue'

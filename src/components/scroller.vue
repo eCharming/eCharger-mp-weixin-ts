@@ -15,32 +15,29 @@
   </view>
 </template>
 
-<script>
+<script lang="ts">
+import {Component, Prop, Vue} from "vue-property-decorator";
 
-export default {
-  data() {
-    return {
-      height: 0,
-      refreshTriggered: false,
-    }
-  },
-  props: {
-    scrollTop: {
-      type: Number
-    },
-  },
-  methods: {
-    emit() {
-      this.$emit('scrolltolower');
-    },
-    scrollToUpper() {		//滚动到最上层刷新缓存
-      this.refreshTriggered = true;	//打开刷新触发
-      setTimeout(() => {		//在0.8秒后关闭刷新的动画以及打开页面的滚动
-        this.refreshTriggered = false;
-      }, 800)
-    }
-  },
-  mounted() {
+@Component
+export default class Scroller extends Vue {
+  @Prop()
+  scrollTop!: number;
+
+  public height: number = 0;
+  public refreshTriggered: boolean = false;
+
+  public emit(): void {
+    this.$emit('scrolltolower');
+  }
+
+  public scrollToUpper(): void {		//滚动到最上层刷新缓存
+    this.refreshTriggered = true;	//打开刷新触发
+    setTimeout(() => {		//在0.8秒后关闭刷新的动画以及打开页面的滚动
+      this.refreshTriggered = false;
+    }, 800)
+  }
+
+  public mounted(): void {
     this.height = this.$store.state.windowHeight * 0.9 - uni.upx2px(560);
   }
 }

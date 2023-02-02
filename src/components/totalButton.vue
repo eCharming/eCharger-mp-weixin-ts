@@ -18,63 +18,62 @@
   </button>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      bordercolor: "rgba(0,0,0,0.3)",
-      opacity: 0,
-      top: 20,
-    }
-  },
-  props: {
-    type: {
-      type: Number,
-    },
-    text1: {
-      type: String
-    },
-    text2: {
-      type: String
-    },
-    selected: {
-      type: Boolean,
-      default: false
-    },
-    isLow: {
-      type: Boolean
-    }
-  },
-  watch: {
-    'selected': {
-      immediate: true,
-      handler: function () {
-        if (this.selected)
-          this.activate();
-        else this.inactivate();
-      }
-    },
-    'isLow'() {
-      if (this.isLow) {
-        this.top = 20;
-        this.opacity = 0;
-      } else {
-        this.top = 5;
-        this.opacity = 1;
-      }
-    }
-  },
-  methods: {
-    activate() {
-      if (this.type == 1)
-        this.bordercolor = "rgba(102,205,170,1)";
-      else this.bordercolor = this.$store.state.color;
-    },
-    inactivate() {
-      this.bordercolor = "rgba(0,0,0,0.1)";
+<script lang="ts">
+import {Component, Prop, Vue, Watch} from "vue-property-decorator";
+
+@Component
+export default class TotalButton extends Vue {
+  @Prop()
+  type!: number;
+  @Prop()
+  text1!: string;
+  @Prop()
+  text2!: string;
+  @Prop({
+    type: Boolean,
+    default: false
+  })
+  selected!: boolean;
+  @Prop()
+  isLow!: boolean;
+
+  public bordercolor: string = "rgba(0,0,0,0.3)";
+  public opacity: number = 0;
+  public top: number = 20;
+
+  @Watch("selected", {
+    immediate: true
+  })
+  public watchSelected() {
+    if (this.selected)
+      this.activate();
+    else {
+      this.inactivate();
     }
   }
+
+  @Watch("isLow")
+  public watchIsLow() {
+    if (this.isLow) {
+      this.top = 20;
+      this.opacity = 0;
+    } else {
+      this.top = 5;
+      this.opacity = 1;
+    }
+  }
+
+  public activate(): void {
+    if (this.type == 1)
+      this.bordercolor = "rgba(102,205,170,1)";
+    else this.bordercolor = this.$store.state.color;
+  }
+
+  public inactivate(): void {
+    this.bordercolor = "rgba(0,0,0,0.1)";
+  }
 }
+
 </script>
 
 <style scoped>

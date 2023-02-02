@@ -1,3 +1,3 @@
 export interface ChargerReq {
-    id: number
+    id: number;
 }
