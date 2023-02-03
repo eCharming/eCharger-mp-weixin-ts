@@ -8,7 +8,6 @@ const app = new Vue({
     ...typeof App === 'function' ? App : Vue.extend(Object.assign({ mpType: 'app' }, App)),
     store
 })
-// const app = new (typeof App === 'function' ? App : Vue.extend(Object.assign({ mpType: 'app' }, App)))
 app.$mount();
 
 wx.cloud.init({

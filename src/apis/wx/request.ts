@@ -1,6 +1,6 @@
 import {RequestBody, ResponseBody} from "@/apis/wx/request-interface";
 
-const BASE_URL: string = "http://127.0.0.1";
+const BASE_URL: string = "http://127.0.0.1/";
 
 export default function request(requestBody: RequestBody): Promise<any> {
     const {url, method, data, header} = requestBody;

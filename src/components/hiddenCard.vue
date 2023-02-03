@@ -38,7 +38,7 @@ export default class HiddenCard extends Vue {
         this.color = 'rgb(102,205,170)';
       else this.color = this.$store.state.color;
       this.text2 = '车程约' + this.$store.state.destination.distance + 'km';
-    } else { //按下locationbutton重置回到自己位置，destination置为空
+    } else { //按下locationButton重置回到自己位置，destination置为空
       this.text1 = "在附近搜索电桩";
       this.text2 = '';
     }
@@ -59,16 +59,14 @@ export default class HiddenCard extends Vue {
 .card {
   position: absolute;
   margin: 20upx;
-  padding: 20upx 15upx 15upx;
+  padding: 15upx 15upx;
   background-color: rgba(250, 255, 250, 1);
   border-radius: 55upx;
   display: flex;
   justify-content: center;
   box-shadow: 0 14upx 20upx -6upx #a6a6a6;
   width: 550upx;
-  height: 90upx;
-  top: -30upx;
-  left: 70upx;
+  left: 50upx;
 
   font-size: 32upx;
   letter-spacing: 2upx;

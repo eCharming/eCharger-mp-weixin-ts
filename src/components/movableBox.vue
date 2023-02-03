@@ -5,8 +5,6 @@
       <movable-view class="main" :style="{'height':windowHeight+'px'}" direction="vertical" damping="30"
                     out-of-bounds="true" :y="currentY" :disabled="isScroll"
                     @touchstart="start($event)" @touchend="end($event)">
-
-        <view>
           <view class="content">
 
             <view class="fixed-view">
@@ -88,7 +86,6 @@
               </view>
             </view>
           </view>
-        </view>
       </movable-view>
     </movable-area>
   </view>
@@ -475,6 +472,7 @@ export default class MovableBox extends Vue {
   border-top-left-radius: 40upx;
   border-top-right-radius: 40upx;
   pointer-events: auto;
+  box-sizing: border-box;
 }
 
 .scrollerview {
@@ -495,7 +493,7 @@ export default class MovableBox extends Vue {
 }
 
 .line {
-  margin: 0upx;
+  margin: 0;
   vertical-align: middle;
   border-bottom: 8rpx solid rgb(214, 215, 217);
   width: 60rpx;

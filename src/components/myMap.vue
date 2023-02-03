@@ -1,8 +1,16 @@
 <template>
   <view>
     <map id="myMap" ref="map" style="width: 100%; height: 100vh;position: absolute;top: 0;" layer-style="1"
-         :latitude="centerLatitude" :longitude="centerLongitude" :markers="covers" :setting="mapSetting"
-         :circles="circles" :scale="scale" :polyline="polyline" @markertap="markerTap($event)">
+         :latitude="centerLatitude"
+         :longitude="centerLongitude"
+         :markers="covers"
+         :circles="circles"
+         :scale="scale"
+         :polyline="polyline"
+         :enable-rotate="true"
+         :show-location="true"
+         subkey="ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL"
+         @markertap="markerTap($event)">
     </map>
   </view>
 </template>
@@ -21,17 +29,6 @@ export default class MyMap extends Vue {
   public longitude: number = 116.39742;  //当前经度
   public cityLatitude: number = 39.909;  //城市纬度，仅仅用于全城
   public cityLongitude: number = 116.39742;  //城市经度，仅仅用于全城
-  public mapSetting: object = {
-    "showCompass": true,
-    "enableOverlooking": false,
-    "enableSatellite": false,
-    "enableTraffic": false,
-    "enableZoom": true,
-    "enableScroll": true,
-    "enableRotate": true,
-    "showLocation": true,
-    "subkey": "ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL"
-  }
   public covers: Array<MapCover> = [];
   public polyline: Array<MapPolyline> = [];
   public circles: Array<MapCircle> = [];
