@@ -97,15 +97,29 @@ export interface LocationRaw {
     province: number;
     city: string;
     district: string;
-    _distance?:number;
+    _distance?: number;
 }
 
-export interface placeSuggestionResp {
+export interface PlaceSuggestionResp {
     status: number;
     message: string;
     request_id: string;
     count: number;
     data: Array<LocationRaw>
+}
+
+export interface DistanceDrivingResp {
+    status: number;
+    message: string;
+    request_id: string;
+    result: {
+        rows: {
+            elements: {
+                distance: number;
+                duration: number;
+            }[]
+        }[]
+    }
 }
 
 export interface MapCover {

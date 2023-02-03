@@ -10,15 +10,15 @@
     </view>
 
     <view>
-      <addcard style="position: relative;">
+      <add-card style="position: relative;">
         <view style="margin: 28upx;">
           <view class="labeltext">电桩位置</view>
           <view style="color:rgba(0,0,0,0.5)">
             {{ address }}
           </view>
         </view>
-        <map id="myMap" style="width: 680upx; height: 500upx;" layer-style="1" :latitude="center_latitude"
-             :longitude="center_longitude" showLocation='true' subkey="ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL"
+        <map id="myMap" style="width: 680upx; height: 500upx;" layer-style="1" :latitude="centerLatitude"
+             :longitude="centerLongitude" showLocation='true' subkey="ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL"
              :markers="covers" :polyline="polyline">
         </map>
 
@@ -47,7 +47,7 @@
             <view style="color:rgba(0,0,0,0.5)">
               {{ '周' + day + '可用时间' }}
             </view>
-            <view class="availabeTime">{{ time[index] == '' ? '无可用时间' : time[index] }}</view>
+            <view class="availabeTime">{{ time[index] === '' ? '无可用时间' : time[index] }}</view>
           </view>
         </view>
 
@@ -56,12 +56,11 @@
         <view style="margin: 28upx;">
           <view class="labeltext">备注</view>
           <view style="color:rgba(0,0,0,0.5)">
-            {{ remarks == '' ? '无' : remarks }}
+            {{ remarks === '' ? '无' : remarks }}
           </view>
         </view>
-
-      </addcard>
-      <addcard>
+      </add-card>
+      <add-card>
         <view style="margin: 28upx;">
           <view class="labeltext">图片</view>
           <view class='content'>
@@ -73,9 +72,9 @@
             </view>
           </view>
         </view>
-      </addcard>
+      </add-card>
 
-      <addcard style="position: relative;">
+      <add-card style="position: relative;">
         <view style="margin: 28upx;">
           <view class="labeltext">桩主信息</view>
           <view style="display: flex;justify-content: space-between;margin-top: 20upx;">
@@ -91,184 +90,178 @@
           </view>
 
         </view>
-      </addcard>
+      </add-card>
 
     </view>
   </view>
 </template>
 
-<script>
-import addcard from '../../components/addCard.vue'
+<script lang="ts">
+import addCard from '@/components/addCard.vue'
+import {Component, Vue} from "vue-property-decorator";
+import {GeoPoint, MapCover, MapPolyline} from "@/apis/map/map-interface";
+import {directionDriving} from "@/apis/map/map";
+import {chargerDetail, chargerPicGet} from "@/apis/charger/charger";
 
-export default {
+@Component({
   components: {
-    addcard
-  },
-  data() {
-    return {
-      statusHeight: uni.getSystemInfoSync().statusBarHeight + 50,
-      detailHeight: 0,
-      windowWidth: uni.getSystemInfoSync().windowWidth,
-      color: '#66CDAA',
-      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      uid: "",
-      name: "",
-      phoneNumber: "",
-      location: "",
-      address: "",
-      price: "",
-      remarks: "",
-      time: [],
-      days: ['一', '二', '三', '四', '五', '六', '天'],
-      avatarUrl: '',
-      covers: [],
-      polyline: [],
-      geopoint: {
-        latitude: 39.909,
-        longitude: 116.39742,
-      },
-      locationList: [],
-      center_latitude: this.$store.state.currentLocation == null ? 39.909 : this.$store.state.currentLocation.latitude,
-      center_longitude: this.$store.state.currentLocation == null ? 116.39742 : this.$store.state.currentLocation.longitude,
-      imgUrl: [],
-    }
-  },
-  methods: {
-    back() {
-      uni.navigateBack({})
-    },
-    navigate() {
-      var url = "https://apis.map.qq.com/ws/direction/v1/driving/?from=" +
-          this.$store.state.currentLocation.latitude + "," + this.$store.state.currentLocation.longitude
-          + "&to=" + this.geopoint.latitude + "," + this.geopoint.longitude
-          + "&key=ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL";
-      uni.request({
-        url: url,
-        success: (res) => {
-          if (res.data.status == "0") {
-            this.polyline.splice(0);
-            this.polyline.push({
-              points: [],
-              width: 6,
-              color: "#66CDAA"
-            });
-            var polyline = res.data.result.routes[0].polyline;
+    addCard
+  }
+})
+export default class Detail extends Vue {
+  public statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
+  public detailHeight: number = 0;
+  public color: string = '#66CDAA';
+  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
+  public uid: string = "";
+  public name: string = "";
+  public phoneNumber: string = "";
+  public location: string = "";
+  public address: string = "";
+  public price: string = "";
+  public remarks: string = "";
+  public time: Array<string> = [];
+  public days: Array<string> = ['一', '二', '三', '四', '五', '六', '天'];
+  public avatarUrl: string = "";
+  public covers: Array<MapCover> = [];
+  public polyline: Array<MapPolyline> = [];
+  public geoPoint: GeoPoint = {
+    latitude: 39.909,
+    longitude: 116.39742,
+  };
+  public centerLatitude: number = this.$store.state.currentLocation == null ? 39.909 : this.$store.state.currentLocation.latitude;
+  public centerLongitude: number = this.$store.state.currentLocation == null ? 116.39742 : this.$store.state.currentLocation.longitude;
+  public imgUrl: Array<any> = [];
+
+  public back(): void {
+    wx.navigateBack({})
+  }
+
+  public navigate(): void {
+    directionDriving({
+      fromLatitude: this.$store.state.currentLocation.latitude,
+      fromLongitude: this.$store.state.currentLocation.longitude,
+      toLatitude: this.geoPoint.latitude,
+      toLongitude: this.geoPoint.longitude,
+      key: "ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL"
+    }).then(data => {
+      if (data.status === 0) {
+        this.polyline.splice(0);
+        this.polyline.push({
+          points: [],
+          width: 6,
+          color: "#66CDAA"
+        });
+        const polyline = data.result.routes[0].polyline;
+        this.polyline[0].points.push({
+          latitude: polyline[0],
+          longitude: polyline[1]
+        })
+
+        for (let i = 2; i < polyline.length; i++) {
+          polyline[i] = polyline[i - 2] + polyline[i] / 1000000;
+          if (i % 2 === 1) {
             this.polyline[0].points.push({
-              latitude: polyline[0],
-              longitude: polyline[1]
-            })
-
-            for (var i = 2; i < polyline.length; i++) {
-              polyline[i] = polyline[i - 2] + polyline[i] / 1000000;
-              if (i % 2 == 1) {
-                this.polyline[0].points.push({
-                  latitude: polyline[i - 1],
-                  longitude: polyline[i]
-                });
-
-              }
-            }
-            ;
-
-          }
-
-        }
-      });
-    },
-    call() {
-      if (this.uid == this.$store.state.uid) {
-        wx.showToast({
-          title: "禁止联系自己",
-          icon: 'error',
-        })
-        return;
-      }
-      wx.makePhoneCall({
-        phoneNumber: this.phoneNumber
-      })
-    },
-    chat() {
-      if (this.uid == this.$store.state.uid) {
-        wx.showToast({
-          title: "禁止联系自己",
-          icon: 'error',
-        })
-        return;
-      }
-      uni.navigateTo({
-        url: '../communication/chat?toUid=' + this.uid + '&name=' + this.name + '&avatarUrl=' + this.avatarUrl,
-      })
-    },
-    showPic(item) {
-      wx.previewImage({
-        current: item,
-        urls: this.imgUrl,
-      })
-    },
-    getPic(cid) {
-      wx.request({
-        url: 'https://ws.healtool.cn/downloadPic/' + cid,
-        method: "GET",
-        success: res => {
-          this.imgUrl = res.data.data.resUrl
-        }
-      })
-    }
-  },
-  onLoad(option) {
-    this.detailHeight = (this.statusHeight - uni.getMenuButtonBoundingClientRect().bottom);
-    wx.cloud.callFunction({
-      name: 'chargerDetail',
-      data: {
-        cid: Number(option.cid)
-      }
-    }).then(res => {
-          if (res.result.status == -1) {
-            wx.showToast({
-              title: "电桩已被删除",
-              icon: 'error',
-              complete: () => {
-                setTimeout(() => {
-                  uni.navigateBack({})
-                }, 1500)
-
-              }
-            })
-          } else {
-            this.uid = res.result.uid;
-            this.address = res.result.address;
-            this.location = res.result.location;
-            this.geopoint.latitude = res.result.geoPoint.coordinates[1];
-            this.geopoint.longitude = res.result.geoPoint.coordinates[0];
-            this.name = res.result.userName;
-            this.avatarUrl = res.result.avatarUrl;
-            this.phoneNumber = res.result.phoneNumber;
-            this.price = res.result.price;
-            this.time = res.result.time;
-
-            this.covers.push({
-              title: this.address,
-              id: Number(option.cid),
-              latitude: this.geopoint.latitude,
-              longitude: this.geopoint.longitude,
-              iconPath: "/static/image/charger.png",
-              width: 40,
-              height: 40,
-              callout: {
-                content: this.address,
-                color: "#333333",
-                fontSize: 13,
-                borderRadius: 20,
-                bgColor: "#e7ffed",
-                textAlign: "center",
-                padding: 10,
-              }
+              latitude: polyline[i - 1],
+              longitude: polyline[i]
             });
-            this.navigate();
-            this.getPic(option.cid);
           }
         }
-    )
+      }
+    });
+  }
+
+  public call(): void {
+    if (this.uid == this.$store.state.uid) {
+      wx.showToast({
+        title: "禁止联系自己",
+        icon: 'error',
+      })
+      return;
+    }
+    wx.makePhoneCall({
+      phoneNumber: this.phoneNumber
+    })
+  }
+
+  public chat(): void {
+    if (this.uid == this.$store.state.uid) {
+      wx.showToast({
+        title: "禁止联系自己",
+        icon: 'error'
+      })
+      return;
+    }
+    wx.navigateTo({
+      url: '../communication/chat?toUid=' + this.uid + '&name=' + this.name + '&avatarUrl=' + this.avatarUrl
+    })
+  }
+
+  public showPic(item: any): void {
+    wx.previewImage({
+      current: item,
+      urls: this.imgUrl
+    })
+  }
+
+  public getPic(cid: string): void {
+    chargerPicGet({
+      cid: cid
+    }).then(res => {
+      this.imgUrl = res.data.data.resUrl
+    })
+  }
+
+  public onLoad(option: { cid: string; }): void {
+    this.detailHeight = (this.statusHeight - uni.getMenuButtonBoundingClientRect().bottom);
+    chargerDetail({
+      cid: Number(option.cid)
+    }).then(res => {
+      if (res.result.status == -1) {
+        wx.showToast({
+          title: "电桩已被删除",
+          icon: 'error',
+          complete: () => {
+            setTimeout(() => {
+              uni.navigateBack({})
+            }, 1500)
+
+          }
+        })
+      } else {
+        this.uid = res.result.uid;
+        this.address = res.result.address;
+        this.location = res.result.location;
+        this.geoPoint.latitude = res.result.geoPoint.coordinates[1];
+        this.geoPoint.longitude = res.result.geoPoint.coordinates[0];
+        this.name = res.result.userName;
+        this.avatarUrl = res.result.avatarUrl;
+        this.phoneNumber = res.result.phoneNumber;
+        this.price = res.result.price;
+        this.time = res.result.time;
+
+        this.covers.push({
+          title: this.address,
+          id: Number(option.cid),
+          latitude: this.geoPoint.latitude,
+          longitude: this.geoPoint.longitude,
+          iconPath: "/static/image/charger.png",
+          width: 40,
+          height: 40,
+          callout: {
+            content: this.address,
+            color: "#333333",
+            fontSize: 13,
+            borderRadius: 20,
+            bgColor: "#e7ffed",
+            textAlign: "center",
+            padding: 10,
+          }
+        });
+        this.navigate();
+        this.getPic(option.cid);
+      }
+    })
     if (this.$store.state.currentLocation == null) {
       wx.showToast({
         title: "请打开定位！",
@@ -310,26 +303,10 @@ export default {
   margin-bottom: 15upx;
 }
 
-.display {
-  display: flex;
-  justify-content: space-between;
-  margin: 28upx;
-}
-
 .divLine {
   width: 100%;
   height: 3upx;
   background-color: #E0E3DA;
-}
-
-.input {
-  width: 500upx;
-  text-align: right;
-}
-
-.line {
-  margin-left: 10upx;
-  margin-right: 10upx;
 }
 
 .time {

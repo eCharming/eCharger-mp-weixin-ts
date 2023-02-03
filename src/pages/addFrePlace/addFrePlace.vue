@@ -44,8 +44,6 @@
           </view>
         </view>
       </scroll-view>
-
-
     </view>
   </view>
 
@@ -65,7 +63,7 @@ export default class AddFrePlace extends Vue {
   public statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
   public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
   public position: string = "";
-  public suggestions: Array<{
+  public suggestions: {
     id: string;
     title: string;
     address: string;
@@ -76,7 +74,7 @@ export default class AddFrePlace extends Vue {
     };
     distance: string;
     strings: string;
-  }> = [];
+  }[] = [];
   public suggestionHeight: number = this.$store.state.windowHeight * 0.85;
   public index: number = 0;
   public isInput: boolean = false;

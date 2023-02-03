@@ -1,11 +1,14 @@
 import {GeoPoint} from "@/apis/map/map-interface";
 
-export interface ChargerReq {
-    id: number;
+export interface ChargerPicReq {
+    cid: number | string;
+    fileName?: string;
+    fileNames?: string[];
 }
 
-export interface ChargerSearchReq {
-    uid: number;
+export interface ChargerReq {
+    cid?: number;
+    uid?: number;
     userName?: string;
     phoneNumber?: string;
     address?: string;

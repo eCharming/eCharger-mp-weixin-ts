@@ -18,7 +18,7 @@
         </view>
       </view>
 
-      <addcard style='margin:10rpx;'>
+      <add-card style='margin:10rpx;'>
         <view style="display: flex;justify-content: space-around;">
           <view @tap="navi(1)" class='funbutton'>
             <image src='../../static/image/historyOrder.png' style="width: 100upx;height:100upx;"></image>
@@ -34,9 +34,9 @@
           </view>
         </view>
 
-      </addcard>
+      </add-card>
 
-      <addcard style='margin:10rpx;'>
+      <add-card style='margin:10rpx;'>
         <view class='labeltext' @tap="navi(7)">
           申请提现（Beta）
         </view>
@@ -48,7 +48,7 @@
         <view class='labeltext' @tap="navi(5)">
           关于我们
         </view>
-      </addcard>
+      </add-card>
     </view>
 
     <view>
@@ -57,96 +57,88 @@
   </view>
 </template>
 
-<script>
-import addcard from '../../components/addCard.vue'
+<script lang="ts">
+import {getBalance, wxLogout} from '@/apis/user/user';
+import addCard from '@/components/addCard.vue'
+import {Component, Vue} from "vue-property-decorator";
 
-export default {
+@Component({
   components: {
-    addcard
-  },
-  data() {
-    return {
-      uid: -1,
-      avatarUrl: '',
-      userName: '',
-      myBottom: 0, //联系人距离导航栏底部距离
-      statusHeight: 0, //导航栏高度
-      statusBarHeight: uni.getSystemInfoSync().statusBarHeight, //状态栏高度
-      balance: 0,	//余额
+    addCard
+  }
+})
+export default class My extends Vue {
+  public uid: number = -1;
+  public avatarUrl: string = '';
+  public userName: string = '';
+  public myBottom: number = 0; //联系人距离导航栏底部距离
+  public statusHeight: number = 0; //导航栏高度
+  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight; //状态栏高度
+  public balance: number = 0;	//余额
+
+  public back(): void {
+    wx.navigateBack({})
+  }
+
+  public navi(index: number): void {
+    if (index === 1) {
+      wx.navigateTo({
+        url: '../orders/ordersHistory',
+      });
+    } else if (index === 2) {
+      this.$store.commit('setMyCharger')
+      wx.navigateBack({})
+    } else if (index === 3) {
+      wx.navigateTo({
+        url: '../faq/faq',
+      })
+    } else if (index === 5) {
+      wx.navigateTo({
+        url: '../aboutUs/aboutUs',
+      })
+    } else if (index === 6) {
+      wx.navigateTo({
+        url: '../feedback/feedback',
+      })
+    } else if (index === 7) {
+      wx.navigateTo({
+        url: '../withdraw/withdraw?maxBalance=' + this.balance
+      })
     }
-  },
-  methods: {
-    back() {
-      uni.navigateBack({})
-    },
-    navi(index) {
-      if (index === 1) {
-        uni.navigateTo({
-          url: '../orders/ordersHistory',
-        });
-      } else if (index === 2) {
-        this.$store.commit('setMyCharger')
-        uni.navigateBack({})
-      } else if (index === 3) {
-        uni.navigateTo({
-          url: '../faq/faq',
-        })
-      } else if (index === 5) {
-        uni.navigateTo({
-          url: '../aboutUs/aboutUs',
-        })
-      } else if (index === 6) {
-        uni.navigateTo({
-          url: '../feedback/feedback',
-        })
-      } else if (index === 7) {
-        uni.navigateTo({
-          url: '../withdraw/withdraw?maxBalance=' + this.balance
-        })
-      }
-    },
-    logout() {
-      wx.cloud.callFunction({ //uid获取
-        name: 'logout',
-        data: {
-          uid: this.$store.state.uid
+  }
+
+  public logout(): void {
+    wxLogout({
+      uid: this.$store.state.uid
+    }).then(res => {
+      this.$store.commit('setLogInStatus', null);
+      wx.showToast({
+        title: "退出登录成功！",
+        icon: 'success',
+        complete: () => {
+          setTimeout(() => {
+            wx.navigateBack({})
+          }, 1000)
         }
-      }).then(
-          res => {
-            this.$store.commit('setLogInStatus', null);
-            wx.showToast({
-              title: "退出登录成功！",
-              icon: 'success',
-              complete: () => {
-                setTimeout(() => {
-                  uni.navigateBack({})
-                }, 1000)
-              }
-            })
-          }
-      )
-    }
-  },
-  mounted() {
-    this.statusHeight = uni.getSystemInfoSync().statusBarHeight + 50;
-    this.myBottom = (this.statusHeight - uni.getMenuButtonBoundingClientRect().bottom);
+      })
+    })
+  }
+
+  public mounted(): void {
+    this.statusHeight = wx.getSystemInfoSync().statusBarHeight + 50;
+    this.myBottom = (this.statusHeight - wx.getMenuButtonBoundingClientRect().bottom);
     this.avatarUrl = this.$store.state.avatarUrl;
     this.userName = this.$store.state.userName;
-    wx.cloud.callFunction({
-      name: 'getBalance',
-      data: {
-        uid: this.$store.state.uid
-      }
+    getBalance({
+      uid: this.$store.state.uid
     }).then(res => {
       this.balance = res.result / 100
     })
-  },
-  onShow() {
-    wx.cloud.callFunction({
-      name: 'getBalance',
-      data: {
-        uid: this.$store.state.uid
-      }
+  }
+
+  public onShow(): void {
+    getBalance({
+      uid: this.$store.state.uid
     }).then(res => {
       this.balance = res.result / 100
     })

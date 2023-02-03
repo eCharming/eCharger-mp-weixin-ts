@@ -8,7 +8,7 @@
         <text :style="{'margin-bottom':cityHeight+'px'}">隐私政策</text>
       </view>
     </view>
-    <addcard>
+    <add-card>
       <view style='width:100%' class='display'>
         <view class="title">易插隐私政策</view>
         <view class="answer">法律声明
@@ -135,32 +135,31 @@
         <view class="problem">我们重视未成年人的个人信息保护，如您为未成年人，建议您请您的监护人仔细阅读本隐私权政策，并在征得您的监护人同意的前提下使用我们的服务或向我们提供信息。
         </view>
       </view>
-    </addcard>
+    </add-card>
   </view>
 </template>
 
-<script>
-import addcard from '../../components/addCard.vue'
+<script lang="ts">
+import addCard from '@/components/addCard.vue'
+import {Component, Vue} from "vue-property-decorator";
 
-export default {
+@Component({
   components: {
-    addcard
-  },
-  data() {
-    return {
-      statusHeight: uni.getSystemInfoSync().statusBarHeight + 50,
-      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      cityHeight: 0,
-      color: 'rgba(102,205,170,1)',
-    }
-  },
-  methods: {
-    back() {
-      uni.navigateBack({})
-    },
-  },
-  mounted() {
-    this.cityHeight = (this.statusHeight - uni.getMenuButtonBoundingClientRect().bottom);
+    addCard
+  }
+})
+export default class PrivacyPolicy extends Vue {
+  public statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
+  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
+  public cityHeight: number = 0;
+  public color: string = 'rgba(102,205,170,1)';
+
+  public back(): void {
+    wx.navigateBack({})
+  }
+
+  public mounted(): void {
+    this.cityHeight = (this.statusHeight - wx.getMenuButtonBoundingClientRect().bottom);
   }
 }
 </script>
@@ -183,18 +182,9 @@ export default {
   height: 25px;
 }
 
-.divLine {
-  width: 100%;
-  height: 3upx;
-  background-color: #E0E3DA;
-  margin-top: 18rpx;
-  margin-bottom: 18rpx;
-}
-
 .problem {
   margin: 10upx;
   letter-spacing: 2upx;
-  /* font-weight: 700; */
   color: #555555;
 }
 

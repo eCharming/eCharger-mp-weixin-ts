@@ -15,7 +15,7 @@
         </image>
         <view style='margin:10upx;letter-spacing: 2upx;'>易插 v1.0.0</view>
       </view>
-      <addCard>
+      <add-card>
         <view style='width:100%' class='display'>
           <view class="answer">我们的服务</view>
           <view class="problem">
@@ -25,7 +25,7 @@
           <view class="answer">我们的目标</view>
           <view class="problem">我们致力于打造一个节能减排，绿色可持续发展的新能源健康社会体系。</view>
         </view>
-      </addCard>
+      </add-card>
     </view>
     <view style="display: flex;justify-content: center;margin: 20upx;color: #555555;">
       <view @tap="customerPolicy">《用户协议》</view>
@@ -101,7 +101,6 @@ export default class AboutUs extends Vue {
 .problem {
   margin: 10upx;
   letter-spacing: 2upx;
-  /* font-weight: 700; */
   color: #555555;
 }
 

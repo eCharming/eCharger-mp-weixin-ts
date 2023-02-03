@@ -8,7 +8,7 @@
         <text :style="{'margin-bottom':cityHeight+'px'}">用户协议</text>
       </view>
     </view>
-    <addcard>
+    <add-card>
       <view style='width:100%' class='display'>
         <view class="title">易插用户服务协议</view>
         <view class="problem">
@@ -197,32 +197,31 @@
         <view class="problem"> 2、本协议及其修改权、最终解释权归我公司所有。
         </view>
       </view>
-    </addcard>
+    </add-card>
   </view>
 </template>
 
-<script>
-import addcard from '../../components/addCard.vue'
+<script lang="ts">
+import addCard from '@/components/addCard.vue'
+import {Component, Vue} from "vue-property-decorator";
 
-export default {
+@Component({
   components: {
-    addcard
-  },
-  data() {
-    return {
-      statusHeight: wx.getSystemInfoSync().statusBarHeight + 50,
-      statusBarHeight: wx.getSystemInfoSync().statusBarHeight,
-      cityHeight: 0,
-      color: 'rgba(102,205,170,1)',
-    }
-  },
-  methods: {
-    back() {
-      wx.navigateBack({})
-    },
-  },
-  mounted() {
-    this.cityHeight = (this.statusHeight - uni.getMenuButtonBoundingClientRect().bottom);
+    addCard
+  }
+})
+export default class CustomerPolicy extends Vue {
+  public statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
+  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
+  public cityHeight: number = 0;
+  public color: string = 'rgba(102,205,170,1)';
+
+  public back(): void {
+    wx.navigateBack({})
+  }
+
+  public mounted(): void {
+    this.cityHeight = (this.statusHeight - wx.getMenuButtonBoundingClientRect().bottom);
   }
 }
 </script>
@@ -245,18 +244,9 @@ export default {
   height: 25px;
 }
 
-.divLine {
-  width: 100%;
-  height: 3upx;
-  background-color: #E0E3DA;
-  margin-top: 18rpx;
-  margin-bottom: 18rpx;
-}
-
 .problem {
   margin: 10upx;
   letter-spacing: 2upx;
-  /* font-weight: 700; */
   color: #555555;
 }
 

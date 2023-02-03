@@ -138,7 +138,7 @@ export default class MyCharger extends Vue {
     showModal("确认要删除该电桩", "提示").then(res => {
       if (res.confirm) {
         return chargerDelete({
-          id: Number(this.cid)
+          cid: Number(this.cid)
         })
       }
     }).then(res => {
@@ -154,7 +154,7 @@ export default class MyCharger extends Vue {
         })
       } else {
         return chargerPicDelete({
-          id: Number(this.cid)
+          cid: this.cid
         })
       }
     }).then(res => {
@@ -207,12 +207,6 @@ export default class MyCharger extends Vue {
   justify-content: space-between;
 }
 
-.view2 {
-  display: flex;
-  justify-content: space-between;
-  margin: 60upx 15upx 15upx;
-}
-
 .location {
   margin: 15upx;
   font-size: 30upx;
@@ -259,14 +253,6 @@ export default class MyCharger extends Vue {
   font-weight: 700;
   color: #249399;
   letter-spacing: 3upx;
-}
-
-.timeview {
-  margin-top: 15upx;
-}
-
-.priceview {
-  margin-top: 15upx;
 }
 
 .smalldetailview {

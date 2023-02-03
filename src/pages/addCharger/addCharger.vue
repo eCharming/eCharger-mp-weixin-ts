@@ -10,7 +10,7 @@
     </view>
 
     <view>
-      <addcard>
+      <add-card>
         <view class="display">
           <text class="labeltext">姓名</text>
           <input class="input" placeholder="请输入姓名" type="text" v-model="name" maxlength="20"></input>
@@ -20,8 +20,8 @@
           <text class="labeltext">电话号码</text>
           <input class="input" placeholder="请输入电话号码" type="number" v-model="phoneNumber" maxlength="11"></input>
         </view>
-      </addcard>
-      <addcard style="position: relative;">
+      </add-card>
+      <add-card style="position: relative;">
         <view class="display">
           <text class="labeltext">电桩位置</text>
           <input class="input" placeholder="请输入电桩位置" type="text" v-model='address'
@@ -29,11 +29,11 @@
         </view>
 
 
-        <map id="myMap" style="width: 680upx; height: 500upx;" layer-style="1" :latitude="center_latitude"
-             :longitude="center_longitude" showLocation='true' subkey="ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL"
+        <map id="myMap" style="width: 680upx; height: 500upx;" layer-style="1" :latitude="centerLatitude"
+             :longitude="centerLongitude" showLocation='true' subkey="ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL"
              :markers="covers" @tap="addMarker">
         </map>
-        <view class="scroll" v-if="locationList.length!=0">
+        <view class="scroll" v-if="locationList.length!==0">
           <view style="display: flex;justify-content: flex-end;">
             <scroll-view class="scrollview" scroll-y="true" enhanced="true" show-scrollbar="true"
                          scroll-with-animation="true">
@@ -58,8 +58,8 @@
           <text class="labeltext">电桩单价</text>
           <input class="input" placeholder="请输入单价" type="digit" v-model="price" :maxlength="maxlength"></input>
         </view>
-      </addcard>
-      <addCard>
+      </add-card>
+      <add-card>
         <view class="display">
           <text class="labeltext">周一可用时段</text>
           <view style="display:flex;justify-content: space-between;align-items:center;">
@@ -190,8 +190,8 @@
             </view>
           </view>
         </view>
-      </addCard>
-      <addCard>
+      </add-card>
+      <add-card>
         <view class="display">
           <text class="labeltext">图片</text>
         </view>
@@ -211,7 +211,7 @@
           <text class="labeltext">备注</text>
           <textarea class="input" placeholder="备注" maxlength="100" auto-height="true" v-model='remarks'></textarea>
         </view>
-      </addCard>
+      </add-card>
       <button class="submit" @tap="submit" :disabled="disable">提交</button>
     </view>
   </view>
@@ -260,8 +260,8 @@ export default class AddCharger extends Vue {
     longitude: 116.39742,
   };
   public locationList: Array<LocationRaw> = [];
-  public center_latitude: number = this.$store.state.currentLocation == null ? 39.909 : this.$store.state.currentLocation.latitude;
-  public center_longitude: number = this.$store.state.currentLocation == null ? 116.39742 : this.$store.state.currentLocation.longitude;
+  public centerLatitude: number = this.$store.state.currentLocation == null ? 39.909 : this.$store.state.currentLocation.latitude;
+  public centerLongitude: number = this.$store.state.currentLocation == null ? 116.39742 : this.$store.state.currentLocation.longitude;
   public disable: boolean = false;
 
   public get isAdd() {
@@ -289,8 +289,8 @@ export default class AddCharger extends Vue {
     this.geoPoint.latitude = item.location.lat;
     this.geoPoint.longitude = item.location.lng;
     this.showMarker();
-    this.center_latitude = this.geoPoint.latitude;
-    this.center_longitude = this.geoPoint.longitude;
+    this.centerLatitude = this.geoPoint.latitude;
+    this.centerLongitude = this.geoPoint.longitude;
     this.locationList.splice(0);
   }
 
@@ -518,7 +518,7 @@ export default class AddCharger extends Vue {
               icon: 'none',
             })
             chargerDelete({
-              id: id
+              cid: id
             })
             this.disable = false;
             return;
@@ -530,7 +530,7 @@ export default class AddCharger extends Vue {
               icon: 'none',
             })
             chargerDelete({
-              id: id
+              cid: id
             })
             this.disable = false;
             return;
@@ -553,7 +553,7 @@ export default class AddCharger extends Vue {
             icon: 'none',
           })
           chargerDelete({
-            id: id
+            cid: id
           })
           this.disable = false;
           return;

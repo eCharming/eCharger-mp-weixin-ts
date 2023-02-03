@@ -16,7 +16,22 @@ export function wxLogin() {
     })
 }
 
+export function wxLogout(userInfo: UserInfo) {
+    return request({
+        url: "TODO",
+        method: "POST",
+        data: userInfo
+    })
+}
 export function infoReturn(userInfo: UserInfo) {
+    return request({
+        url: "TODO",
+        method: "POST",
+        data: userInfo
+    })
+}
+
+export function getBalance(userInfo: UserInfo) {
     return request({
         url: "TODO",
         method: "POST",

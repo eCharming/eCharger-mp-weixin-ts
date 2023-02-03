@@ -5,87 +5,87 @@
       <movable-view class="main" :style="{'height':windowHeight+'px'}" direction="vertical" damping="30"
                     out-of-bounds="true" :y="currentY" :disabled="isScroll"
                     @touchstart="start($event)" @touchend="end($event)">
-          <view class="content">
+        <view class="content">
 
-            <view class="fixed-view">
-              <view class='flex-img'>
-                <infoButton :isLow="isLow"></infoButton>
-                <view style="display: flex;">
-                  <navigateButton :isLow="isLow" :style="{'opacity':isNavigate}"
-                                  style="transition: opacity 1s;"></navigateButton>
-                  <locationButton :isLow="isLow"></locationButton>
-                </view>
-              </view>
-            </view>
-
-            <view class="touchline">
-              <view class="line"></view>
-            </view>
-
-            <hiddenCard :isLow="isLow"></hiddenCard>
-            <hiddenDetail v-if="hiddenDetail" :isLow="isLow" @tap="detail"></hiddenDetail>
-            <card>
-              <totalButton :text1="'租电桩'" :text2="'电桩共享'" :selected="isSelected1" :isLow="isLow" :type="1"
-                           @tap="tapButton1()">
-                <image class="image1" src="../static/image/car&charger_color.png"
-                       :style="{'filter':'grayscale('+imageFilter1+')','opacity':imageOpacity1}"></image>
-              </totalButton>
-              <totalButton :text1="'借电桩'" :text2="'出租电桩'" :selected="isSelected2" :isLow="isLow" :type="2"
-                           @tap="tapButton2()">
-                <image class="image2" src="../static/image/park.png"
-                       :style="{'filter':'grayscale('+imageFilter2+')','opacity':imageOpacity2}"></image>
-              </totalButton>
-            </card>
-            <destination></destination>
-
-
-            <view style="transform-style: preserve-3d;transition:all .6s;
-						transition-timing-function: cubic-bezier(.6,-0.5,.44,1.5);position: relative;"
-                  :style="{'transform':'rotateY('+rotate+'deg)'}">
-              <view style="position: absolute;width: 100%;transform:translateZ(10upx);"
-                    :class="isSelected1?'auto':'none'">
-                <scroller @scrolltolower="scrollToLower()" @touchstart="scroll()">
-                  <order v-for="(order,index) in orders" :ref="'orderRef'+index" :key="index" :index="index"
-                         :cid="order.id" :uid="order.uid" :longitude="order.longitude" :latitude="order.latitude"
-                         :address="order.address" :location="order.location" :distance="order.distance"
-                         :price="order.price" :time="order.time" :detail="order.detail" :windowWidth="windowWidth"
-                         @map="tapOrder(index)" @detail="detail()" @undetail="undetail()" @toLow="toLow">
-                  </order>
-                  <view class="scrollerview" v-if="orders.length!==0">
-                    <image :src="src1" style="width: 45rpx;height: 45rpx;" v-show="icontype==='download'"></image>
-                    <image :src="src2" style="width: 45rpx;height: 45rpx;" v-show="icontype==='warn'"></image>
-                    <text>{{ icontext }}</text>
-                  </view>
-                  <view v-if="orders.length===0"
-                        style="width:100%;height:100%;display: flex;align-items: center;justify-content: center;flex-direction: column;">
-                    <image src="/static/image/blank.png" style="width: 200rpx;height: 200rpx;"></image>
-                    <text style="font-weight: bold;color: rgba(102,205,170,1);">附近暂无电桩</text>
-                  </view>
-                </scroller>
-              </view>
-
-              <view style="transform: rotateY(180deg) translateZ(13upx);position: absolute;width: 100%;"
-                    :class="isSelected2?'auto':'none'">
-                <scroller @touchstart="scroll()">
-                  <charger v-for="(charger,index) in chargers" :ref="'chargerRef'+index" :key="index"
-                           :location="charger.location" :address="charger.address" :state="charger.isAvailable"
-                           :price="charger.price"
-                           :time="charger.time" :cid="charger.cid" :windowWidth="windowWidth" :detail="charger.detail"
-                           @tap="tapCharger(index)" @chargerUndetail="chargerUndetail()">
-                  </charger>
-                  <view v-if="chargers.length===0"
-                        style="width:100%;height:100%;display: flex;align-items: center;justify-content: center;flex-direction: column;">
-                    <image src="/static/image/blank_blue.png" style="width: 200rpx;height: 200rpx;"></image>
-                    <text style="font-weight: bold;color: rgba(50,200,210,1);">暂无你的电桩</text>
-                  </view>
-                  <view class="scrollerview">
-                    <image :src="src3" style="width: 45rpx;height: 45rpx;" @tap="addCharger"></image>
-                    <text @tap="addCharger">添加你的电桩</text>
-                  </view>
-                </scroller>
+          <view class="fixed-view">
+            <view class='flex-img'>
+              <info-button :isLow="isLow"></info-button>
+              <view style="display: flex;">
+                <navigate-button :isLow="isLow" :style="{'opacity':isNavigate}"
+                                 style="transition: opacity 1s;"></navigate-button>
+                <location-button :isLow="isLow"></location-button>
               </view>
             </view>
           </view>
+
+          <view class="touchline">
+            <view class="line"></view>
+          </view>
+
+          <hidden-card :isLow="isLow"></hidden-card>
+          <hidden-detail v-if="hiddenDetail" :isLow="isLow" @tap="detail"></hidden-detail>
+          <card>
+            <total-button :text1="'租电桩'" :text2="'电桩共享'" :selected="isSelected1" :isLow="isLow" :type="1"
+                          @tap="tapButton1()">
+              <image class="image1" src="../static/image/car&charger_color.png"
+                     :style="{'filter':'grayscale('+imageFilter1+')','opacity':imageOpacity1}"></image>
+            </total-button>
+            <total-button :text1="'借电桩'" :text2="'出租电桩'" :selected="isSelected2" :isLow="isLow" :type="2"
+                          @tap="tapButton2()">
+              <image class="image2" src="../static/image/park.png"
+                     :style="{'filter':'grayscale('+imageFilter2+')','opacity':imageOpacity2}"></image>
+            </total-button>
+          </card>
+          <destination></destination>
+
+
+          <view style="transform-style: preserve-3d;transition:all .6s;
+						transition-timing-function: cubic-bezier(.6,-0.5,.44,1.5);position: relative;"
+                :style="{'transform':'rotateY('+rotate+'deg)'}">
+            <view style="position: absolute;width: 100%;transform:translateZ(10upx);"
+                  :class="isSelected1?'auto':'none'">
+              <scroller @scrolltolower="scrollToLower()" @touchstart="scroll()">
+                <order v-for="(order,index) in orders" :ref="'orderRef'+index" :key="index" :index="index"
+                       :cid="order.id" :uid="order.uid" :longitude="order.longitude" :latitude="order.latitude"
+                       :address="order.address" :location="order.location" :distance="order.distance"
+                       :price="order.price" :time="order.time" :detail="order.detail" :windowWidth="windowWidth"
+                       @map="tapOrder(index)" @detail="detail()" @undetail="undetail()" @toLow="toLow">
+                </order>
+                <view class="scrollerview" v-if="orders.length!==0">
+                  <image :src="src1" style="width: 45rpx;height: 45rpx;" v-show="icontype==='download'"></image>
+                  <image :src="src2" style="width: 45rpx;height: 45rpx;" v-show="icontype==='warn'"></image>
+                  <text>{{ icontext }}</text>
+                </view>
+                <view v-if="orders.length===0"
+                      style="width:100%;height:100%;display: flex;align-items: center;justify-content: center;flex-direction: column;">
+                  <image src="/static/image/blank.png" style="width: 200rpx;height: 200rpx;"></image>
+                  <text style="font-weight: bold;color: rgba(102,205,170,1);">附近暂无电桩</text>
+                </view>
+              </scroller>
+            </view>
+
+            <view style="transform: rotateY(180deg) translateZ(13upx);position: absolute;width: 100%;"
+                  :class="isSelected2?'auto':'none'">
+              <scroller @touchstart="scroll()">
+                <charger v-for="(charger,index) in chargers" :ref="'chargerRef'+index" :key="index"
+                         :location="charger.location" :address="charger.address" :state="charger.isAvailable"
+                         :price="charger.price"
+                         :time="charger.time" :cid="charger.cid" :windowWidth="windowWidth" :detail="charger.detail"
+                         @tap="tapCharger(index)" @chargerUndetail="chargerUndetail()">
+                </charger>
+                <view v-if="chargers.length===0"
+                      style="width:100%;height:100%;display: flex;align-items: center;justify-content: center;flex-direction: column;">
+                  <image src="/static/image/blank_blue.png" style="width: 200rpx;height: 200rpx;"></image>
+                  <text style="font-weight: bold;color: rgba(50,200,210,1);">暂无你的电桩</text>
+                </view>
+                <view class="scrollerview">
+                  <image :src="src3" style="width: 45rpx;height: 45rpx;" @tap="addCharger"></image>
+                  <text @tap="addCharger">添加你的电桩</text>
+                </view>
+              </scroller>
+            </view>
+          </view>
+        </view>
       </movable-view>
     </movable-area>
   </view>

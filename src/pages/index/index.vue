@@ -1,7 +1,7 @@
 <template>
   <view>
-    <myMap></myMap>
-    <movableBox></movableBox>
+    <my-map></my-map>
+    <movable-box></movable-box>
     <loading v-if="isLoading" style="position: absolute;top: 0;width: 100%;"></loading>
   </view>
 </template>

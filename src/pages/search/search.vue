@@ -11,8 +11,8 @@
                :style="{'border-color':color}">
         </input>
         <text class="searchtext" :style="{'color':color}">搜索</text>
-        <image :src="src1" :class="changeImg==0?'image1':'image1_none'"></image>
-        <image :src="src2" :class="changeImg==0?'image1_none':'image1'"></image>
+        <image :src="src1" :class="changeImg===0?'image1':'image1_none'"></image>
+        <image :src="src2" :class="changeImg===0?'image1_none':'image1'"></image>
       </view>
 
       <view class="storageview" v-if="!isInput">
@@ -109,11 +109,11 @@
               <view
                   style="width:100%;height:100%;display: flex;align-items: center;justify-content: center;flex-direction: column;"
                   v-if="
-							JSON.stringify(frePlace.freHome) == '{}' && JSON.stringify(frePlace.freCompany) == '{}' && JSON.stringify(frePlace.freSchool) == '{}' && frePlace.freOther.length==0">
+							JSON.stringify(frePlace.freHome) === '{}' && JSON.stringify(frePlace.freCompany) === '{}' && JSON.stringify(frePlace.freSchool) === '{}' && frePlace.freOther.length==0">
                 <image src="/static/image/blank_blue.png" style="width: 200rpx;height: 200rpx;"></image>
                 <text style="font-weight: bold;color: rgba(50,200,210,1);">还没有常用地点</text>
               </view>
-              <view style="display: flex;flex-direction: column;" v-if="JSON.stringify(frePlace.freHome) != '{}'">
+              <view style="display: flex;flex-direction: column;" v-if="JSON.stringify(frePlace.freHome) !== '{}'">
                 <view class="storage" @tap="tapStorage(frePlace.freHome.title,frePlace.freHome.location)">
 
                   <view class="view5">
@@ -134,7 +134,7 @@
                 </view>
               </view>
 
-              <view style="display: flex;flex-direction: column;" v-if="JSON.stringify(frePlace.freCompany) != '{}'">
+              <view style="display: flex;flex-direction: column;" v-if="JSON.stringify(frePlace.freCompany) !== '{}'">
                 <view class="storage" @tap="tapStorage(frePlace.freCompany.title,frePlace.freCompany.location)">
 
                   <view class="view5">
@@ -155,7 +155,7 @@
                 </view>
               </view>
 
-              <view style="display: flex;flex-direction: column;" v-if="JSON.stringify(frePlace.freSchool) != '{}'">
+              <view style="display: flex;flex-direction: column;" v-if="JSON.stringify(frePlace.freSchool) !== '{}'">
                 <view class="storage" @tap="tapStorage(frePlace.freSchool.title,frePlace.freSchool.location)">
 
                   <view class="view5">
@@ -242,275 +242,301 @@
 
 </template>
 
-<script>
-import navigator from '../../components/navigator.vue'
+<script lang="ts">
+import navigator from '@/components/navigator.vue'
+import {distanceDriving, placeSuggestion} from "@/apis/map/map";
+import {Component, Vue} from "vue-property-decorator";
 
-export default {
+@Component({
   components: {
     navigator
-  },
-  data() {
-    return {
-      statusHeight: uni.getSystemInfoSync().statusBarHeight + 50,
-      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      searchHeight: 0,
-      position: "",
-      suggestions: [],
-      storageHeight: this.$store.state.windowHeight * 0.8,
-      suggestionHeight: this.$store.state.windowHeight * 0.85,
-      index: 0,
-      storages: [],
-      frePlace: {},
-      isInput: false,
-      modelWidth: 120,
-      modelHeight: 15,
-      windowWidth: uni.getSystemInfoSync().windowWidth,
-      justifyContent: "flex-start",
-      currentPage: 0,
-      changeImg: 0,
-      buttonLeft: 185,
-      buttonOpacity1: 1,
-      buttonOpacity2: 0,
-      color: 'rgba(102,205,170,1)',
-      doubleColor: "linear-gradient(to right bottom,rgb(102,205,170) 0% 100%,rgb(50,200,210))",
-      src1: "../../static/image/lightning_green.png",
-      src2: "../../static/image/lightning_blue.png",
-    }
-  },
-  methods: {
-    back() {
-      uni.navigateBack({})
-    },
-    request() {
-      if (this.position == "") {
-        this.isInput = false;
-      } else {
-        this.isInput = true;
-        var url = 'https://apis.map.qq.com/ws/place/v1/suggestion?keyword=' + this.position + '&location=' +
-            this.$store.state.currentLocation.latitude + ',' + this.$store.state.currentLocation.longitude +
-            '&address_format=short' +
-            '&key=ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL';
-        uni.request({
-          url: url,
-          method: 'GET',
-          success: (res) => {
-            if (res.data.status == '0') {
-              this.suggestions.splice(0);
-              for (var index in res.data.data) {
-                this.suggestions.push({
-                  id: res.data.data[index].id,
-                  title: res.data.data[index].title,
-                  address: res.data.data[index].address,
-                  category: res.data.data[index].category,
-                  location: res.data.data[index].location,
-                  distance: (res.data.data[index]._distance / 1000).toFixed(1),
-                  strings: "<div style='width: 100%;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;'>" +
-                      this.keyword(res.data.data[index].title, this.position) +
-                      "<div>",
-                });
-              }
-              ;
-            }
-          },
-        })
-      }
-    },
-    keyword(title, position) {
-      if (title.includes(position)) {
-        var html = (title.replace(
-            position,
-            '<span style="color:rgb(102,205,170);">' + position + '</span>'
-        ));
-        html = '<span class="text1">' + html + '</span>';
-        return html;
-      } else {
-        return title;
-      }
-    },
-    setStorage(id, title, location, category) {
-      var searchHistory = uni.getStorageSync('searchHistory');
-      if (searchHistory != '') {
-        searchHistory = JSON.parse(searchHistory);
-        for (var index in searchHistory) {
-          if (searchHistory[index].id == id) {
-            searchHistory.splice(index, 1);
-            break;
+  }
+})
+export default class Search extends Vue {
+  public statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
+  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
+  public searchHeight: number = 0;
+  public position: string = "";
+  public suggestions: {
+    id: string;
+    title: string;
+    address: string;
+    category: string;
+    location: {
+      lat: number;
+      lng: number;
+    };
+    distance: string;
+    strings: string;
+  }[] = [];
+  public storageHeight: number = this.$store.state.windowHeight * 0.8;
+  public suggestionHeight: number = this.$store.state.windowHeight * 0.85;
+  public index: number = 0;
+  public storages: any[] = [];
+  public frePlace: any = {};
+  public isInput: boolean = false;
+  public modelWidth: number = 120;
+  public modelHeight: number = 15;
+  public windowWidth: number = uni.getSystemInfoSync().windowWidth;
+  public justifyContent: string = "flex-start";
+  public currentPage: number = 0;
+  public changeImg: number = 0;
+  public buttonLeft: number = 185;
+  public buttonOpacity1: number = 1;
+  public buttonOpacity2: number = 0;
+  public color: string = 'rgba(102,205,170,1)';
+  public doubleColor: string = "linear-gradient(to right bottom,rgb(102,205,170) 0% 100%,rgb(50,200,210))";
+  public src1: string = "../../static/image/lightning_green.png";
+  public src2: string = "../../static/image/lightning_blue.png";
+
+  public back(): void {
+    wx.navigateBack({})
+  }
+
+  public request(): void {
+    if (this.position === "") {
+      this.isInput = false;
+    } else {
+      this.isInput = true;
+      placeSuggestion({
+        address: this.position,
+        location: {
+          latitude: this.$store.state.currentLocation.latitude,
+          longitude: this.$store.state.currentLocation.longitude
+        },
+        addressFormat: "short",
+        key: "ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL"
+      }).then(data => {
+        if (data.status === 0) {
+          this.suggestions.splice(0);
+          for (let index in data.data) {
+            this.suggestions.push({
+              id: data.data[index].id,
+              title: data.data[index].title,
+              address: data.data[index].address,
+              category: data.data[index].category,
+              location: data.data[index].location,
+              distance: (<number>data.data[index]._distance / 1000).toFixed(1),
+              strings: "<div style='width: 100%;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;'>" +
+                  this.keyword(data.data[index].title, this.position) +
+                  "<div>"
+            });
           }
         }
-        if (searchHistory.length >= 10) {
-          searchHistory.splice(0, 1);
-        }
-        searchHistory.push({
-          id: id,
-          title: title,
-          location: location,
-          category: category
-        });
-        uni.setStorageSync('searchHistory', JSON.stringify(searchHistory));
-      } else {
-        searchHistory = [];
-        searchHistory.push({
-          id: id,
-          title: title,
-          location: location,
-          category: category
-        });
-        uni.setStorageSync('searchHistory', JSON.stringify(searchHistory));
-      }
-    },
-    tap(id, title, location, category) {
-      this.setStorage(id, title, location, category);
-      uni.request({
-        url: 'https://apis.map.qq.com/ws/distance/v1/matrix/?mode=driving&from=' +
-            this.$store.state.currentLocation.latitude + ',' + this.$store.state.currentLocation
-                .longitude + '&to=' +
-            location.lat + ',' + location.lng + '&key=ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL',
-        success: (res) => {
-          this.$store.commit('setDestination', {
-            title: title,
-            location: location,
-            distance: (res.data.result.rows[0].elements[0].distance / 1000).toFixed(1),
-          });
-        }
-      });
-
-      uni.navigateBack();
-      this.$store.commit('addIsLow');
-    },
-    tapStorage(title, location) {
-      uni.request({
-        url: 'https://apis.map.qq.com/ws/distance/v1/matrix/?mode=driving&from=' +
-            this.$store.state.currentLocation.latitude + ',' + this.$store.state.currentLocation
-                .longitude + '&to=' +
-            +location.lat + ',' + location.lng + '&key=ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL',
-        success: (res) => {
-          this.$store.commit('setDestination', {
-            title: title,
-            location: location,
-            distance: (res.data.result.rows[0].elements[0].distance / 1000).toFixed(1),
-          });
-        }
-      });
-      uni.navigateBack();
-      this.$store.commit('addIsLow');
-    },
-    tapStorageIcon(type) {
-      if (type == 0 && JSON.stringify(this.frePlace.freHome) != '{}') {
-        this.tapStorage(this.frePlace.freHome.title, this.frePlace.freHome.location)
-      } else if (type == 1 && JSON.stringify(this.frePlace.freCompany) != '{}') {
-        this.tapStorage(this.frePlace.freCompany.title, this.frePlace.freCompany.location)
-      } else if (type == 2 && JSON.stringify(this.frePlace.freSchool) != '{}') {
-        this.tapStorage(this.frePlace.freSchool.title, this.frePlace.freSchool.location)
-      } else {
-        uni.navigateTo({
-          url: '../addFrePlace/addFrePlace',
-        })
-      }
-    },
-    clear() {
-      uni.removeStorageSync('searchHistory');
-      this.storages.splice(0);
-    },
-    del(index) {
-      this.storages.splice(index, 1);
-      var searchHistory = JSON.parse(uni.getStorageSync('searchHistory'));
-
-      if (searchHistory.length != 1) {
-        var historyIndex = searchHistory.length - 1 - index;
-        searchHistory.splice(historyIndex, 1);
-        uni.setStorageSync('searchHistory', JSON.stringify(searchHistory));
-      } else uni.removeStorageSync('searchHistory');
-
-    },
-    delFre(index) {
-      this.frePlace.freOther.splice(index, 1);
-      uni.setStorageSync('frePlace', JSON.stringify(this.frePlace));
-    },
-    delFreIcon(type) {
-      if (type == 0) {
-        this.frePlace.freHome = {}
-      } else if (type == 1) {
-        this.frePlace.freCompany = {}
-      } else if (type == 2) {
-        this.frePlace.freSchool = {}
-      }
-      uni.setStorageSync('frePlace', JSON.stringify(this.frePlace));
-    },
-    change(e) {
-      this.changeImg = e.detail.current;
-    },
-    animationfinish(e) {
-      this.currentPage = e.detail.current;
-    },
-    transition(e) {
-      // 50,200,210 蓝
-      // 102,205,170 绿
-      var dx = e.detail.dx;
-      var percent = Math.abs(dx) / this.windowWidth;
-      if (this.currentPage == 0) { //向右翻页
-        if (percent <= 0.6) {
-          this.$nextTick(function () {
-            this.justifyContent = "flex-start";
-          })
-
-          this.modelWidth = 120 + 280 * percent * 2;
-        } else {
-          this.$nextTick(function () {
-            this.justifyContent = "flex-end";
-          })
-
-          this.modelWidth = 400 - 280 * (percent - 0.5) * 2;
-        }
-        this.buttonLeft = 185 - 185 * percent;
-        this.buttonOpacity1 = 1 - percent;
-        this.buttonOpacity2 = percent;
-        this.color = "rgba(" + (102 - 52 * percent) + "," + (205 - 5 * percent) + "," + (170 + 40 * percent) +
-            ",1)";
-        this.doubleColor = "linear-gradient(to right bottom,rgb(102,205,170) 0% " + (1 - percent) * 100 +
-            "%," + this.$store.state.color + ")";
-      } else {
-        if (percent <= 0.6) {
-          this.$nextTick(function () {
-            this.justifyContent = "flex-end";
-          })
-
-          this.modelWidth = 120 + 280 * percent * 2;
-        } else {
-          this.$nextTick(function () {
-            this.justifyContent = "flex-start";
-          })
-
-          this.modelWidth = 400 - 280 * (percent - 0.5) * 2;
-        }
-        this.buttonLeft = 185 * percent;
-        this.buttonOpacity1 = percent;
-        this.buttonOpacity2 = 1 - percent;
-        this.color = "rgba(" + (50 + 52 * percent) + "," + (200 + 5 * percent) + "," + (210 - 40 * percent) +
-            ",1)";
-        this.doubleColor = "linear-gradient(to right bottom,rgb(102,205,170) 0% " + percent * 100 + "%," + this
-            .$store.state.color + ")";
-      }
-    },
-    addFrePlace() {
-      uni.navigateTo({
-        url: '../addFrePlace/addFrePlace',
       })
     }
-  },
-  mounted() {
-    this.searchHeight = (this.statusHeight - uni.getMenuButtonBoundingClientRect().bottom);
-    var searchHistory = uni.getStorageSync('searchHistory');
+  }
+
+  public keyword(title: string, position: string): string {
+    if (title.includes(position)) {
+      let html = (title.replace(
+          position,
+          '<span style="color:rgb(102,205,170);">' + position + '</span>'
+      ));
+      html = '<span class="text1">' + html + '</span>';
+      return html;
+    } else {
+      return title;
+    }
+  }
+
+  public setStorage(id: any, title: any, location: { lat: number; lng: number; }, category: any): void {
+    let searchHistory = uni.getStorageSync('searchHistory');
+    if (searchHistory !== '') {
+      searchHistory = JSON.parse(searchHistory);
+      for (let index in searchHistory) {
+        if (searchHistory[index].id === id) {
+          searchHistory.splice(index, 1);
+          break;
+        }
+      }
+      if (searchHistory.length >= 10) {
+        searchHistory.splice(0, 1);
+      }
+      searchHistory.push({
+        id: id,
+        title: title,
+        location: location,
+        category: category
+      });
+      wx.setStorageSync('searchHistory', JSON.stringify(searchHistory));
+    } else {
+      searchHistory = [];
+      searchHistory.push({
+        id: id,
+        title: title,
+        location: location,
+        category: category
+      });
+      wx.setStorageSync('searchHistory', JSON.stringify(searchHistory));
+    }
+  }
+
+  public tap(id: any, title: string, location: { lat: number; lng: number; }, category: any): void {
+    this.setStorage(id, title, location, category);
+    distanceDriving({
+      fromLongitude: this.$store.state.currentLocation.longitude,
+      fromLatitude: this.$store.state.currentLocation.latitude,
+      toLongitude: location.lng,
+      toLatitude: location.lat,
+      key: "ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL"
+    }).then(data => {
+      this.$store.commit('setDestination', {
+        title: title,
+        location: location,
+        distance: (data.result.rows[0].elements[0].distance / 1000).toFixed(1),
+      });
+    })
+
+    wx.navigateBack();
+    this.$store.commit('addIsLow');
+  }
+
+  public tapStorage(title: string, location: { lat: number; lng: number; }): void {
+    distanceDriving({
+      fromLongitude: this.$store.state.currentLocation.longitude,
+      fromLatitude: this.$store.state.currentLocation.latitude,
+      toLongitude: location.lng,
+      toLatitude: location.lat,
+      key: "ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL"
+    }).then(data => {
+      this.$store.commit('setDestination', {
+        title: title,
+        location: location,
+        distance: (data.result.rows[0].elements[0].distance / 1000).toFixed(1),
+      });
+    })
+
+    wx.navigateBack();
+    this.$store.commit('addIsLow');
+  }
+
+  public tapStorageIcon(type: number): void {
+    if (type === 0 && JSON.stringify(this.frePlace.freHome) !== '{}') {
+      this.tapStorage(this.frePlace.freHome.title, this.frePlace.freHome.location)
+    } else if (type === 1 && JSON.stringify(this.frePlace.freCompany) !== '{}') {
+      this.tapStorage(this.frePlace.freCompany.title, this.frePlace.freCompany.location)
+    } else if (type === 2 && JSON.stringify(this.frePlace.freSchool) !== '{}') {
+      this.tapStorage(this.frePlace.freSchool.title, this.frePlace.freSchool.location)
+    } else {
+      wx.navigateTo({
+        url: '../addFrePlace/addFrePlace'
+      })
+    }
+  }
+
+  public clear(): void {
+    wx.removeStorageSync('searchHistory');
+    this.storages.splice(0);
+  }
+
+  public del(index: number): void {
+    this.storages.splice(index, 1);
+    let searchHistory = JSON.parse(wx.getStorageSync('searchHistory'));
+
+    if (searchHistory.length !== 1) {
+      let historyIndex = searchHistory.length - 1 - index;
+      searchHistory.splice(historyIndex, 1);
+      wx.setStorageSync('searchHistory', JSON.stringify(searchHistory));
+    } else wx.removeStorageSync('searchHistory');
+
+  }
+
+  public delFre(index: number): void {
+    this.frePlace.freOther.splice(index, 1);
+    wx.setStorageSync('frePlace', JSON.stringify(this.frePlace));
+  }
+
+  public delFreIcon(type: number): void {
+    if (type === 0) {
+      this.frePlace.freHome = {}
+    } else if (type === 1) {
+      this.frePlace.freCompany = {}
+    } else if (type === 2) {
+      this.frePlace.freSchool = {}
+    }
+    wx.setStorageSync('frePlace', JSON.stringify(this.frePlace));
+  }
+
+  public change(e: { detail: { current: number; }; }): void {
+    this.changeImg = e.detail.current;
+  }
+
+  public animationfinish(e: { detail: { current: number; }; }): void {
+    this.currentPage = e.detail.current;
+  }
+
+  public transition(e: { detail: { dx: any; }; }): void {
+    // 50,200,210 蓝
+    // 102,205,170 绿
+    let dx = e.detail.dx;
+    let percent = Math.abs(dx) / this.windowWidth;
+    if (this.currentPage === 0) { //向右翻页
+      if (percent <= 0.6) {
+        this.$nextTick(function () {
+          this.justifyContent = "flex-start";
+        })
+
+        this.modelWidth = 120 + 280 * percent * 2;
+      } else {
+        this.$nextTick(function () {
+          this.justifyContent = "flex-end";
+        })
+
+        this.modelWidth = 400 - 280 * (percent - 0.5) * 2;
+      }
+      this.buttonLeft = 185 - 185 * percent;
+      this.buttonOpacity1 = 1 - percent;
+      this.buttonOpacity2 = percent;
+      this.color = "rgba(" + (102 - 52 * percent) + "," + (205 - 5 * percent) + "," + (170 + 40 * percent) +
+          ",1)";
+      this.doubleColor = "linear-gradient(to right bottom,rgb(102,205,170) 0% " + (1 - percent) * 100 +
+          "%," + this.$store.state.color + ")";
+    } else {
+      if (percent <= 0.6) {
+        this.$nextTick(function () {
+          this.justifyContent = "flex-end";
+        })
+
+        this.modelWidth = 120 + 280 * percent * 2;
+      } else {
+        this.$nextTick(function () {
+          this.justifyContent = "flex-start";
+        })
+
+        this.modelWidth = 400 - 280 * (percent - 0.5) * 2;
+      }
+      this.buttonLeft = 185 * percent;
+      this.buttonOpacity1 = percent;
+      this.buttonOpacity2 = 1 - percent;
+      this.color = "rgba(" + (50 + 52 * percent) + "," + (200 + 5 * percent) + "," + (210 - 40 * percent) +
+          ",1)";
+      this.doubleColor = "linear-gradient(to right bottom,rgb(102,205,170) 0% " + percent * 100 + "%," + this
+          .$store.state.color + ")";
+    }
+  }
+
+  public addFrePlace(): void {
+    wx.navigateTo({
+      url: '../addFrePlace/addFrePlace'
+    })
+  }
+
+  public mounted(): void {
+    this.searchHeight = (this.statusHeight - wx.getMenuButtonBoundingClientRect().bottom);
+    let searchHistory = wx.getStorageSync('searchHistory');
     if (searchHistory) {
       searchHistory = JSON.parse(searchHistory);
-      var length = searchHistory.length;
-      for (var index in searchHistory) {
+      let length = searchHistory.length;
+      for (let index of searchHistory) {
         this.storages.push(searchHistory[length - 1 - index]);
       }
     }
-    this.frePlace = JSON.parse(uni.getStorageSync('frePlace'));
-  },
-  onShow() {
-    this.frePlace = JSON.parse(uni.getStorageSync('frePlace'));
+    this.frePlace = JSON.parse(wx.getStorageSync('frePlace'));
+  }
+
+  public onShow(): void {
+    this.frePlace = JSON.parse(wx.getStorageSync('frePlace'));
   }
 }
 </script>

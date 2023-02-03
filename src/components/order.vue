@@ -676,12 +676,6 @@ export default class Order extends Vue {
   justify-content: space-between;
 }
 
-.view2 {
-  display: flex;
-  justify-content: space-between;
-  margin: 15upx 15upx 0;
-}
-
 .location {
   margin: 15upx;
   font-size: 30upx;

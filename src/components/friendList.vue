@@ -92,7 +92,7 @@ export default class FriendList extends Vue {
   }
 
   public deleteFriend(): void {
-    uni.showModal({
+    wx.showModal({
       title: "确定删除好友？",
       success: (res) => {
         if (res.confirm) {

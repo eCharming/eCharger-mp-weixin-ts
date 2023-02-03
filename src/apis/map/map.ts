@@ -1,10 +1,10 @@
 import {
     DirectionDrivingReq,
-    DirectionDrivingResp,
+    DirectionDrivingResp, DistanceDrivingResp,
     GeoCoderReq,
     GeoCoderResp,
     GeoPoint,
-    GeoPointExtend, PlaceSuggestionReq, placeSuggestionResp
+    GeoPointExtend, PlaceSuggestionReq, PlaceSuggestionResp
 } from "@/apis/map/map-interface";
 import request from "@/apis/wx/request";
 
@@ -40,7 +40,7 @@ export function directionDriving(directionDrivingReq: DirectionDrivingReq): Prom
     });
 }
 
-export function placeSuggestion(placeSuggestionReq: PlaceSuggestionReq): Promise<placeSuggestionResp> {
+export function placeSuggestion(placeSuggestionReq: PlaceSuggestionReq): Promise<PlaceSuggestionResp> {
     const {address, addressFormat, location, key} = placeSuggestionReq;
     let url: string;
     if (location !== undefined) {
@@ -52,7 +52,23 @@ export function placeSuggestion(placeSuggestionReq: PlaceSuggestionReq): Promise
         wx.request({
             url: url,
             success: res => {
-                const data = <placeSuggestionResp>res.data;
+                const data = <PlaceSuggestionResp>res.data;
+                resolve(data)
+            },
+            fail: err => {
+                reject(err);
+            }
+        })
+    });
+}
+
+export function distanceDriving(directionDrivingReq: DirectionDrivingReq): Promise<DistanceDrivingResp> {
+    const {fromLongitude, fromLatitude, toLongitude, toLatitude, key} = directionDrivingReq;
+    return new Promise((resolve, reject) => {
+        wx.request({
+            url: `https://apis.map.qq.com/ws/distance/v1/matrix/?mode=driving&from=${fromLatitude},${fromLongitude}&to=${toLatitude},${toLongitude}&key=${key}`,
+            success: res => {
+                const data = <DistanceDrivingResp>res.data;
                 resolve(data)
             },
             fail: err => {

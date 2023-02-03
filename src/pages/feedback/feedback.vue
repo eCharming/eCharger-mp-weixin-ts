@@ -9,19 +9,19 @@
           <text :style="{'margin-bottom':cityHeight+'px'}">意见反馈</text>
         </view>
       </view>
-      <addcard>
+      <add-card>
         <view class="display">
           <view class="labeltext">反馈描述</view>
           <textarea class="input" placeholder="请说说您的意见或反馈,以便于我们提供更好的服务" maxlength="200"
                     v-model='feedback'></textarea>
         </view>
-      </addcard>
-      <addcard>
+      </add-card>
+      <add-card>
         <view class="display">
           <view class="labeltext">联系方式</view>
           <input placeholder="请输入您的手机号(选填)" maxlength="11" v-model="phoneNumber"></input>
         </view>
-      </addcard>
+      </add-card>
     </view>
     <view>
       <button class="submit" @tap="submit" :disabled="feedback.length==0">提交反馈</button>
@@ -29,50 +29,51 @@
   </view>
 </template>
 
-<script>
-import addcard from '../../components/addCard.vue'
+<script lang="ts">
+import addCard from '@/components/addCard.vue'
+import {Component, Vue} from "vue-property-decorator";
 
-export default {
+@Component({
   components: {
-    addcard
-  },
-  data() {
-    return {
-      statusHeight: uni.getSystemInfoSync().statusBarHeight + 50,
-      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      cityHeight: 0,
-      color: 'rgba(102,205,170,1)',
-      feedback: "",
-      phoneNumber: "",
-    }
-  },
-  methods: {
-    back() {
-      uni.navigateBack({})
-    },
-    submit() {
-      wx.cloud.callFunction({
-        name: 'feedback',
-        data: {
-          feedback: this.feedback,
-          phoneNumber: this.phoneNumber,
-          uid: this.$store.state.uid
+    addCard
+  }
+})
+export default class Feedback extends Vue {
+
+  public statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
+  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
+  public cityHeight: number = 0;
+  public color: string = 'rgba(102,205,170,1)';
+  public feedback: string = "";
+  public phoneNumber: string = "";
+
+  public back(): void {
+    wx.navigateBack({})
+  }
+
+  public submit() {
+    wx.cloud.callFunction({
+      name: 'feedback',
+      data: {
+        feedback: this.feedback,
+        phoneNumber: this.phoneNumber,
+        uid: this.$store.state.uid
+      }
+    }).then(res => {
+      wx.showToast({
+        title: "提交成功！",
+        icon: 'success',
+        complete: () => {
+          setTimeout(() => {
+            uni.navigateBack({})
+          }, 1000)
         }
-      }).then(res => {
-        wx.showToast({
-          title: "提交成功！",
-          icon: 'success',
-          complete: () => {
-            setTimeout(() => {
-              uni.navigateBack({})
-            }, 1000)
-          }
-        })
       })
-    }
-  },
-  mounted() {
-    this.cityHeight = (this.statusHeight - uni.getMenuButtonBoundingClientRect().bottom);
+    })
+  }
+
+  public mounted(): void {
+    this.cityHeight = (this.statusHeight - wx.getMenuButtonBoundingClientRect().bottom);
   }
 }
 </script>
