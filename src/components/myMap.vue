@@ -1,7 +1,7 @@
 <template>
   <view>
     <map id="myMap" ref="map" style="width: 100%; height: 100vh;position: absolute;top: 0;" layer-style="1"
-         :latitude="center_latitude" :longitude="center_longitude" :markers="covers" :setting="mapSetting"
+         :latitude="centerLatitude" :longitude="centerLongitude" :markers="covers" :setting="mapSetting"
          :circles="circles" :scale="scale" :polyline="polyline" @markertap="markerTap($event)">
     </map>
   </view>

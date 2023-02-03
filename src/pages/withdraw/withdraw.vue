@@ -190,7 +190,6 @@ export default {
           }
         })
       }*/
-
     },
     showPic(item) {
       wx.previewImage({

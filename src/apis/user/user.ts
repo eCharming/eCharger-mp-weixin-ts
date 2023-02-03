@@ -8,3 +8,18 @@ export function updateUrl(userInfo: UserInfo) {
         data: userInfo
     })
 }
+
+export function wxLogin() {
+    return request({
+        url: "TODO",
+        method: "POST"
+    })
+}
+
+export function infoReturn(userInfo: UserInfo) {
+    return request({
+        url: "TODO",
+        method: "POST",
+        data: userInfo
+    })
+}

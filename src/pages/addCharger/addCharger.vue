@@ -38,7 +38,7 @@
             <scroll-view class="scrollview" scroll-y="true" enhanced="true" show-scrollbar="true"
                          scroll-with-animation="true">
               <view v-for="(item,index) in locationList" :key="index" class="scroll-innerview"
-                    @tap="tapsearch(item)">
+                    @tap="tapSearch(item)">
                 <text v-text="item.title" class="scroll-text" style="margin:10upx"></text>
               </view>
 
@@ -59,7 +59,7 @@
           <input class="input" placeholder="请输入单价" type="digit" v-model="price" :maxlength="maxlength"></input>
         </view>
       </addcard>
-      <addcard>
+      <addCard>
         <view class="display">
           <text class="labeltext">周一可用时段</text>
           <view style="display:flex;justify-content: space-between;align-items:center;">
@@ -190,8 +190,8 @@
             </view>
           </view>
         </view>
-      </addcard>
-      <addcard>
+      </addCard>
+      <addCard>
         <view class="display">
           <text class="labeltext">图片</text>
         </view>
@@ -211,408 +211,395 @@
           <text class="labeltext">备注</text>
           <textarea class="input" placeholder="备注" maxlength="100" auto-height="true" v-model='remarks'></textarea>
         </view>
-      </addcard>
+      </addCard>
       <button class="submit" @tap="submit" :disabled="disable">提交</button>
     </view>
   </view>
 </template>
 
-<script>
-import addcard from '../../components/addCard.vue'
+<script lang="ts">
+import {Component, Vue, Watch} from "vue-property-decorator";
+import addCard from '@/components/addCard.vue'
+import {GeoPoint, LocationRaw, MapCover} from "@/apis/map/map-interface";
+import {geoCoder, placeSuggestion} from "@/apis/map/map";
+import {chargerDelete, chargerInput} from "@/apis/charger/charger";
+import uploadFile from "@/apis/wx/uploadFile";
 
-export default {
+@Component({
   components: {
-    addcard
-  },
-  data() {
-    return {
-      statusHeight: uni.getSystemInfoSync().statusBarHeight + 50,
-      windowWidth: uni.getSystemInfoSync().windowWidth,
-      addChargerHeight: 0,
-      color: 'rgba(50,200,210,1)',
-      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      name: "",
-      phoneNumber: "",
-      location: "",
-      address: "",
-      price: "",
-      maxlength: 5,
-      haveDDot: false,
-      text: ["起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间",
-        "起始时间", "结束时间"
-      ],
-      minTime: ['00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00',
-        '00:00', '00:00', '00:00', '00:00'
-      ],
-      maxTime: ['24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00',
-        '24:00', '24:00', '24:00', '24:00'
-      ],
-      opacity: [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
-      remarks: "",
-      avatarUrl: [],
-      covers: [],
-      geopoint: {
-        latitude: 39.909,
-        longitude: 116.39742,
-      },
-      locationList: [],
-      center_latitude: this.$store.state.currentLocation == null ? 39.909 : this.$store.state.currentLocation.latitude,
-      center_longitude: this.$store.state.currentLocation == null ? 116.39742 : this.$store.state.currentLocation.longitude,
-      disable: false,
-    }
-  },
-  computed: {
-    isAdd() {
-      return this.avatarUrl.length < 6;
-    },
-    listLength() {
-      return 6 - this.avatarUrl.length;
-    }
-  },
-  methods: {
-    showMarker() {
-      this.covers.splice(0, 1, {
-        title: "定位点",
-        id: 0,
-        latitude: this.geopoint.latitude,
-        longitude: this.geopoint.longitude,
-        iconPath: "/static/image/charger.png",
-        width: 50,
-        height: 50,
-      })
-    },
-    tapsearch(item) {
-      this.address = item.title;
-      this.geopoint.latitude = item.location.lat;
-      this.geopoint.longitude = item.location.lng;
-      this.showMarker();
-      this.center_latitude = this.geopoint.latitude;
-      this.center_longitude = this.geopoint.longitude;
-      this.locationList.splice(0);
-    },
-    searchKeyword() {
-      var url = 'https://apis.map.qq.com/ws/place/v1/suggestion?keyword=' + this.address +
-          '&address_format=short' +
-          '&key=ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL';
-      uni.request({
-        url: url,
-        method: 'GET',
-        success: (res) => {
-          this.locationList.splice(0)
-          if (res.data.status == 0) {
-            this.locationList.push(...res.data.data)
-          }
-        },
-        fail: (res) => {
-          this.locationList.splice(0)
-        }
-      })
-    },
-    addMarker(res) {
-      this.geopoint.longitude = res.detail.longitude;
-      this.geopoint.latitude = res.detail.latitude;
-      this.showMarker();
-      var url = "https://apis.map.qq.com/ws/geocoder/v1/?location=" + this.geopoint.latitude + "," + this
-          .geopoint.longitude + '&key=ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL';
-      uni.request({
-        url: url,
-        method: 'GET',
-        success: (res) => {
-          this.address = res.data.result.address
-        },
-      })
-    },
-    back() {
-      uni.navigateBack({})
-    },
-    changetime1(e, index) {
-      var time = e.detail.value;
-      this.text.splice(index, 1, time)
-      this.minTime.splice(index + 1, 1, time)
-      this.opacity.splice(index, 1, 1);
-    },
-    changetime2(e, index) {
-      var time = e.detail.value;
-      this.text.splice(index, 1, time)
-      this.maxTime.splice(index - 1, 1, time)
-      this.opacity.splice(index, 1, 1);
-    },
-    uploadPic() {
-      if (this.avatarUrl.length >= 6) {
-        wx.showToast({
-          title: "图片数量不能超过六张！",
-          icon: 'none',
-        })
-        return;
+    addCard
+  }
+})
+export default class AddCharger extends Vue {
+  public statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
+  public addChargerHeight: number = 0;
+  public color: string = 'rgba(50,200,210,1)';
+  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
+  public name: string = "";
+  public phoneNumber: string = "";
+  public location: string = "";
+  public address: string = "";
+  public price: string = "";
+  public maxlength: number = 5;
+  public haveDot: boolean = false;
+  public text: Array<string> = ["起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间",
+    "起始时间", "结束时间"
+  ];
+  public minTime: Array<string> = ['00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00',
+    '00:00', '00:00', '00:00', '00:00'
+  ];
+  public maxTime: Array<string> = ['24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00',
+    '24:00', '24:00', '24:00', '24:00'
+  ];
+  public opacity: Array<number> = [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7];
+  public remarks: string = "";
+  public avatarUrl: Array<string> = [];
+  public covers: Array<MapCover> = [];
+  public geoPoint: GeoPoint = {
+    latitude: 39.909,
+    longitude: 116.39742,
+  };
+  public locationList: Array<LocationRaw> = [];
+  public center_latitude: number = this.$store.state.currentLocation == null ? 39.909 : this.$store.state.currentLocation.latitude;
+  public center_longitude: number = this.$store.state.currentLocation == null ? 116.39742 : this.$store.state.currentLocation.longitude;
+  public disable: boolean = false;
+
+  public get isAdd() {
+    return this.avatarUrl.length < 6;
+  }
+
+  public get listLength() {
+    return 6 - this.avatarUrl.length;
+  }
+
+  public showMarker(): void {
+    this.covers.splice(0, 1, {
+      title: "定位点",
+      id: 0,
+      latitude: this.geoPoint.latitude,
+      longitude: this.geoPoint.longitude,
+      iconPath: "/static/image/charger.png",
+      width: 50,
+      height: 50
+    })
+  }
+
+  public tapSearch(item: { title: string; location: { lat: number; lng: number; }; }): void {
+    this.address = item.title;
+    this.geoPoint.latitude = item.location.lat;
+    this.geoPoint.longitude = item.location.lng;
+    this.showMarker();
+    this.center_latitude = this.geoPoint.latitude;
+    this.center_longitude = this.geoPoint.longitude;
+    this.locationList.splice(0);
+  }
+
+  public searchKeyword(): void {
+    placeSuggestion({
+      address: this.address,
+      addressFormat: "short",
+      key: "ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL"
+    }).then(data => {
+      this.locationList.splice(0)
+      if (data.status == 0) {
+        this.locationList.push(...data.data)
       }
-      wx.chooseMedia({
-        count: this.listLength,
-        mediaType: ['image'],
-        sourceType: ['album', 'camera'],
-        maxDuration: 30,
-        camera: 'back',
-        success: res => {
-          //限制图片大小
-          for (var i = 0; i < res.tempFiles.length; i++) {
-            let size = res.tempFiles.every(item => {
-              return item.size <= 10000000
+    }).catch(err => {
+      this.locationList.splice(0)
+    })
+  }
+
+  public addMarker(res: { detail: GeoPoint; }): void {
+    this.geoPoint.longitude = res.detail.longitude;
+    this.geoPoint.latitude = res.detail.latitude;
+    this.showMarker();
+    geoCoder({
+      latitude: this.geoPoint.latitude,
+      longitude: this.geoPoint.longitude,
+      key: "ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL"
+    }).then(data => {
+      this.address = data.result.address
+    })
+  }
+
+  public back(): void {
+    wx.navigateBack({})
+  }
+
+  public changetime1(e: { detail: { value: any; }; }, index: number): void {
+    let time = e.detail.value;
+    this.text.splice(index, 1, time)
+    this.minTime.splice(index + 1, 1, time)
+    this.opacity.splice(index, 1, 1);
+  }
+
+  public changetime2(e: { detail: { value: any; }; }, index: number): void {
+    let time = e.detail.value;
+    this.text.splice(index, 1, time)
+    this.maxTime.splice(index - 1, 1, time)
+    this.opacity.splice(index, 1, 1);
+  }
+
+  public uploadPic(): void {
+    if (this.avatarUrl.length >= 6) {
+      wx.showToast({
+        title: "图片数量不能超过六张！",
+        icon: 'none',
+      })
+      return;
+    }
+    wx.chooseMedia({
+      count: this.listLength,
+      mediaType: ['image'],
+      sourceType: ['album', 'camera'],
+      maxDuration: 30,
+      camera: 'back',
+      success: res => {
+        //限制图片大小
+        for (let i = 0; i < res.tempFiles.length; i++) {
+          let size = res.tempFiles.every(item => {
+            return item.size <= 10000000
+          })
+          if (size) {
+            this.avatarUrl.push(res.tempFiles[i].tempFilePath);
+          } else {
+            wx.showToast({
+              title: '上传图片不能大于10M!',
+              icon: 'none'
             })
-            if (size) {
-              this.avatarUrl.push(res.tempFiles[i].tempFilePath);
-            } else {
-              wx.showToast({
-                title: '上传图片不能大于10M!',
-                icon: 'none'
-              })
-              return;
-            }
+            return;
           }
         }
+      }
+    })
+  }
+
+  public submit():void {
+    const reg_tel = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+    if (this.name == "") {
+      wx.showToast({
+        title: "请输入名字！",
+        icon: 'none',
       })
-    },
-    submit() {
-      var reg_tel = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
-      if (this.name == "") {
-        wx.showToast({
-          title: "请输入名字！",
-          icon: 'none',
-        })
-        return;
-      }
-      if (this.phoneNumber == "") {
-        wx.showToast({
-          title: "请输入电话号码！",
-          icon: 'none',
-        })
-        return;
-      }
-      if (!reg_tel.test(this.phoneNumber)) {
-        wx.showToast({
-          title: "请输入正确的手机号！",
-          icon: 'none',
-        })
-        return;
-      }
-      if (this.location == "") {
-        wx.showToast({
-          title: "请输入电桩位置！",
-          icon: 'none',
-        })
-        return;
-      }
-      if (this.geopoint.longitude == -1 || this.geopoint.latitude == -1) {
-        wx.showToast({
-          title: "请在地图上标注电桩位置！",
-          icon: 'none',
-        })
-        return;
-      }
-      if (this.price == "") {
-        wx.showToast({
-          title: "请输入电桩单价！",
-          icon: 'none',
-        })
-        return;
-      }
-      if (this.listLength == 6) {
-        wx.showToast({
-          title: "请上传照片！",
-          icon: 'none',
-        })
-        return;
-      }
-      let isSet = false;
-      for (let i = 0; i < this.text.length; i += 2) {
-        if (this.text[i] != '起始时间' || this.text[i + 1] != '结束时间') {
-          isSet = true;
-          break;
-        }
-      }
-      if (isSet == false) {
-        wx.showToast({
-          title: "请填写至少一个时间段！",
-          icon: 'none',
-        })
-        return;
-      }
-      let isFinish = true;
-      for (let i = 0; i < this.text.length; i += 2) {
-        if (this.text[i] != '起始时间' && this.text[i + 1] == '结束时间') {
-          isFinish = false;
-          break;
-        }
-        if (this.text[i] == '起始时间' && this.text[i + 1] != '结束时间') {
-          isFinish = false;
-          break;
-        }
-      }
-      if (isFinish == false) {
-        wx.showToast({
-          title: "请填写完整的时间段！",
-          icon: 'none',
-        })
-        return;
-      }
-      let isLong = true;
-      for (let i = 0; i < this.text.length; i += 2) {
-        if (this.text[i] != '起始时间' && this.text[i + 1] != '结束时间') {
-          let first = this.text[i].split(':')
-          let second = this.text[i + 1].split(':')
-          if (second[0] * 60 + second[1] - first[0] * 60 - first[1] < 60) {
-            isLong = false;
-            break;
-          }
-        }
-      }
-      if (isLong == false) {
-        wx.showToast({
-          title: "时间段请大于1小时！",
-          icon: 'none',
-        })
-        return;
-      }
-      var time = new Array();
-      for (var i = 0; i < 14; i += 2) {
-        if (this.text[i] == "起始时间" || this.text[i + 1] == "结束时间") {
-          time.push("")
-        } else {
-          time.push(this.text[i] + "-" + this.text[i + 1])
-        }
-      }
-      var timestamp = new Array();
-      for (var i = 0; i < 14; i++) {
-        if (this.text[i] == "起始时间" || this.text[i] == "结束时间") {
-          timestamp.push(-1)
-        } else {
-          var sp = this.text[i].split(":")
-          timestamp.push(Number(sp[0]) * 60 + Number(sp[1]))
-        }
-      }
-      this.disable = true;
-      wx.cloud.callFunction({ //uid获取
-        name: 'chargerInput',
-        data: {
-          uid: this.$store.state.uid,
-          userName: this.name,
-          phoneNumber: this.phoneNumber,
-          address: this.address,
-          location: this.location,
-          geoPoint: {
-            coordinates: [this.geopoint.longitude, this.geopoint.latitude],
-            type: "Point",
-          },
-          timeStamp: timestamp,
-          time: time,
-          price: this.price,
-          remarks: this.remarks,
-        }
-      }).then(
-          res => {
-            var id = res.result._id;
-            for (var i = 0; i < this.avatarUrl.length; i++) {
-              wx.uploadFile({
-                url: "https://ws.healtool.cn/uploadPic/" + id,
-                filePath: this.avatarUrl[i],
-                name: 'file',
-                success: res => {
-                  if (res.data.startsWith("<html>")) {
-                    wx.showToast({
-                      title: "图片上传失败！",
-                      icon: 'none',
-                    })
-                    wx.cloud.callFunction({
-                      name: 'chargerDelete',
-                      data: {
-                        _id: id
-                      },
-                    })
-                    this.disable = false;
-                    return;
-                  }
-                  var res = JSON.parse(res.data)
-                  if (res.code != 200) {
-                    wx.showToast({
-                      title: "图片上传失败！",
-                      icon: 'none',
-                    })
-                    wx.cloud.callFunction({
-                      name: 'chargerDelete',
-                      data: {
-                        _id: id
-                      },
-                    })
-                    this.disable = false;
-                    return;
-                  } else {
-                    this.$store.commit('setRefresh')
-                    wx.showToast({
-                      title: "提交成功！",
-                      icon: 'success',
-                      complete: () => {
-                        setTimeout(() => {
-                          this.disable = false;
-                          uni.navigateBack({})
-                        }, 1500)
-                      }
-                    })
-                  }
-                },
-                fail: res => {
-                  wx.showToast({
-                    title: "图片上传失败！",
-                    icon: 'none',
-                  })
-                  wx.cloud.callFunction({
-                    name: 'chargerDelete',
-                    data: {
-                      _id: id
-                    },
-                  })
-                  this.disable = false;
-                  return;
-                }
-              })
-            }
-          }
-      )
-    },
-    showPic(item) {
-      wx.previewImage({
-        current: item,
-        urls: this.avatarUrl,
-      })
-    },
-    deletePic(index) {
-      this.avatarUrl.splice(index, 1);
+      return;
     }
-  },
-  mounted() {
-    this.addChargerHeight = (this.statusHeight - uni.getMenuButtonBoundingClientRect().bottom);
+    if (this.phoneNumber == "") {
+      wx.showToast({
+        title: "请输入电话号码！",
+        icon: 'none',
+      })
+      return;
+    }
+    if (!reg_tel.test(this.phoneNumber)) {
+      wx.showToast({
+        title: "请输入正确的手机号！",
+        icon: 'none',
+      })
+      return;
+    }
+    if (this.location == "") {
+      wx.showToast({
+        title: "请输入电桩位置！",
+        icon: 'none',
+      })
+      return;
+    }
+    if (this.geoPoint.longitude == -1 || this.geoPoint.latitude == -1) {
+      wx.showToast({
+        title: "请在地图上标注电桩位置！",
+        icon: 'none',
+      })
+      return;
+    }
+    if (this.price == "") {
+      wx.showToast({
+        title: "请输入电桩单价！",
+        icon: 'none',
+      })
+      return;
+    }
+    if (this.listLength == 6) {
+      wx.showToast({
+        title: "请上传照片！",
+        icon: 'none',
+      })
+      return;
+    }
+    let isSet = false;
+    for (let i = 0; i < this.text.length; i += 2) {
+      if (this.text[i] != '起始时间' || this.text[i + 1] != '结束时间') {
+        isSet = true;
+        break;
+      }
+    }
+    if (!isSet) {
+      wx.showToast({
+        title: "请填写至少一个时间段！",
+        icon: 'none',
+      })
+      return;
+    }
+    let isFinish = true;
+    for (let i = 0; i < this.text.length; i += 2) {
+      if (this.text[i] != '起始时间' && this.text[i + 1] == '结束时间') {
+        isFinish = false;
+        break;
+      }
+      if (this.text[i] == '起始时间' && this.text[i + 1] != '结束时间') {
+        isFinish = false;
+        break;
+      }
+    }
+    if (!isFinish) {
+      wx.showToast({
+        title: "请填写完整的时间段！",
+        icon: 'none',
+      })
+      return;
+    }
+    let isLong = true;
+    for (let i = 0; i < this.text.length; i += 2) {
+      if (this.text[i] != '起始时间' && this.text[i + 1] != '结束时间') {
+        let first = this.text[i].split(':')
+        let second = this.text[i + 1].split(':')
+        if (Number(second[0]) * 60 + Number(second[1]) - Number(first[0]) * 60 - Number(first[1]) < 60) {
+          isLong = false;
+          break;
+        }
+      }
+    }
+    if (!isLong) {
+      wx.showToast({
+        title: "时间段请大于1小时！",
+        icon: 'none',
+      })
+      return;
+    }
+    let time = [];
+    for (let i = 0; i < 14; i += 2) {
+      if (this.text[i] == "起始时间" || this.text[i + 1] == "结束时间") {
+        time.push("")
+      } else {
+        time.push(this.text[i] + "-" + this.text[i + 1])
+      }
+    }
+    let timestamp = [];
+    for (let i = 0; i < 14; i++) {
+      if (this.text[i] == "起始时间" || this.text[i] == "结束时间") {
+        timestamp.push(-1)
+      } else {
+        let sp = this.text[i].split(":")
+        timestamp.push(Number(sp[0]) * 60 + Number(sp[1]))
+      }
+    }
+    this.disable = true;
+    chargerInput({
+      uid: this.$store.state.uid,
+      userName: this.name,
+      phoneNumber: this.phoneNumber,
+      address: this.address,
+      location: this.location,
+      geoPoint: this.geoPoint,
+      timeStamp: timestamp,
+      time: time,
+      price: this.price,
+      remarks: this.remarks,
+    }).then(res => {
+      let id = res.result._id;
+      for (let i = 0; i < this.avatarUrl.length; i++) {
+        uploadFile(
+            "https://ws.healtool.cn/uploadPic/" + id,
+            this.avatarUrl[i],
+            'file'
+        ).then(result => {
+          if (result.data.startsWith("<html>")) {
+            wx.showToast({
+              title: "图片上传失败！",
+              icon: 'none',
+            })
+            chargerDelete({
+              id: id
+            })
+            this.disable = false;
+            return;
+          }
+          let res = JSON.parse(result.data)
+          if (res.code != 200) {
+            wx.showToast({
+              title: "图片上传失败！",
+              icon: 'none',
+            })
+            chargerDelete({
+              id: id
+            })
+            this.disable = false;
+            return;
+          } else {
+            this.$store.commit('setRefresh')
+            wx.showToast({
+              title: "提交成功！",
+              icon: 'success',
+              complete: () => {
+                setTimeout(() => {
+                  this.disable = false;
+                  wx.navigateBack({})
+                }, 1500)
+              }
+            })
+          }
+        }).catch(err => {
+          wx.showToast({
+            title: "图片上传失败！",
+            icon: 'none',
+          })
+          chargerDelete({
+            id: id
+          })
+          this.disable = false;
+          return;
+        })
+      }
+    })
+  }
+
+  public showPic(item: any):void {
+    wx.previewImage({
+      current: item,
+      urls: this.avatarUrl,
+    })
+  }
+
+  public deletePic(index: number):void {
+    this.avatarUrl.splice(index, 1);
+  }
+
+  public mounted():void {
+    this.addChargerHeight = (this.statusHeight - wx.getMenuButtonBoundingClientRect().bottom);
     if (this.$store.state.currentLocation == null) {
       wx.showToast({
         title: "请打开定位！",
         icon: 'error',
         complete: () => {
           setTimeout(() => {
-            uni.navigateBack({})
+            wx.navigateBack({})
           }, 1500)
-
         }
       })
     }
-  },
-  watch: {
-    price() {
-      if (this.price.indexOf('.') != -1 && !this.haveDot) {
-        this.maxlength = this.price.length + 2
-        this.haveDot = true
-      } else if (this.price.indexOf('.') == -1 && this.haveDot) {
-        this.maxlength = 5
-        this.haveDot = false
-      }
+  }
+
+  @Watch("price")
+  public watchPrice() {
+    if (this.price.indexOf('.') != -1 && !this.haveDot) {
+      this.maxlength = this.price.length + 2
+      this.haveDot = true
+    } else if (this.price.indexOf('.') == -1 && this.haveDot) {
+      this.maxlength = 5
+      this.haveDot = false
     }
   }
 }
+
 </script>
 
 <style scoped>

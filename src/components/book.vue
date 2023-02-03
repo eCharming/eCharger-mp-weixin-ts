@@ -277,7 +277,7 @@ export default class Book extends Vue {
     }
   }
 
-  mounted() {
+  public mounted():void {
     this.status = this.message.status;
     this.oid = this.message.oid;
     this.cid = this.message.cid;
@@ -349,10 +349,7 @@ export default class Book extends Vue {
         orderStatusQuery({
           oid: this.oid
         }).then(res => {
-          // @ts-ignore
-          // TODO
           if (res.result != -2) {
-            // @ts-ignore
             this.status = res.result;
             this.$emit("changeOrderStatus", this.status);
             if (this.status == 1) {
@@ -378,10 +375,7 @@ export default class Book extends Vue {
         orderStatusQuery({
           oid: this.oid
         }).then(res => {
-          // @ts-ignore
-          // TODO
           if (res.result != -2) {
-            // @ts-ignore
             this.status = res.result;
             this.$emit("changeOrderStatus", this.status);
             if (this.status == 1) {
@@ -482,7 +476,7 @@ export default class Book extends Vue {
     }
   }
 
-  destroyed() {
+  public destroyed():void {
     if (this.timeCount) {
       clearInterval(this.timeCount);
     }

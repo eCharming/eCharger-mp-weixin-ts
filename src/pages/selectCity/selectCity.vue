@@ -124,20 +124,19 @@ export default {
   },
   methods: {
     back() {
-      uni.navigateBack({})
+      wx.navigateBack({})
     },
     getWords(e) {
-      var id = e.target.id;
-      if (id == 'popular')
+      let id = e.target.id;
+      if (id === 'popular')
         id = "热"
-      else if (id == 'now')
+      else if (id === 'now')
         id = "定"
       this.showwords = id;
       this.hidden = 1;
     },
     setWords(e) {
-      var id = e.target.id;
-      this.scrollTopId = id;
+      this.scrollTopId = e.target.id;
       this.hidden = 0;
 
     },
@@ -150,7 +149,7 @@ export default {
   computed: {
     city() {
       let city = this.$store.state.city;
-      if (city == "") {
+      if (city === "") {
         city = "未定位";
       }
       return city;
@@ -158,7 +157,7 @@ export default {
   },
   mounted() {
     this.cityHeight = (this.statusHeight - uni.getMenuButtonBoundingClientRect().bottom);
-    uni.getSystemInfo({
+    wx.getSystemInfo({
       success: (res) => {
         this.scrollHeight = res.windowHeight - this.statusHeight;
       }

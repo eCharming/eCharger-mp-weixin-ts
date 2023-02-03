@@ -4,7 +4,7 @@ import {
     GeoCoderReq,
     GeoCoderResp,
     GeoPoint,
-    GeoPointExtend
+    GeoPointExtend, PlaceSuggestionReq, placeSuggestionResp
 } from "@/apis/map/map-interface";
 import request from "@/apis/wx/request";
 
@@ -31,6 +31,28 @@ export function directionDriving(directionDrivingReq: DirectionDrivingReq): Prom
             url: `https://apis.map.qq.com/ws/direction/v1/driving/?from=${fromLatitude},${fromLongitude}&to=${toLatitude},${toLongitude}&key=${key}`,
             success: res => {
                 const data = <DirectionDrivingResp>res.data;
+                resolve(data)
+            },
+            fail: err => {
+                reject(err);
+            }
+        })
+    });
+}
+
+export function placeSuggestion(placeSuggestionReq: PlaceSuggestionReq): Promise<placeSuggestionResp> {
+    const {address, addressFormat, location, key} = placeSuggestionReq;
+    let url: string;
+    if (location !== undefined) {
+        url = `https://apis.map.qq.com/ws/place/v1/suggestion?keyword=${address}&location=${location.latitude},${location.longitude}&address_format=${addressFormat}&key=${key}`;
+    } else {
+        url = `https://apis.map.qq.com/ws/place/v1/suggestion?keyword=${address}&address_format=${addressFormat}&key=${key}`;
+    }
+    return new Promise((resolve, reject) => {
+        wx.request({
+            url: url,
+            success: res => {
+                const data = <placeSuggestionResp>res.data;
                 resolve(data)
             },
             fail: err => {

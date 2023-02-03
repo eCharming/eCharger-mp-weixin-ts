@@ -210,15 +210,15 @@ export default {
   },
   data() {
     return {
-      statusHeight: uni.getSystemInfoSync().statusBarHeight + 50,
-      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
+      statusHeight: wx.getSystemInfoSync().statusBarHeight + 50,
+      statusBarHeight: wx.getSystemInfoSync().statusBarHeight,
       cityHeight: 0,
       color: 'rgba(102,205,170,1)',
     }
   },
   methods: {
     back() {
-      uni.navigateBack({})
+      wx.navigateBack({})
     },
   },
   mounted() {

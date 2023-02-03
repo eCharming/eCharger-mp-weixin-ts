@@ -1,4 +1,5 @@
 export interface UserInfo {
-    userName: string
-    avatarUrl: string
+    uid?: number;
+    userName?: string
+    avatarUrl?: string
 }

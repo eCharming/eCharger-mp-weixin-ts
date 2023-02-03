@@ -89,7 +89,7 @@ export default class Destination extends Vue {
 
   @Watch('$store.state.destination')
   public watchStateDestination() {
-    if (this.$store.state.destination != null) { //按下locationbutton重置回到自己位置，destination置为空
+    if (this.$store.state.destination != null) { //按下locationButton重置回到自己位置，destination置为空
       this.destination = this.$store.state.destination.title;
       if (this.$store.state.buttonSelected == 1)
         this.color = "rgb(102,205,170)";

@@ -308,7 +308,7 @@ export default class Order extends Vue {
     });
   }
 
-  public untap(): void {
+  public unTap(): void {
     this.translate = 'translate(0rpx,284rpx)';
     setTimeout(() => {
       this.translate = 'translate(' + (-this.width) + 'px,0px)';
@@ -348,11 +348,11 @@ export default class Order extends Vue {
     }
   }
 
-  public unCheckDetail() {
+  public unCheckDetail(): void {
     this.$emit('undetail');
   }
 
-  public navigate() {
+  public navigate(): void {
     let animation = wx.createAnimation({
       duration: 100,
       timingFunction: 'ease',

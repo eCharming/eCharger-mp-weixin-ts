@@ -25,6 +25,13 @@ export interface DirectionDrivingReq {
     key: string;
 }
 
+export interface PlaceSuggestionReq {
+    address: string;
+    addressFormat: string;
+    key: string;
+    location?: GeoPoint;
+}
+
 export interface GeoCoderResp {
     status: number;
     message: string;
@@ -76,6 +83,31 @@ export interface DirectionDrivingResp {
     }
 }
 
+export interface LocationRaw {
+    id: string;
+    title: string;
+    address: string;
+    category: string;
+    type: number;
+    location: {
+        lat: number;
+        lng: number;
+    }
+    adcode: number;
+    province: number;
+    city: string;
+    district: string;
+    _distance?:number;
+}
+
+export interface placeSuggestionResp {
+    status: number;
+    message: string;
+    request_id: string;
+    count: number;
+    data: Array<LocationRaw>
+}
+
 export interface MapCover {
     title: string;
     id: number;
@@ -84,7 +116,7 @@ export interface MapCover {
     iconPath: string;
     width: number;
     height: number;
-    callout: {
+    callout?: {
         content: string;
         color: string;
         fontSize: number;

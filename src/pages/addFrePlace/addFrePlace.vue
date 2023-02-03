@@ -10,8 +10,8 @@
                :style="{'border-color':color}">
         </input>
         <text class="searchtext" :style="{'color':color}">搜索</text>
-        <image :src="src1" :class="changeImg==0?'image1':'image1_none'"></image>
-        <image :src="src2" :class="changeImg==0?'image1_none':'image1'"></image>
+        <image :src="src1" :class="changeImg===0?'image1':'image1_none'"></image>
+        <image :src="src2" :class="changeImg===0?'image1_none':'image1'"></image>
       </view>
 
       <scroll-view scroll-y="true"
@@ -51,208 +51,161 @@
 
 </template>
 
-<script>
-import navigator from '../../components/navigator.vue'
+<script lang="ts">
+import {Component, Vue} from "vue-property-decorator";
+import navigator from '@/components/navigator.vue'
+import {placeSuggestion} from "@/apis/map/map";
 
-export default {
+@Component({
   components: {
     navigator
-  },
-  data() {
-    return {
-      statusHeight: uni.getSystemInfoSync().statusBarHeight + 50,
-      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      position: "",
-      suggestions: [],
-      suggestionHeight: this.$store.state.windowHeight * 0.85,
-      index: 0,
-      isInput: false,
-      windowWidth: uni.getSystemInfoSync().windowWidth,
-      justifyContent: "flex-start",
-      currentPage: 0,
-      changeImg: 0,
-      buttonLeft: 185,
-      buttonOpacity1: 1,
-      buttonOpacity2: 0,
-      color: 'rgba(102,205,170,1)',
-      doubleColor: "linear-gradient(to right bottom,rgb(102,205,170) 0% 100%,rgb(50,200,210))",
-      src1: "../../static/image/lightning_green.png",
-      src2: "../../static/image/lightning_blue.png",
-    }
-  },
-  methods: {
-    back() {
-      uni.navigateBack({})
-    },
-    request() {
-      if (this.position == "") {
-        this.isInput = false;
-      } else {
-        this.isInput = true;
-        var url = 'https://apis.map.qq.com/ws/place/v1/suggestion?keyword=' + this.position + '&location=' +
-            this.$store.state.currentLocation.latitude + ',' + this.$store.state.currentLocation.longitude +
-            '&address_format=short' +
-            '&key=ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL';
-        uni.request({
-          url: url,
-          method: 'GET',
-          success: (res) => {
-            if (res.data.status == '0') {
-              this.suggestions.splice(0);
-              for (var index in res.data.data) {
-                this.suggestions.push({
-                  id: res.data.data[index].id,
-                  title: res.data.data[index].title,
-                  address: res.data.data[index].address,
-                  category: res.data.data[index].category,
-                  location: res.data.data[index].location,
-                  distance: (res.data.data[index]._distance / 1000).toFixed(1),
-                  strings: "<div style='width: 100%;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;'>" +
-                      this.keyword(res.data.data[index].title, this.position) +
-                      "<div>",
-                });
-              }
-              ;
-            }
-          },
-        })
-      }
-    },
-    keyword(title, position) {
-      if (title.includes(position)) {
-        var html = (title.replace(
-            position,
-            '<span style="color:rgb(102,205,170);">' + position + '</span>'
-        ));
-        html = '<span class="text1">' + html + '</span>';
-        return html;
-      } else {
-        return title;
-      }
-    },
-    setOtherFreStorage(id, title, location, category) {
-      var otherFrePlace = uni.getStorageSync('frePlace');
-      otherFrePlace = JSON.parse(otherFrePlace);
-      for (var index in otherFrePlace.freOther) {
-        if (otherFrePlace.freOther[index].id == id) {
-          otherFrePlace.freOther.splice(index, 1);
-          break;
-        }
-      }
-      otherFrePlace.freOther.push({
-        id: id,
-        title: title,
-        location: location,
-        category: category
-      });
-      uni.setStorageSync('frePlace', JSON.stringify(otherFrePlace));
-    },
-    setFreStorage(id, title, location, category, type) {
-      var otherFrePlace = uni.getStorageSync('frePlace');
-      otherFrePlace = JSON.parse(otherFrePlace);
-      var frePlace = {
-        id: id,
-        title: title,
-        location: location,
-        category: category
-      }
-      if (type == 0) {
-        otherFrePlace.freHome = frePlace
-      } else if (type == 1) {
-        otherFrePlace.freCompany = frePlace
-      } else if (type == 2) {
-        otherFrePlace.freSchool = frePlace
-      }
-      uni.setStorageSync('frePlace', JSON.stringify(otherFrePlace));
-    },
-    tap(id, title, location, category) {
-      uni.showActionSheet({
-        itemList: ['家', '公司', '学校', '其他'],
-        success: (res) => {
-          if (res.tapIndex == 3) {
-            this.setOtherFreStorage(id, title, location, category);
-          } else {
-            this.setFreStorage(id, title, location, category, res.tapIndex);
-          }
-          wx.showToast({
-            title: "添加成功！",
-            icon: 'success',
-            complete: () => {
-              setTimeout(() => {
-                uni.navigateBack({})
-              }, 500)
-            }
-          })
+  }
+})
+export default class AddFrePlace extends Vue {
+  public statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
+  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
+  public position: string = "";
+  public suggestions: Array<{
+    id: string;
+    title: string;
+    address: string;
+    category: string;
+    location: {
+      lat: number;
+      lng: number;
+    };
+    distance: string;
+    strings: string;
+  }> = [];
+  public suggestionHeight: number = this.$store.state.windowHeight * 0.85;
+  public index: number = 0;
+  public isInput: boolean = false;
+  public changeImg: number = 0;
+  public color: string = 'rgba(102,205,170,1)';
+  public doubleColor: string = "linear-gradient(to right bottom,rgb(102,205,170) 0% 100%,rgb(50,200,210))";
+  public src1: string = "../../static/image/lightning_green.png";
+  public src2: string = "../../static/image/lightning_blue.png";
+
+  public back(): void {
+    wx.navigateBack({})
+  }
+
+  public request(): void {
+    if (this.position == "") {
+      this.isInput = false;
+    } else {
+      this.isInput = true;
+      placeSuggestion({
+        address: this.position,
+        addressFormat: "short",
+        location: {
+          latitude: this.$store.state.currentLocation.latitude,
+          longitude: this.$store.state.currentLocation.longitude
         },
-        fail: (res) => {
-          wx.showToast({
-            title: "添加失败！",
-            icon: 'error',
-            complete: () => {
-              setTimeout(() => {
-                uni.navigateBack({})
-              }, 500)
-            }
-          })
+        key: "ORFBZ-V73LX-N3Z4Y-Z3MR4-V35MJ-LNBFL"
+      }).then(data => {
+        if (data.status === 0) {
+          this.suggestions.splice(0);
+          for (let index in data.data) {
+            this.suggestions.push({
+              id: data.data[index].id,
+              title: data.data[index].title,
+              address: data.data[index].address,
+              category: data.data[index].category,
+              location: data.data[index].location,
+              distance: (<number>data.data[index]._distance / 1000).toFixed(1),
+              strings: "<div style='width: 100%;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;'>" +
+                  this.keyword(data.data[index].title, this.position) +
+                  "<div>"
+            });
+          }
         }
       })
-    },
-    change(e) {
-      this.changeImg = e.detail.current;
-    },
-    animationfinish(e) {
-      this.currentPage = e.detail.current;
-    },
-    transition(e) {
-      // 50,200,210 蓝
-      // 102,205,170 绿
-      var dx = e.detail.dx;
-      var percent = Math.abs(dx) / this.windowWidth;
-      if (this.currentPage == 0) { //向右翻页
-        if (percent <= 0.6) {
-          this.$nextTick(function () {
-            this.justifyContent = "flex-start";
-          })
+    }
+  }
 
-          this.modelWidth = 120 + 280 * percent * 2;
-        } else {
-          this.$nextTick(function () {
-            this.justifyContent = "flex-end";
-          })
+  public keyword(title: string, position: string): string {
+    if (title.includes(position)) {
+      let html = (title.replace(
+          position,
+          '<span style="color:rgb(102,205,170);">' + position + '</span>'
+      ));
+      html = '<span class="text1">' + html + '</span>';
+      return html;
+    } else {
+      return title;
+    }
+  }
 
-          this.modelWidth = 400 - 280 * (percent - 0.5) * 2;
-        }
-        this.buttonLeft = 185 - 185 * percent;
-        this.buttonOpacity1 = 1 - percent;
-        this.buttonOpacity2 = percent;
-        this.color = "rgba(" + (102 - 52 * percent) + "," + (205 - 5 * percent) + "," + (170 + 40 * percent) +
-            ",1)";
-        this.doubleColor = "linear-gradient(to right bottom,rgb(102,205,170) 0% " + (1 - percent) * 100 +
-            "%," + this.$store.state.color + ")";
-      } else {
-        if (percent <= 0.6) {
-          this.$nextTick(function () {
-            this.justifyContent = "flex-end";
-          })
-
-          this.modelWidth = 120 + 280 * percent * 2;
-        } else {
-          this.$nextTick(function () {
-            this.justifyContent = "flex-start";
-          })
-
-          this.modelWidth = 400 - 280 * (percent - 0.5) * 2;
-        }
-        this.buttonLeft = 185 * percent;
-        this.buttonOpacity1 = percent;
-        this.buttonOpacity2 = 1 - percent;
-        this.color = "rgba(" + (50 + 52 * percent) + "," + (200 + 5 * percent) + "," + (210 - 40 * percent) +
-            ",1)";
-        this.doubleColor = "linear-gradient(to right bottom,rgb(102,205,170) 0% " + percent * 100 + "%," + this
-            .$store.state.color + ")";
+  public setOtherFreStorage(id: string, title: string, location: { lng: number; lat: number; }, category: string) {
+    let otherFrePlace = wx.getStorageSync('frePlace');
+    otherFrePlace = JSON.parse(otherFrePlace);
+    for (let index in otherFrePlace.freOther) {
+      if (otherFrePlace.freOther[index].id == id) {
+        otherFrePlace.freOther.splice(Number(index), 1);
+        break;
       }
     }
-  },
+    otherFrePlace.freOther.push({
+      id: id,
+      title: title,
+      location: location,
+      category: category
+    });
+    wx.setStorageSync('frePlace', JSON.stringify(otherFrePlace));
+  }
+
+  public setFreStorage(id: string, title: string, location: { lng: number; lat: number; }, category: string, type: number) {
+    let otherFrePlace = uni.getStorageSync('frePlace');
+    otherFrePlace = JSON.parse(otherFrePlace);
+    let frePlace = {
+      id: id,
+      title: title,
+      location: location,
+      category: category
+    }
+    if (type == 0) {
+      otherFrePlace.freHome = frePlace
+    } else if (type == 1) {
+      otherFrePlace.freCompany = frePlace
+    } else if (type == 2) {
+      otherFrePlace.freSchool = frePlace
+    }
+    wx.setStorageSync('frePlace', JSON.stringify(otherFrePlace));
+  }
+
+  public tap(id: string, title: string, location: { lng: number; lat: number; }, category: string) {
+    wx.showActionSheet({
+      itemList: ['家', '公司', '学校', '其他'],
+      success: (res) => {
+        if (res.tapIndex == 3) {
+          this.setOtherFreStorage(id, title, location, category);
+        } else {
+          this.setFreStorage(id, title, location, category, res.tapIndex);
+        }
+        wx.showToast({
+          title: "添加成功！",
+          icon: 'success',
+          complete: () => {
+            setTimeout(() => {
+              wx.navigateBack({})
+            }, 500)
+          }
+        })
+      },
+      fail: res => {
+        wx.showToast({
+          title: "添加失败！",
+          icon: 'error',
+          complete: () => {
+            setTimeout(() => {
+              wx.navigateBack({})
+            }, 500)
+          }
+        })
+      }
+    })
+  }
 }
 </script>
 
@@ -286,11 +239,6 @@ export default {
 
 }
 
-.image3 {
-  height: 70upx;
-  width: 70upx;
-}
-
 .searchbox {
   background-color: rgb(240, 240, 240);
 }
@@ -319,86 +267,7 @@ export default {
   font-size: 32upx;
   color: rgba(102, 205, 170, 1);
   font-weight: 700;
-  padding: 20upx;
-  padding-left: 25upx;
-}
-
-.history {
-  display: flex;
-  justify-content: space-between;
-}
-
-.historyview {
-  margin-left: 30upx;
-  border-radius: 8upx;
-  font-size: 30upx;
-  font-weight: 700;
-  letter-spacing: 1upx;
-}
-
-.commonview {
-  margin-left: 50upx;
-  border-radius: 8upx;
-  font-size: 30upx;
-  font-weight: 700;
-  letter-spacing: 1upx;
-}
-
-.modelSelected {
-  border-radius: 10upx;
-  transition: all .1s;
-}
-
-.clear {
-  background-color: rgba(102, 205, 170, 0.2);
-  color: rgba(102, 205, 170, 1);
-  margin-right: 30upx;
-  padding: 10upx;
-  font-size: 23upx;
-  font-weight: 700;
-  border-radius: 10upx;
-  transition: all .1s;
-}
-
-.add {
-  background-color: rgba(50, 200, 210, 0.2);
-  color: rgb(50, 200, 210);
-  margin-right: 30upx;
-  padding: 10upx;
-  font-size: 23upx;
-  font-weight: 700;
-  border-radius: 10upx;
-  transition: all .1s;
-}
-
-.storage {
-  margin-top: 10upx;
-  padding: 15upx 15upx 5upx 20upx;
-  border-radius: 10upx;
-  display: flex;
-  justify-content: space-between;
-  overflow: hidden;
-}
-
-.view5 {
-  position: relative;
-  display: flex;
-}
-
-.text3 {
-  margin: 18upx 15upx 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 500upx;
-  font-size: 29upx;
-  font-weight: 700;
-  letter-spacing: 1upx;
-}
-
-.view4 {
-  margin-top: 10upx;
-  margin-right: 20upx;
+  padding: 20upx 20upx 20upx 25upx;
 }
 
 .suggestion {
@@ -428,16 +297,6 @@ export default {
 
 .view3 {
   margin: 20upx 20upx 20upx 82upx;
-}
-
-.text6 {
-  background-color: rgba(102, 205, 170, 0.2);
-  color: rgba(102, 205, 170, 1);
-  margin-left: 100upx;
-  margin-bottom: 20upx;
-  padding: 10upx;
-  font-size: 20upx;
-
 }
 
 .text1 {

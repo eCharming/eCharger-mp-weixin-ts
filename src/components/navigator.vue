@@ -85,7 +85,7 @@ import {qWeather} from "@/apis/weather/weather";
 @Component
 export default class Navigator extends Vue {
   @Prop()
-  isLow!: number;
+  isLow!: boolean;
   @Prop()
   buttonSelected!: boolean;
 
