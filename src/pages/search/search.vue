@@ -253,11 +253,11 @@ import {Component, Vue} from "vue-property-decorator";
   }
 })
 export default class Search extends Vue {
-  public statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
-  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
-  public searchHeight: number = 0;
-  public position: string = "";
-  public suggestions: {
+  private statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
+  private statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
+  private searchHeight: number = 0;
+  private position: string = "";
+  private suggestions: {
     id: string;
     title: string;
     address: string;
@@ -269,25 +269,24 @@ export default class Search extends Vue {
     distance: string;
     strings: string;
   }[] = [];
-  public storageHeight: number = this.$store.state.windowHeight * 0.8;
-  public suggestionHeight: number = this.$store.state.windowHeight * 0.85;
-  public index: number = 0;
-  public storages: any[] = [];
-  public frePlace: any = {};
-  public isInput: boolean = false;
-  public modelWidth: number = 120;
-  public modelHeight: number = 15;
-  public windowWidth: number = uni.getSystemInfoSync().windowWidth;
-  public justifyContent: string = "flex-start";
-  public currentPage: number = 0;
-  public changeImg: number = 0;
-  public buttonLeft: number = 185;
-  public buttonOpacity1: number = 1;
-  public buttonOpacity2: number = 0;
-  public color: string = 'rgba(102,205,170,1)';
-  public doubleColor: string = "linear-gradient(to right bottom,rgb(102,205,170) 0% 100%,rgb(50,200,210))";
-  public src1: string = "../../static/image/lightning_green.png";
-  public src2: string = "../../static/image/lightning_blue.png";
+  private storageHeight: number = this.$store.state.windowHeight * 0.8;
+  private suggestionHeight: number = this.$store.state.windowHeight * 0.85;
+  private storages: any[] = [];
+  private frePlace: any = {};
+  private isInput: boolean = false;
+  private modelWidth: number = 120;
+  private modelHeight: number = 15;
+  private windowWidth: number = uni.getSystemInfoSync().windowWidth;
+  private justifyContent: string = "flex-start";
+  private currentPage: number = 0;
+  private changeImg: number = 0;
+  private buttonLeft: number = 185;
+  private buttonOpacity1: number = 1;
+  private buttonOpacity2: number = 0;
+  private color: string = 'rgba(102,205,170,1)';
+  private doubleColor: string = "linear-gradient(to right bottom,rgb(102,205,170) 0% 100%,rgb(50,200,210))";
+  private src1: string = "../../static/image/lightning_green.png";
+  private src2: string = "../../static/image/lightning_blue.png";
 
   public back(): void {
     wx.navigateBack({})

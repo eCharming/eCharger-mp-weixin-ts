@@ -149,10 +149,10 @@ import {Component, Vue} from "vue-property-decorator";
   }
 })
 export default class PrivacyPolicy extends Vue {
-  public statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
-  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
-  public cityHeight: number = 0;
-  public color: string = 'rgba(102,205,170,1)';
+  private statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
+  private statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
+  private cityHeight: number = 0;
+  private color: string = 'rgba(102,205,170,1)';
 
   public back(): void {
     wx.navigateBack({})

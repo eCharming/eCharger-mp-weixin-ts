@@ -32,11 +32,12 @@
                        style="margin: 30upx;background-color: #FFFFFF;border-radius: 40upx;width:690upx"
                        :style="{'height': storageHeight+'px'}">
 
-            <myOrderHistotry v-for="(order,index) in myOrder" :key="index" :cid="order.cid" :uid="order.uid"
-                             :toUid="order.toUid" :oid="order.oid" :startTime="order.startTime" :endTime="order.endTime"
-                             :predictedPrice="order.predictedPrice"
-                             :timeStamp="order.timeStamp" :statusContext="order.status" :address="order.address"
-                             :location="order.location"></myOrderHistotry>
+            <my-order-history v-for="(order,index) in myOrder" :key="index" :cid="order.cid" :uid="order.uid"
+                              :toUid="order.toUid" :oid="order.oid" :startTime="order.startTime"
+                              :endTime="order.endTime"
+                              :predictedPrice="order.predictedPrice"
+                              :timeStamp="order.timeStamp" :statusContext="order.status" :address="order.address"
+                              :location="order.location"></my-order-history>
             <view v-if="myOrder.length===0"
                   style="width:100%;height:100%;display: flex;align-items: center;justify-content: center;flex-direction: column;">
               <image src="/static/image/blank.png" style="width: 200rpx;height: 200rpx;"></image>
@@ -49,11 +50,11 @@
                        style="margin: 30upx;background-color: #FFFFFF;border-radius: 40upx;width:690upx"
                        :style="{'height': (storageHeight)+'px'}">
 
-            <borrowOrderHistory v-for="(order,index) in borrowOrder" :key="index" :cid="order.cid" :uid="order.uid"
-                                :toUid="order.toUid" :oid="order.oid" :startTime="order.startTime"
-                                :endTime="order.endTime" :predictedPrice="order.predictedPrice"
-                                :timeStamp="order.timeStamp" :statusContext="order.status" :address="order.address"
-                                :location="order.location"></borrowOrderHistory>
+            <borrow-order-history v-for="(order,index) in borrowOrder" :key="index" :cid="order.cid" :uid="order.uid"
+                                  :toUid="order.toUid" :oid="order.oid" :startTime="order.startTime"
+                                  :endTime="order.endTime" :predictedPrice="order.predictedPrice"
+                                  :timeStamp="order.timeStamp" :statusContext="order.status" :address="order.address"
+                                  :location="order.location"></borrow-order-history>
             <view v-if="borrowOrder.length===0"
                   style="width:100%;height:100%;display: flex;align-items: center;justify-content: center;flex-direction: column;">
               <image src="/static/image/blank_blue.png" style="width: 200rpx;height: 200rpx;"></image>
@@ -68,94 +69,91 @@
   </view>
 </template>
 
-<script>
-import myOrderHistotry from '../../components/myOrderHistory.vue'
-import borrowOrderHistory from '../../components/borrowOrderHistory.vue'
+<script lang="ts">
+import myOrderHistory from '@/components/myOrderHistory.vue'
+import borrowOrderHistory from '@/components/borrowOrderHistory.vue'
+import {Vue, Component} from "vue-property-decorator";
+import {orderQuery} from "@/apis/order/order";
 
-export default {
+@Component({
   components: {
-    myOrderHistotry,
-    borrowOrderHistory,
-  },
-  data() {
-    return {
-      statusHeight: uni.getSystemInfoSync().statusBarHeight + 50,
-      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      windowWidth: uni.getSystemInfoSync().windowWidth,
-      orderHistoryHeight: 0,
-      color: 'rgba(102,205,170,1)',
-      doubleColor: "linear-gradient(to right bottom,rgb(102,205,170) 0% 100%,rgb(50,200,210))",
-      justifyContent: "flex-start",
-      modelWidth: 120,
-      storageHeight: this.$store.state.windowHeight * 0.9 - 10,
-      currentPage: 0,
-      myOrder: [],
-      borrowOrder: [],
-    }
-  },
-  methods: {
-    back() {
-      uni.navigateBack({})
-    },
-    animationfinish(e) {
-      this.currentPage = e.detail.current;
-    },
-    transition(e) {
-      // 50,200,210 蓝
-      // 102,205,170 绿
-      var dx = e.detail.dx;
-      var percent = Math.abs(dx) / this.windowWidth;
-      if (this.currentPage == 0) { //向右翻页
-        if (percent <= 0.6) {
-          this.$nextTick(function () {
-            this.justifyContent = "flex-start";
-          })
+    myOrderHistory,
+    borrowOrderHistory
+  }
+})
+export default class OrdersHistory extends Vue {
+  private statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
+  private statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
+  private windowWidth: number = wx.getSystemInfoSync().windowWidth;
+  private orderHistoryHeight: number = 0;
+  private color: string = 'rgba(102,205,170,1)';
+  private doubleColor: string = "linear-gradient(to right bottom,rgb(102,205,170) 0% 100%,rgb(50,200,210))";
+  private justifyContent: string = "flex-start";
+  private modelWidth: number = 120;
+  private storageHeight: number = this.$store.state.windowHeight * 0.9 - 10;
+  private currentPage: number = 0;
+  private myOrder: any[] = [];
+  private borrowOrder: any[] = [];
 
-          this.modelWidth = 120 + 280 * percent * 2;
-        } else {
-          this.$nextTick(function () {
-            this.justifyContent = "flex-end";
-          })
+  public back(): void {
+    wx.navigateBack({})
+  }
 
-          this.modelWidth = 400 - 280 * (percent - 0.5) * 2;
-        }
-        this.color = "rgba(" + (102 - 52 * percent) + "," + (205 - 5 * percent) + "," + (170 + 40 * percent) +
-            ",1)";
-        this.doubleColor = "linear-gradient(to right bottom,rgb(102,205,170) 0% " + (1 - percent) * 100 +
-            "%," + this.$store.state.color + ")";
+  public animationfinish(e: { detail: { current: number; }; }): void {
+    this.currentPage = e.detail.current;
+  }
+
+  public transition(e: { detail: { dx: any; }; }): void {
+    // 50,200,210 蓝
+    // 102,205,170 绿
+    let dx = e.detail.dx;
+    let percent = Math.abs(dx) / this.windowWidth;
+    if (this.currentPage === 0) { //向右翻页
+      if (percent <= 0.6) {
+        this.$nextTick(function () {
+          this.justifyContent = "flex-start";
+        })
+
+        this.modelWidth = 120 + 280 * percent * 2;
       } else {
-        if (percent <= 0.6) {
-          this.$nextTick(function () {
-            this.justifyContent = "flex-end";
-          })
+        this.$nextTick(function () {
+          this.justifyContent = "flex-end";
+        })
 
-          this.modelWidth = 120 + 280 * percent * 2;
-        } else {
-          this.$nextTick(function () {
-            this.justifyContent = "flex-start";
-          })
+        this.modelWidth = 400 - 280 * (percent - 0.5) * 2;
+      }
+      this.color = "rgba(" + (102 - 52 * percent) + "," + (205 - 5 * percent) + "," + (170 + 40 * percent) +
+          ",1)";
+      this.doubleColor = "linear-gradient(to right bottom,rgb(102,205,170) 0% " + (1 - percent) * 100 +
+          "%," + this.$store.state.color + ")";
+    } else {
+      if (percent <= 0.6) {
+        this.$nextTick(function () {
+          this.justifyContent = "flex-end";
+        })
 
-          this.modelWidth = 400 - 280 * (percent - 0.5) * 2;
-        }
-        this.color = "rgba(" + (50 + 52 * percent) + "," + (200 + 5 * percent) + "," + (210 - 40 * percent) +
-            ",1)";
-        this.doubleColor = "linear-gradient(to right bottom,rgb(102,205,170) 0% " + percent * 100 + "%," + this
-            .$store.state.color + ")";
+        this.modelWidth = 120 + 280 * percent * 2;
+      } else {
+        this.$nextTick(function () {
+          this.justifyContent = "flex-start";
+        })
+
+        this.modelWidth = 400 - 280 * (percent - 0.5) * 2;
       }
-    },
-  },
-  onLoad() {
-    this.orderHistoryHeight = (this.statusHeight - uni.getMenuButtonBoundingClientRect().bottom);
-    wx.cloud.callFunction({   //uid获取
-      name: 'orderQuery',
-      data: {
-        uid: this.$store.state.uid
-      }
+      this.color = "rgba(" + (50 + 52 * percent) + "," + (200 + 5 * percent) + "," + (210 - 40 * percent) +
+          ",1)";
+      this.doubleColor = "linear-gradient(to right bottom,rgb(102,205,170) 0% " + percent * 100 + "%," + this
+          .$store.state.color + ")";
+    }
+  }
+
+  public onLoad(): void {
+    this.orderHistoryHeight = (this.statusHeight - wx.getMenuButtonBoundingClientRect().bottom);
+    orderQuery({
+      uid: this.$store.state.uid
     }).then(res => {
-      //console.log(res)
       this.myOrder = res.result.myOrder;
       this.borrowOrder = res.result.borrowOrder;
-
     })
   }
 }

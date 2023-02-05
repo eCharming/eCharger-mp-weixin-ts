@@ -32,3 +32,11 @@ export function orderInput(orderReq: OrderReq) {
         data: orderReq
     })
 }
+
+export function orderQuery(orderReq: OrderReq) {
+    return request({
+        url: "TODO",
+        method: "POST",
+        data: orderReq
+    })
+}
