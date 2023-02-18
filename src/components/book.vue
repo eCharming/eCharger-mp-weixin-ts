@@ -2,134 +2,35 @@
   <view>
     <view class="card">
       <view>
-        <view
-            style="
-            width: 400upx;
-            font-size: 32upx;
-            font-weight: 700;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-bottom: 25upx;
-            color: rgba(102, 205, 170, 1);
-          "
-        >{{ address }}
-        </view>
-        <view
-            style="
-            width: 400upx;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            margin-bottom: 25upx;
-            color: rgba(0, 0, 0, 0.5);
-          "
-        >{{ location }}
-        </view>
+        <view class="address">{{ address }}</view>
+        <view class="location">{{ location }}</view>
         <image
             style="width: 420upx; height: 315upx; margin-bottom: 25upx"
             :src="imageUrl"
         ></image>
 
-        <view style="display: flex; margin-bottom: 25upx">
-          <view style="color: rgba(0, 0, 0, 0.5)">下单时间：</view>
-          <view
-              style="
-              font-weight: 600;
-              color: rgba(0, 0, 0, 0.5);
-              letter-spacing: 1upx;
-            "
-          >{{ bookTimeText }}
-          </view
-          >
+        <view class="time-wrap">
+          <view class="time-text">下单时间：</view>
+          <view class="book-time">{{ bookTimeText }}</view>
         </view>
-        <view style="display: flex; margin-bottom: 25upx" v-if="status === 0">
-          <view style="color: rgba(0, 0, 0, 0.5)">剩余时间：</view>
-          <view
-              style="
-              font-weight: 600;
-              color: rgba(0, 0, 0, 0.5);
-              letter-spacing: 1upx;
-            "
-          >{{ timeRemain }}
-          </view
-          >
+        <view class="time-wrap" v-if="status === 0">
+          <view class="time-text">剩余时间：</view>
+          <view class="book-time">{{ timeRemain }}</view>
         </view>
-        <view style="display: flex; margin-bottom: 25upx">
-          <view style="color: rgba(0, 0, 0, 0.5)">预约时间：</view>
-          <view
-              style="
-              font-size: 35upx;
-              font-weight: 700;
-              color: rgba(102, 205, 170, 1);
-              letter-spacing: 3upx;
-            "
-          >
-            {{ startTime }}-{{ endTime }}
-          </view>
+        <view class="time-wrap">
+          <view class="time-text">预约时间：</view>
+          <view class="start-end-time">{{ startTime }}-{{ endTime }}</view>
         </view>
-        <view style="display: flex; margin-bottom: 25upx">
-          <view style="color: rgba(0, 0, 0, 0.5)">预估价格：</view>
-          <view
-              style="
-              font-size: 35upx;
-              font-weight: 700;
-              color: rgba(102, 205, 170, 1);
-              letter-spacing: 3upx;
-            "
-          >
-            ￥{{ price }}
-          </view>
+        <view class="time-wrap">
+          <view class="time-text">预估价格：</view>
+          <view class="price">￥{{ price }}</view>
         </view>
-
-        <view
-            style="
-            width: 100%;
-            height: 70upx;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          "
-        >
-          <view
-              style="width: 400upx; display: flex; justify-content: space-between"
-          >
-            <view
-                style="
-                height: 70upx;
-                width: 170upx;
-                background-color: rgba(102, 205, 170, 1);
-                color: white;
-                font-size: 28upx;
-                font-weight: 700;
-                letter-spacing: 2upx;
-                border-radius: 25upx;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-              "
-                @tap="detail()"
-            >
+        <view class="charger-detail-wrapper">
+          <view class="charger-detail-wrap">
+            <view class="charge-detail" @tap="detail()">
               <view>电桩详情</view>
             </view>
-            <view
-                style="
-                height: 70upx;
-                width: 170upx;
-                color: white;
-                font-size: 28upx;
-                font-weight: 700;
-                letter-spacing: 2upx;
-                border-radius: 25upx;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-              "
-                :style="{ 'background-color': color }"
-                @tap="check()"
-            >
+            <view class="status-text" :style="{ 'background-color': color }" @tap="check()">
               <view>{{ statusText }}</view>
             </view>
           </view>
@@ -474,7 +375,7 @@ export default class Book extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .card {
   background-color: rgb(255, 255, 255);
   width: 500upx;
@@ -483,5 +384,97 @@ export default class Book extends Vue {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  .address {
+    width: 400upx;
+    font-size: 32upx;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 25upx;
+    color: rgba(102, 205, 170, 1);
+  }
+
+  .location {
+    width: 400upx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin-bottom: 25upx;
+    color: rgba(0, 0, 0, 0.5);
+  }
+
+  .book-time {
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.5);
+    letter-spacing: 1upx;
+  }
+
+  .time-wrap {
+    display: flex;
+    margin-bottom: 25upx
+  }
+
+  .time-text {
+    color: rgba(0, 0, 0, 0.5);
+  }
+
+  .status-text {
+    height: 70upx;
+    width: 170upx;
+    color: white;
+    font-size: 28upx;
+    font-weight: 700;
+    letter-spacing: 2upx;
+    border-radius: 25upx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .start-end-time {
+    font-size: 35upx;
+    font-weight: 700;
+    color: rgba(102, 205, 170, 1);
+    letter-spacing: 3upx;
+  }
+
+  .price {
+    font-size: 35upx;
+    font-weight: 700;
+    color: rgba(102, 205, 170, 1);
+    letter-spacing: 3upx;
+  }
+
+  .charger-detail-wrap {
+    width: 400upx;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .charge-detail {
+    height: 70upx;
+    width: 170upx;
+    background-color: rgba(102, 205, 170, 1);
+    color: white;
+    font-size: 28upx;
+    font-weight: 700;
+    letter-spacing: 2upx;
+    border-radius: 25upx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .charger-detail-wrapper {
+    width: 100%;
+    height: 70upx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 </style>
