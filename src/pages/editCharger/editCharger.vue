@@ -239,40 +239,40 @@ import uploadFile from "@/apis/wx/uploadFile";
   }
 })
 export default class EditCharger extends Vue {
-  public cid: string = "";
-  public statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
-  public addChargerHeight: number = 0;
-  public color: string = 'rgba(50,200,210,1)';
-  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
-  public name: string = "";
-  public phoneNumber: string = "";
-  public location: string = "";
-  public address: string = "";
-  public price: string = "";
-  public maxlength: number = 5;
-  public haveDot: boolean = false;
-  public text: string[] = ["起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间",
+  private cid: string = "";
+  private statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
+  private addChargerHeight: number = 0;
+  private color: string = 'rgba(50,200,210,1)';
+  private statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
+  private name: string = "";
+  private phoneNumber: string = "";
+  private location: string = "";
+  private address: string = "";
+  private price: string = "";
+  private maxlength: number = 5;
+  private haveDot: boolean = false;
+  private text: string[] = ["起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间", "起始时间", "结束时间",
     "起始时间", "结束时间"
   ];
-  public minTime: string[] = ['00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00',
+  private minTime: string[] = ['00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00', '00:00',
     '00:00', '00:00', '00:00', '00:00'
   ];
-  public maxTime: string[] = ['24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00',
+  private maxTime: string[] = ['24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00', '24:00',
     '24:00', '24:00', '24:00', '24:00'
   ];
-  public opacity: number[] = [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7];
-  public remarks: string = "";
-  public avatarUrl: string[] = [];
-  public rawUrl: string[] = []; //初始照片，用于对比
-  public covers: MapCover[] = [];
-  public geoPoint: GeoPoint = {
+  private opacity: number[] = [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7];
+  private remarks: string = "";
+  private avatarUrl: string[] = [];
+  private rawUrl: string[] = []; //初始照片，用于对比
+  private covers: MapCover[] = [];
+  private geoPoint: GeoPoint = {
     latitude: 39.909,
     longitude: 116.39742,
   };
-  public locationList: Array<LocationRaw> = [];
-  public centerLatitude: number = this.$store.state.currentLocation == null ? 39.909 : this.$store.state.currentLocation.latitude;
-  public centerLongitude: number = this.$store.state.currentLocation == null ? 116.39742 : this.$store.state.currentLocation.longitude;
-  public disable: boolean = false;
+  private locationList: Array<LocationRaw> = [];
+  private centerLatitude: number = this.$store.state.currentLocation == null ? 39.909 : this.$store.state.currentLocation.latitude;
+  private centerLongitude: number = this.$store.state.currentLocation == null ? 116.39742 : this.$store.state.currentLocation.longitude;
+  private disable: boolean = false;
 
   public get isAdd() {
     return this.avatarUrl.length < 6;

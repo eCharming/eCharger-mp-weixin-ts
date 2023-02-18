@@ -15,9 +15,9 @@ export default class LocationButton extends Vue {
   @Prop()
   isLow!: boolean;
 
-  public src: string = "../static/image/location.png";
-  public pointerEvents: string = "auto";
-  public opacity: number = 1;
+  private src: string = "../static/image/location.png";
+  private pointerEvents: string = "auto";
+  private opacity: number = 1;
 
   public relocate(): void {
     wx.startLocationUpdate({})

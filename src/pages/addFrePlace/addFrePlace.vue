@@ -60,10 +60,10 @@ import {placeSuggestion} from "@/apis/map/map";
   }
 })
 export default class AddFrePlace extends Vue {
-  public statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
-  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
-  public position: string = "";
-  public suggestions: {
+  private statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
+  private statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
+  private position: string = "";
+  private suggestions: {
     id: string;
     title: string;
     address: string;
@@ -75,14 +75,14 @@ export default class AddFrePlace extends Vue {
     distance: string;
     strings: string;
   }[] = [];
-  public suggestionHeight: number = this.$store.state.windowHeight * 0.85;
-  public index: number = 0;
-  public isInput: boolean = false;
-  public changeImg: number = 0;
-  public color: string = 'rgba(102,205,170,1)';
-  public doubleColor: string = "linear-gradient(to right bottom,rgb(102,205,170) 0% 100%,rgb(50,200,210))";
-  public src1: string = "../../static/image/lightning_green.png";
-  public src2: string = "../../static/image/lightning_blue.png";
+  private suggestionHeight: number = this.$store.state.windowHeight * 0.85;
+  private index: number = 0;
+  private isInput: boolean = false;
+  private changeImg: number = 0;
+  private color: string = 'rgba(102,205,170,1)';
+  private doubleColor: string = "linear-gradient(to right bottom,rgb(102,205,170) 0% 100%,rgb(50,200,210))";
+  private src1: string = "../../static/image/lightning_green.png";
+  private src2: string = "../../static/image/lightning_blue.png";
 
   public back(): void {
     wx.navigateBack({})

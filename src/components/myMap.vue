@@ -23,21 +23,21 @@ import {directionDriving, getSurround, wholeCity} from "@/apis/map/map";
 
 @Component
 export default class MyMap extends Vue {
-  public centerLatitude: number = 39.909;  //中心纬度
-  public centerLongitude: number = 116.39742; //中心经度
-  public latitude: number = 39.909;  //当前纬度
-  public longitude: number = 116.39742;  //当前经度
-  public cityLatitude: number = 39.909;  //城市纬度，仅仅用于全城
-  public cityLongitude: number = 116.39742;  //城市经度，仅仅用于全城
-  public covers: Array<MapCover> = [];
-  public polyline: Array<MapPolyline> = [];
-  public circles: Array<MapCircle> = [];
-  public mapContext: MapContext | undefined;
-  public scale: number = 16;
-  public ordersCopy: Array<any> = [];
-  public url: string = 'https://apis.map.qq.com/ws/distance/v1/matrix/?mode=driving&from=';
-  public markerSelected: number = -1;
-  public chargerList: Array<any> = []; //请求所获得的所有桩信息
+  private centerLatitude: number = 39.909;  //中心纬度
+  private centerLongitude: number = 116.39742; //中心经度
+  private latitude: number = 39.909;  //当前纬度
+  private longitude: number = 116.39742;  //当前经度
+  private cityLatitude: number = 39.909;  //城市纬度，仅仅用于全城
+  private cityLongitude: number = 116.39742;  //城市经度，仅仅用于全城
+  private covers: Array<MapCover> = [];
+  private polyline: Array<MapPolyline> = [];
+  private circles: Array<MapCircle> = [];
+  private mapContext: MapContext | undefined;
+  private scale: number = 16;
+  private ordersCopy: Array<any> = [];
+  private url: string = 'https://apis.map.qq.com/ws/distance/v1/matrix/?mode=driving&from=';
+  private markerSelected: number = -1;
+  private chargerList: Array<any> = []; //请求所获得的所有桩信息
 
   public mounted(): void {
     setTimeout(() => {

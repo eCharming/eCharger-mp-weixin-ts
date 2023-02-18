@@ -222,29 +222,29 @@ export default class Order extends Vue {
   @Prop()
   windowWidth!: number;
 
-  public height: number = 300;
-  public width: number = 0;
-  public translate: string = 'translate(' + (this.windowWidth - uni.upx2px(160) + 10) + 'px,-' + uni.upx2px(300) + 'px)';
-  public check: boolean = false;
-  public checkOpacity: number = 0;
-  public rotate: number = 0;
-  public checkRight: number = 100;
-  public animationBook: object = {};
-  public animationContact: object = {};
-  public animationNavigate: object = {};
-  public animationDetail: object = {};
-  public buttonRotate: number = 0;
-  public buttonOpacity: number = 1;
-  public bookRotate: number = -90;
-  public minTime1: string = '00:00';
-  public maxTime1: string = '24:00';
-  public minTime2: string = '00:00';
-  public maxTime2: string = '24:00';
-  public text1: string = '起始时间';
-  public text2: string = '结束时间';
-  public opacity1: number = 0.5;
-  public opacity2: number = 0.5;
-  public possiblePrice: string = '0';
+  private height: number = 300;
+  private width: number = 0;
+  private translate: string = 'translate(' + (this.windowWidth - uni.upx2px(160) + 10) + 'px,-' + uni.upx2px(300) + 'px)';
+  private check: boolean = false;
+  private checkOpacity: number = 0;
+  private rotate: number = 0;
+  private checkRight: number = 100;
+  private animationBook: object = {};
+  private animationContact: object = {};
+  private animationNavigate: object = {};
+  private animationDetail: object = {};
+  private buttonRotate: number = 0;
+  private buttonOpacity: number = 1;
+  private bookRotate: number = -90;
+  private minTime1: string = '00:00';
+  private maxTime1: string = '24:00';
+  private minTime2: string = '00:00';
+  private maxTime2: string = '24:00';
+  private text1: string = '起始时间';
+  private text2: string = '结束时间';
+  private opacity1: number = 0.5;
+  private opacity2: number = 0.5;
+  private possiblePrice: string = '0';
 
   public get showTime() {
     let tempDate = new Date();

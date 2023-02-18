@@ -102,15 +102,15 @@ export default class BorrowOrderHistory extends Vue {
   @Prop()
   statusContext!: number;
 
-  public status: number = -3;
-  public statusText: string = "";
-  public statusColor: string = "";
-  public checkStatus: string = "";
-  public checkColor: string = "";
-  public timeText: string = "";
-  public timeCount: number = -1;
-  public socketTask: SocketTask | undefined = undefined;
-  public timeRemain: string = "";
+  private status: number = -3;
+  private statusText: string = "";
+  private statusColor: string = "";
+  private checkStatus: string = "";
+  private checkColor: string = "";
+  private timeText: string = "";
+  private timeCount: number = -1;
+  private socketTask: SocketTask | undefined;
+  private timeRemain: string = "";
 
   public detail(): void {
     wx.navigateTo({
@@ -222,20 +222,16 @@ export default class BorrowOrderHistory extends Vue {
             this.statusColor = 'rgba(0,0,0,0.5)';
             clearInterval(this.timeCount);
             this.timeCount = -1;
-            if (this.socketTask != null) {
-              this.socketTask.close({
-                success: () => {
-                  this.socketTask = undefined;
-                }
-              });
-            }
+            socketClose(this.socketTask).then(res => {
+              this.socketTask = undefined;
+            })
           }
         } else clearInterval(this.timeCount);
 
       }, 1000);
 
       this.socketTask = wx.connectSocket({		//打开链接
-        url: 'wss://ws.healtool.cn/websocketapi/Order/' + this.oid + '/' + this.toUid + '/' + this.uid
+        url: `wss://ws.healtool.cn/websocketapi/Order/${this.oid}/${this.toUid}/${this.uid}`
       });
       this.socketTask.onMessage((res) => {
         this.status = (JSON.parse(<string>res.data)).message;
@@ -252,11 +248,9 @@ export default class BorrowOrderHistory extends Vue {
           this.statusText = '预约已确定';
           this.statusColor = 'rgb(50,200,210)';
         }
-        this.socketTask?.close({
-          success: () => {
-            this.socketTask = undefined;
-          }
-        });
+        socketClose(this.socketTask).then(res => {
+          this.socketTask = undefined;
+        })
       });
 
 

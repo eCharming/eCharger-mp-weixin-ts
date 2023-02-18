@@ -45,11 +45,11 @@ export default class FriendList extends Vue {
   @Prop()
   newMessageNum!: number;
 
-  public originX: number = 0;
-  public isRight: boolean = true;
-  public currentX: number = 0;
-  public newMessageNumLocal: number = 0;
-  public hasNewLocal: boolean = false;
+  private originX: number = 0;
+  private isRight: boolean = true;
+  private currentX: number = 0;
+  private newMessageNumLocal: number = 0;
+  private hasNewLocal: boolean = false;
 
   public start(e: { changedTouches: { pageX: number }[] }): void {
     this.originX = e.changedTouches[0].pageX;

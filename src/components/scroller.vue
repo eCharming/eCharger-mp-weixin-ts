@@ -23,8 +23,8 @@ export default class Scroller extends Vue {
   @Prop()
   scrollTop!: number;
 
-  public height: number = 0;
-  public refreshTriggered: boolean = false;
+  private height: number = 0;
+  private refreshTriggered: boolean = false;
 
   public emit(): void {
     this.$emit('scrolltolower');

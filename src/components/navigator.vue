@@ -89,17 +89,17 @@ export default class Navigator extends Vue {
   @Prop()
   buttonSelected!: boolean;
 
-  public position: string = "未定位";
-  public weather: string = "";
-  public statusHeight: number = 0;
-  public width: number = 0;
-  public backColor: string = "rgb(102,205,170)";
-  public secondColor: string = "rgb(166,236,146)";
-  public bottom: number = -120;
-  public lastBottom: number = -150;
-  public textBottom: number = -30;
-  public imageBottom: Array<number> = [-48, 5, 5, 5];
-  public word: Array<{ bottom: number; opacity: number }> = [{
+  private position: string = "未定位";
+  private weather: string = "";
+  private statusHeight: number = 0;
+  private width: number = 0;
+  private backColor: string = "rgb(102,205,170)";
+  private secondColor: string = "rgb(166,236,146)";
+  private bottom: number = -120;
+  private lastBottom: number = -150;
+  private textBottom: number = -30;
+  private imageBottom: number[] = [-48, 5, 5, 5];
+  private word: Array<{ bottom: number; opacity: number }> = [{
     bottom: -10,
     opacity: 1,
   }, {
@@ -112,16 +112,16 @@ export default class Navigator extends Vue {
     bottom: 35,
     opacity: 0,
   }];
-  public opacity: number = 1;
-  public selected: number = 0;
-  public left: number = 25;
-  public pointerEvents: string = "auto";
-  public length1: number = 30;
-  public length2: number = 0;
-  public markTop: number = -15;
-  public eyeLeft: number = 0;
-  public eyeTop: number = -8;
-  public imgSrc: Array<string> = [
+  private opacity: number = 1;
+  private selected: number = 0;
+  private left: number = 25;
+  private pointerEvents: string = "auto";
+  private length1: number = 30;
+  private length2: number = 0;
+  private markTop: number = -15;
+  private eyeLeft: number = 0;
+  private eyeTop: number = -8;
+  private imgSrc: string[] = [
     "../static/image/order-green.png",
     "../static/image/connect-green.png",
     "../static/image/map-green.png",

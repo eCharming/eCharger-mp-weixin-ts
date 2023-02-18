@@ -39,13 +39,12 @@ import {Component, Vue} from "vue-property-decorator";
   }
 })
 export default class Feedback extends Vue {
-
-  public statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
-  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
-  public cityHeight: number = 0;
-  public color: string = 'rgba(102,205,170,1)';
-  public feedback: string = "";
-  public phoneNumber: string = "";
+  private statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
+  private statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
+  private cityHeight: number = 0;
+  private color: string = 'rgba(102,205,170,1)';
+  private feedback: string = "";
+  private phoneNumber: string = "";
 
   public back(): void {
     wx.navigateBack({})

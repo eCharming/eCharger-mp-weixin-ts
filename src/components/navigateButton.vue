@@ -15,9 +15,9 @@ export default class NavigateButton extends Vue {
 
   @Prop()
   isLow!: boolean;
-  public src: string = "../static/image/navigate.png";
-  public pointerEvents: string = "auto";
-  public opacity: number = 1;
+  private src: string = "../static/image/navigate.png";
+  private pointerEvents: string = "auto";
+  private opacity: number = 1;
 
   public unnavigate(): void {
     if (this.$store.state.isNavigate) {

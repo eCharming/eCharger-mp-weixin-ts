@@ -47,7 +47,7 @@
 
       <view v-for="(item,index) in obj" :key="index">
         <view :id="index">
-          <citycard :alphabet="index" :list="item"></citycard>
+          <city-card :alphabet="index" :list="item"></city-card>
         </view>
 
       </view>
@@ -64,18 +64,20 @@
 
     </view>
     <view :style="{'opacity':hidden}" class="showwords">
-      {{ showwords }}
+      {{ showWords }}
     </view>
   </view>
 </template>
 
 <script lang="ts">
 import addCard from '@/components/addCard.vue'
+import cityCard from '@/components/cityCard.vue'
 import {Component, Vue} from "vue-property-decorator";
 
 @Component({
   components: {
-    addCard
+    addCard,
+    cityCard
   }
 })
 export default class SelectCity extends Vue {
@@ -89,8 +91,8 @@ export default class SelectCity extends Vue {
   );
   private scrollTopId: string = "";
   private hidden: number = 0;
-  private showwords: string = "";
-  private popluarLoc: {
+  private showWords: string = "";
+  private popularLoc: {
     name: string;
     lat: number;
     lng: number;
@@ -135,7 +137,7 @@ export default class SelectCity extends Vue {
       id = "热"
     else if (id === 'now')
       id = "定"
-    this.showwords = id;
+    this.showWords = id;
     this.hidden = 1;
   }
 
@@ -145,7 +147,7 @@ export default class SelectCity extends Vue {
   }
 
   public location(index: number) {
-    let poploc = this.popluarLoc[index];
+    let poploc = this.popularLoc[index];
     this.$store.commit('setCityLocation', poploc)
     wx.navigateBack({})
   }

@@ -12,8 +12,8 @@ export default class HiddenDetail extends Vue {
   @Prop()
   isLow!: boolean;
 
-  public top: number = -130;
-  public opacity: number = 1;
+  private top: number = -130;
+  private opacity: number = 1;
 
   @Watch("isLow")
   public watchIsLow() {

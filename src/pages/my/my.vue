@@ -68,13 +68,13 @@ import {Component, Vue} from "vue-property-decorator";
   }
 })
 export default class My extends Vue {
-  public uid: number = -1;
-  public avatarUrl: string = '';
-  public userName: string = '';
-  public myBottom: number = 0; //联系人距离导航栏底部距离
-  public statusHeight: number = 0; //导航栏高度
-  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight; //状态栏高度
-  public balance: number = 0;	//余额
+  private uid: number = -1;
+  private avatarUrl: string = '';
+  private userName: string = '';
+  private myBottom: number = 0; //联系人距离导航栏底部距离
+  private statusHeight: number = 0; //导航栏高度
+  private statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight; //状态栏高度
+  private balance: number = 0;	//余额
 
   public back(): void {
     wx.navigateBack({})

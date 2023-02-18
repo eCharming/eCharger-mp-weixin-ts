@@ -21,8 +21,8 @@ import {infoReturn, wxLogin} from "@/apis/user/user";
   }
 })
 export default class Index extends Vue {
-  public isLoading: boolean = false;
-  public refreshInterval: number = 0;
+  private isLoading: boolean = false;
+  private refreshInterval: number = 0;
 
   public onUnload(): void {
     clearInterval(this.refreshInterval)

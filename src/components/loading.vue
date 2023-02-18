@@ -59,14 +59,14 @@ import {Component, Vue} from "vue-property-decorator";
 
 @Component
 export default class Loading extends Vue {
-  public rotate: number = 0;
-  public bottom: number = 0;
-  public backRotate1: number = 0;
-  public backRotate2: number = 0;
-  public backRotate3: number = 0;
-  public backRotate4: number = 0;
-  public isAvailable: boolean = false;
-  public scale: number = 1;
+  private rotate: number = 0;
+  private bottom: number = 0;
+  private backRotate1: number = 0;
+  private backRotate2: number = 0;
+  private backRotate3: number = 0;
+  private backRotate4: number = 0;
+  private isAvailable: boolean = false;
+  private scale: number = 1;
 
   public mounted(): void {
     setTimeout(() => {

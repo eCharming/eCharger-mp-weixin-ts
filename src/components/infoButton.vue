@@ -16,10 +16,10 @@ export default class InfoButton extends Vue {
   @Prop()
   isLow!: boolean;
 
-  public src: string = "../static/image/person_1.gif";
-  public pointerEvents: string = "auto";
-  public opacity: number = 1;
-  public logInStatus: boolean = false;
+  private src: string = "../static/image/person_1.gif";
+  private pointerEvents: string = "auto";
+  private opacity: number = 1;
+  private logInStatus: boolean = false;
 
   public info(): void {
     if (!this.logInStatus) {

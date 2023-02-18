@@ -33,23 +33,23 @@ import {Component, Vue, Watch} from "vue-property-decorator";
 
 @Component
 export default class Destination extends Vue {
-  public month: number = 0;
-  public date: number = 0;
-  public day: string = "";
-  public minTime1: string = "00:00";
-  public maxTime1: string = "24:00";
-  public minTime2: string = "00:00";
-  public maxTime2: string = "24:00";
-  public text1: string = this.$store.state.startTime;
-  public text2: string = this.$store.state.endTime;
-  public opacity1: number = this.$store.state.startTime === "起始时间" ? 0.5 : 1;
-  public opacity2: number = this.$store.state.endTime === "结束时间" ? 0.5 : 1;
-  public destination: string = "请输入你的目的地";
-  public color: string = "rgba(0,0,0,0.5)";
-  dayColor: string = "rgb(102,205,170)";
-  src1: string = "../static/image/lightning_green.png";
-  src2: string = "../static/image/lightning_blue.png";
-  changeImg: number = 0;
+  private month: number = 0;
+  private date: number = 0;
+  private day: string = "";
+  private minTime1: string = "00:00";
+  private maxTime1: string = "24:00";
+  private minTime2: string = "00:00";
+  private maxTime2: string = "24:00";
+  private text1: string = this.$store.state.startTime;
+  private text2: string = this.$store.state.endTime;
+  private opacity1: number = this.$store.state.startTime === "起始时间" ? 0.5 : 1;
+  private opacity2: number = this.$store.state.endTime === "结束时间" ? 0.5 : 1;
+  private destination: string = "请输入你的目的地";
+  private color: string = "rgba(0,0,0,0.5)";
+  private dayColor: string = "rgb(102,205,170)";
+  private src1: string = "../static/image/lightning_green.png";
+  private src2: string = "../static/image/lightning_blue.png";
+  private changeImg: number = 0;
 
   public changetime1(e: { detail: { value: any } }): void {
     let time1 = e.detail.value;

@@ -3,7 +3,7 @@
       id="btn"
       class="btn"
       :plain="true"
-      :style="{'border-color':bordercolor}"
+      :style="{'border-color':borderColor}"
   >
     <view class="view1">
       <text class="text1" :style="{'top':top+'rpx'}">{{ text1 }}</text>
@@ -37,9 +37,9 @@ export default class TotalButton extends Vue {
   @Prop()
   isLow!: boolean;
 
-  public bordercolor: string = "rgba(0,0,0,0.3)";
-  public opacity: number = 0;
-  public top: number = 20;
+  private borderColor: string = "rgba(0,0,0,0.3)";
+  private opacity: number = 0;
+  private top: number = 20;
 
   @Watch("selected", {
     immediate: true
@@ -65,12 +65,12 @@ export default class TotalButton extends Vue {
 
   public activate(): void {
     if (this.type == 1)
-      this.bordercolor = "rgba(102,205,170,1)";
-    else this.bordercolor = this.$store.state.color;
+      this.borderColor = "rgba(102,205,170,1)";
+    else this.borderColor = this.$store.state.color;
   }
 
   public inactivate(): void {
-    this.bordercolor = "rgba(0,0,0,0.1)";
+    this.borderColor = "rgba(0,0,0,0.1)";
   }
 }
 

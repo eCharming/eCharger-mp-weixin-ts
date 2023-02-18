@@ -152,26 +152,26 @@ export default class Book extends Vue {
   @Prop()
   message!: BookMessage;
 
-  public status: number = 0;
-  public oid: number = 0;
-  public cid: number = 0;
-  public uid: number = 0;
-  public toUid: number = 0;
-  public longitude: string = "";
-  public latitude: string = "";
-  public address: string = "";
-  public location: string = "";
-  public price: string = "";
-  public timeStamp: string = "";
-  public startTime: string = "";
-  public endTime: string = "";
-  public imageUrl: string = "";
-  public statusText: string = "";
-  public bookTimeText: string = "";
-  public timeRemain: string = "";
-  public color: string = "rgba(102,205,170,1)"
-  public timeCount: number = 0; //倒计时计时器
-  public socketTask: SocketTask | undefined = undefined;
+  private status: number = 0;
+  private oid: number = 0;
+  private cid: number = 0;
+  private uid: number = 0;
+  private toUid: number = 0;
+  private longitude: string = "";
+  private latitude: string = "";
+  private address: string = "";
+  private location: string = "";
+  private price: string = "";
+  private timeStamp: string = "";
+  private startTime: string = "";
+  private endTime: string = "";
+  private imageUrl: string = "";
+  private statusText: string = "";
+  private bookTimeText: string = "";
+  private timeRemain: string = "";
+  private color: string = "rgba(102,205,170,1)"
+  private timeCount: number = 0; //倒计时计时器
+  private socketTask: SocketTask | undefined;
 
   public detail(): void {
     wx.navigateTo({
@@ -277,7 +277,7 @@ export default class Book extends Vue {
     }
   }
 
-  public mounted():void {
+  public mounted(): void {
     this.status = this.message.status;
     this.oid = this.message.oid;
     this.cid = this.message.cid;
@@ -401,15 +401,8 @@ export default class Book extends Vue {
                 uid = this.toUid;
                 toUid = this.uid;
               }
-              this.socketTask = wx.connectSocket({
-                //打开链接
-                url:
-                    "wss://ws.healtool.cn/websocketapi/Order/" +
-                    this.oid +
-                    "/" +
-                    uid +
-                    "/" +
-                    toUid
+              this.socketTask = wx.connectSocket({  //打开链接
+                url: `wss://ws.healtool.cn/websocketapi/Order/${this.oid}/${uid}/${toUid}`
               });
 
               this.socketTask.onMessage(res => {
@@ -425,11 +418,9 @@ export default class Book extends Vue {
                   this.statusText = "对方已确定";
                   this.color = "rgba(0,0,0,0.6)";
                 }
-                this.socketTask?.close({
-                  success: () => {
-                    this.socketTask = undefined;
-                  },
-                });
+                socketClose(this.socketTask).then(res => {
+                  this.socketTask = undefined;
+                })
               });
 
               this.timeCount = setInterval(() => {
@@ -450,13 +441,9 @@ export default class Book extends Vue {
                     this.color = "rgba(0,0,0,0.6)";
                     clearInterval(this.timeCount);
                     this.timeCount = -1;
-                    if (this.socketTask != null) {
-                      this.socketTask.close({
-                        success: () => {
-                          this.socketTask = undefined;
-                        },
-                      });
-                    }
+                    socketClose(this.socketTask).then(res => {
+                      this.socketTask = undefined;
+                    })
                   }
                 } else clearInterval(this.timeCount);
               }, 1000);
@@ -476,7 +463,7 @@ export default class Book extends Vue {
     }
   }
 
-  public destroyed():void {
+  public destroyed(): void {
     if (this.timeCount) {
       clearInterval(this.timeCount);
     }

@@ -91,11 +91,11 @@ export default class MyCharger extends Vue {
   @Prop()
   detail!: boolean;
 
-  public height: number = 300;
-  public rotate: number = 0;
-  public buttonRotate: number = 0;
-  public buttonOpacity: number = 1;
-  public bookRotate: number = -90;
+  private height: number = 300;
+  private rotate: number = 0;
+  private buttonRotate: number = 0;
+  private buttonOpacity: number = 1;
+  private bookRotate: number = -90;
 
   public get showTime() {
     let tempDate = new Date();

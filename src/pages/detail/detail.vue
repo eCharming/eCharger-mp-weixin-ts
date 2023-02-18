@@ -109,29 +109,29 @@ import {chargerDetail, chargerPicGet} from "@/apis/charger/charger";
   }
 })
 export default class Detail extends Vue {
-  public statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
-  public detailHeight: number = 0;
-  public color: string = '#66CDAA';
-  public statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
-  public uid: string = "";
-  public name: string = "";
-  public phoneNumber: string = "";
-  public location: string = "";
-  public address: string = "";
-  public price: string = "";
-  public remarks: string = "";
-  public time: Array<string> = [];
-  public days: Array<string> = ['一', '二', '三', '四', '五', '六', '天'];
-  public avatarUrl: string = "";
-  public covers: Array<MapCover> = [];
-  public polyline: Array<MapPolyline> = [];
-  public geoPoint: GeoPoint = {
+  private statusHeight: number = wx.getSystemInfoSync().statusBarHeight + 50;
+  private detailHeight: number = 0;
+  private color: string = '#66CDAA';
+  private statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;
+  private uid: string = "";
+  private name: string = "";
+  private phoneNumber: string = "";
+  private location: string = "";
+  private address: string = "";
+  private price: string = "";
+  private remarks: string = "";
+  private time: Array<string> = [];
+  private days: Array<string> = ['一', '二', '三', '四', '五', '六', '天'];
+  private avatarUrl: string = "";
+  private covers: Array<MapCover> = [];
+  private polyline: Array<MapPolyline> = [];
+  private geoPoint: GeoPoint = {
     latitude: 39.909,
     longitude: 116.39742,
   };
-  public centerLatitude: number = this.$store.state.currentLocation == null ? 39.909 : this.$store.state.currentLocation.latitude;
-  public centerLongitude: number = this.$store.state.currentLocation == null ? 116.39742 : this.$store.state.currentLocation.longitude;
-  public imgUrl: Array<any> = [];
+  private centerLatitude: number = this.$store.state.currentLocation == null ? 39.909 : this.$store.state.currentLocation.latitude;
+  private centerLongitude: number = this.$store.state.currentLocation == null ? 116.39742 : this.$store.state.currentLocation.longitude;
+  private imgUrl: Array<any> = [];
 
   public back(): void {
     wx.navigateBack({})

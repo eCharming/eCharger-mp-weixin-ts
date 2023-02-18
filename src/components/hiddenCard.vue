@@ -13,11 +13,11 @@ export default class HiddenCard extends Vue {
   @Prop()
   isLow!: boolean;
 
-  public text1: string = "在附近搜索电桩";
-  public text2: string = "";
-  public color: string = "rgb(102,205,170)";
-  public top: number = -30;
-  public opacity: number = 0;
+  private text1: string = "在附近搜索电桩";
+  private text2: string = "";
+  private color: string = "rgb(102,205,170)";
+  private top: number = -30;
+  private opacity: number = 0;
 
   @Watch("isLow")
   public watchIsLow() {

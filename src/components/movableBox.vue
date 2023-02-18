@@ -52,9 +52,9 @@
                        @map="tapOrder(index)" @detail="detail()" @undetail="undetail()" @toLow="toLow">
                 </order>
                 <view class="scrollerview" v-if="orders.length!==0">
-                  <image :src="src1" style="width: 45rpx;height: 45rpx;" v-show="icontype==='download'"></image>
-                  <image :src="src2" style="width: 45rpx;height: 45rpx;" v-show="icontype==='warn'"></image>
-                  <text>{{ icontext }}</text>
+                  <image :src="src1" style="width: 45rpx;height: 45rpx;" v-show="iconType==='download'"></image>
+                  <image :src="src2" style="width: 45rpx;height: 45rpx;" v-show="iconType==='warn'"></image>
+                  <text>{{ iconText }}</text>
                 </view>
                 <view v-if="orders.length===0"
                       style="width:100%;height:100%;display: flex;align-items: center;justify-content: center;flex-direction: column;">
@@ -126,39 +126,39 @@ import Order from "./order.vue";
   }
 })
 export default class MovableBox extends Vue {
-  public originY: number = 0;//第一次触摸时的手指位置
-  public currentY: number = 0; //当前movableBox的高度(非实时)
-  public boxHeight: number = 300; //movableBox的最高高度
-  public windowHeight: number = 300; //本机的高度 单位px
-  public windowWidth: number = 0; //本机的宽度 单位px
-  public isLow: boolean = true; //滑动开始前上拉框处在低位则为真，在高位则为假
-  public isScroll: boolean = false;
-  public scrollTop: number = 0;
-  public areaLength: number = 500;
-  public minHeight: number = 0.33;
-  public maxHeight: number = 0.88;
-  public imageFilter1: number = 0;
-  public imageOpacity1: number = 1;
-  public imageFilter2: number = 1;
-  public imageOpacity2: number = 0.3;
-  public icontype: string = "warn";
-  public icontext: string = "暂无更多";
-  public rotate: number = 0;
-  public orders: Array<any> = [];
-  public chargers: Array<any> = [];
-  public orderSelected: number = -1;
-  public preOrder: number = -2;
-  public hiddenDetail: boolean = false;//记录是否显示订单详情气泡
-  public orderIndex: number = 0; //记录scroller刷新到哪个order
-  public isFull: boolean = false; //是否拿满
-  public chargerSelected: number = -1;
-  public preCharger: number = -2;
-  public isSelected1: boolean = true;
-  public isSelected2: boolean = false;
+  private originY: number = 0;//第一次触摸时的手指位置
+  private currentY: number = 0; //当前movableBox的高度(非实时)
+  private boxHeight: number = 300; //movableBox的最高高度
+  private windowHeight: number = 300; //本机的高度 单位px
+  private windowWidth: number = 0; //本机的宽度 单位px
+  private isLow: boolean = true; //滑动开始前上拉框处在低位则为真，在高位则为假
+  private isScroll: boolean = false;
+  private scrollTop: number = 0;
+  private areaLength: number = 500;
+  private minHeight: number = 0.33;
+  private maxHeight: number = 0.88;
+  private imageFilter1: number = 0;
+  private imageOpacity1: number = 1;
+  private imageFilter2: number = 1;
+  private imageOpacity2: number = 0.3;
+  private iconType: string = "warn";
+  private iconText: string = "暂无更多";
+  private rotate: number = 0;
+  private orders: Array<any> = [];
+  private chargers: Array<any> = [];
+  private orderSelected: number = -1;
+  private preOrder: number = -2;
+  private hiddenDetail: boolean = false;//记录是否显示订单详情气泡
+  private orderIndex: number = 0; //记录scroller刷新到哪个order
+  private isFull: boolean = false; //是否拿满
+  private chargerSelected: number = -1;
+  private preCharger: number = -2;
+  private isSelected1: boolean = true;
+  private isSelected2: boolean = false;
 
-  public src1: string = "/static/image/uparrow.png";
-  public src2: string = "/static/image/warning.png";
-  public src3: string = "/static/image/plus_blue.png";
+  private src1: string = "/static/image/uparrow.png";
+  private src2: string = "/static/image/warning.png";
+  private src3: string = "/static/image/plus_blue.png";
 
   public scroll() {
     this.isScroll = true;
@@ -289,8 +289,8 @@ export default class MovableBox extends Vue {
         this.orderIndex += 5;
       }
     } else {
-      this.icontext = "暂无更多";
-      this.icontype = "warn";
+      this.iconText = "暂无更多";
+      this.iconType = "warn";
     }
   }
 
@@ -393,8 +393,8 @@ export default class MovableBox extends Vue {
 
   @Watch("$store.state.orders") //用于加载order
   public watchOrders() {
-    this.icontext = "上拉加载更多";
-    this.icontype = "download";
+    this.iconText = "上拉加载更多";
+    this.iconType = "download";
     this.isFull = false;
     this.orders.splice(0);
     if (this.orderSelected !== -1) {
@@ -409,8 +409,8 @@ export default class MovableBox extends Vue {
       }
       this.orderIndex = this.$store.state.orders.length - 1;
       this.isFull = true;
-      this.icontext = "暂无更多";
-      this.icontype = "warn";
+      this.iconText = "暂无更多";
+      this.iconType = "warn";
     } else {
       for (let index = 0; index <= 4; index++) {
         this.orders.push(this.$store.state.orders[index]);

@@ -51,7 +51,7 @@ export default class Friends extends Vue {
   private friends: FriendsFriends[] = [];//所有好友数据的信息都存储在这个数组里
   private uid: number = -1;
   private statusBarHeight: number = wx.getSystemInfoSync().statusBarHeight;//状态栏高度
-  public socketTask: SocketTask | undefined;
+  private socketTask: SocketTask | undefined;
 
   private reminders: FriendsReminders[] = [];
 
