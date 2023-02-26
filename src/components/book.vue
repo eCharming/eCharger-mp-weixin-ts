@@ -407,66 +407,33 @@ export default class Book extends Vue {
     color: rgba(0, 0, 0, 0.5);
   }
 
-  .book-time {
-    font-weight: 600;
-    color: rgba(0, 0, 0, 0.5);
-    letter-spacing: 1upx;
-  }
-
   .time-wrap {
     display: flex;
-    margin-bottom: 25upx
-  }
+    margin-bottom: 25upx;
 
-  .time-text {
-    color: rgba(0, 0, 0, 0.5);
-  }
+    .book-time {
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.5);
+      letter-spacing: 1upx;
+    }
 
-  .status-text {
-    height: 70upx;
-    width: 170upx;
-    color: white;
-    font-size: 28upx;
-    font-weight: 700;
-    letter-spacing: 2upx;
-    border-radius: 25upx;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    .time-text {
+      color: rgba(0, 0, 0, 0.5);
+    }
 
-  .start-end-time {
-    font-size: 35upx;
-    font-weight: 700;
-    color: rgba(102, 205, 170, 1);
-    letter-spacing: 3upx;
-  }
+    .start-end-time {
+      font-size: 35upx;
+      font-weight: 700;
+      color: rgba(102, 205, 170, 1);
+      letter-spacing: 3upx;
+    }
 
-  .price {
-    font-size: 35upx;
-    font-weight: 700;
-    color: rgba(102, 205, 170, 1);
-    letter-spacing: 3upx;
-  }
-
-  .charger-detail-wrap {
-    width: 400upx;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .charge-detail {
-    height: 70upx;
-    width: 170upx;
-    background-color: rgba(102, 205, 170, 1);
-    color: white;
-    font-size: 28upx;
-    font-weight: 700;
-    letter-spacing: 2upx;
-    border-radius: 25upx;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    .price {
+      font-size: 35upx;
+      font-weight: 700;
+      color: rgba(102, 205, 170, 1);
+      letter-spacing: 3upx;
+    }
   }
 
   .charger-detail-wrapper {
@@ -475,6 +442,39 @@ export default class Book extends Vue {
     display: flex;
     justify-content: center;
     align-items: center;
+
+    .charger-detail-wrap {
+      width: 400upx;
+      display: flex;
+      justify-content: space-between;
+
+      .status-text {
+        height: 70upx;
+        width: 170upx;
+        color: white;
+        font-size: 28upx;
+        font-weight: 700;
+        letter-spacing: 2upx;
+        border-radius: 25upx;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .charge-detail {
+        height: 70upx;
+        width: 170upx;
+        background-color: rgba(102, 205, 170, 1);
+        color: white;
+        font-size: 28upx;
+        font-weight: 700;
+        letter-spacing: 2upx;
+        border-radius: 25upx;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
   }
 }
 </style>
