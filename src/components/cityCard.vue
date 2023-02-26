@@ -1,10 +1,10 @@
 <template>
   <view>
-    <view class="biglabel">{{ alphabet }}</view>
+    <view class="big-label">{{ alphabet }}</view>
     <view class="card">
       <view v-if="list.length!==0" v-for='(item,index) in list' :key='index' class="display" @tap="changeCity(item)">
-        <view class="labeltext">{{ item.name }}</view>
-        <view v-if="index!==list.length-1" class="divLine"></view>
+        <view class="label-text">{{ item.name }}</view>
+        <view v-if="index!==list.length-1" class="div-line"></view>
       </view>
     </view>
   </view>
@@ -32,24 +32,24 @@ export default class CityCard extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .display {
   margin: 15upx;
 }
 
-.divLine {
+.div-line {
   width: 100%;
   height: 3upx;
   background-color: #E0E3DA;
   margin-top: 18rpx;
 }
 
-.labeltext {
+.label-text {
   letter-spacing: 2upx;
   font-weight: 700;
 }
 
-.biglabel {
+.big-label {
   margin: 20upx 20upx 20upx 30upx;
   padding: 15upx;
   font-weight: 900;

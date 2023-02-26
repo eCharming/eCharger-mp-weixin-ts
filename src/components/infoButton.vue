@@ -2,7 +2,7 @@
   <view>
     <view>
       <image :src="src"
-             style="transition: opacity .3s;border-radius: 50%;width: 100rpx;height:100rpx;margin:20rpx"
+             class="location-button-image"
              :style="{'pointer-events':pointerEvents,'opacity':opacity}" @click="info"></image>
     </view>
   </view>
@@ -90,5 +90,12 @@ export default class InfoButton extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+.location-button-image {
+  transition: opacity .3s;
+  border-radius: 50%;
+  width: 100rpx;
+  height: 100rpx;
+  margin: 20rpx
+}
 </style>

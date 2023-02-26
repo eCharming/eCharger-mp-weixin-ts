@@ -20,7 +20,7 @@
             <view class="view1">
               <text class="location">{{ address }}</text>
               <view>
-                <image class="image" src="../static/image/arrow.png"></image>
+                <image class="location-button-image" src="../static/image/arrow.png"></image>
                 <text class="distance">{{ distance }}km</text>
               </view>
 
@@ -63,25 +63,25 @@
               返回
             </text>
           </view>
-          <view class="smalldetailview" :animation="animationBook">
+          <view class="small-detail-view" :animation="animationBook">
             <image src="../static/image/order.png" style="height: 125upx;width: 125upx;" @tap="book">
             </image>
-            <text class="smalldetail">预约</text>
+            <text class="small-detail">预约</text>
           </view>
-          <view class="smalldetailview" :animation="animationContact">
+          <view class="small-detail-view" :animation="animationContact">
             <image src="../static/image/connection.png" style="height: 125upx;width: 125upx;" @tap="chat">
             </image>
-            <text class="smalldetail">联系</text>
+            <text class="small-detail">联系</text>
           </view>
-          <view class="smalldetailview" :animation="animationNavigate">
+          <view class="small-detail-view" :animation="animationNavigate">
             <image src="../static/image/navigation.png" style="height: 125upx;width: 125upx;"
                    @tap="navigate"></image>
-            <text class="smalldetail">导航</text>
+            <text class="small-detail">导航</text>
           </view>
-          <view class="smalldetailview" :animation="animationDetail">
+          <view class="small-detail-view" :animation="animationDetail">
             <image src="../static/image/chargerdetail.png" style="height: 125upx;width: 125upx;"
                    @tap="orderDetail"></image>
-            <text class="smalldetail">详情</text>
+            <text class="small-detail">详情</text>
           </view>
         </view>
 
@@ -110,7 +110,7 @@
                 <view
                     style="margin-left:30upx;margin-right:30upx;margin-top: 10upx;display: flex;justify-content: space-between;">
                   <view>
-                    <image class="image" src="../static/image/arrow.png"></image>
+                    <image class="location-button-image" src="../static/image/arrow.png"></image>
                     <text
                         style="color:rgba(102,205,170,1) ;font-size: 30upx;letter-spacing: 1upx;">
                       距离您约{{ distance }}km
@@ -713,7 +713,7 @@ export default class Order extends Vue {
   margin-top: 15upx;
 }
 
-.image {
+.location-button-image {
   width: 40upx;
   height: 40upx;
   position: relative;
@@ -751,7 +751,7 @@ export default class Order extends Vue {
   transition: all .7s;
 }
 
-.smalldetail {
+.small-detail {
   font-size: 25upx;
   letter-spacing: 0.6upx;
   margin-left: 38upx;
@@ -759,7 +759,7 @@ export default class Order extends Vue {
   bottom: 10upx;
 }
 
-.smalldetailview {
+.small-detail-view {
   height: 180upx;
   display: flex;
   flex-direction: column;

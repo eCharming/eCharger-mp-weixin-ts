@@ -10,12 +10,10 @@
         <text class="lastWord">{{ lastWord }}</text>
         <text class="lastTime">{{ lastTime }}</text>
 
-
         <!-- 这里需要vif hasNewLocal，但是有bug -->
         <view v-if="hasNewLocal" class="newMessage">
           <text>{{ newMessageNumLocal }}</text>
         </view>
-
 
       </view>
       <view
@@ -114,7 +112,7 @@ export default class FriendList extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .avatarView {
   position: absolute;
   height: 100upx;

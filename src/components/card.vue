@@ -11,7 +11,7 @@ import {Component, Vue} from "vue-property-decorator";
 export default class Card extends Vue {}
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .card {
   margin: 20upx;
   padding: 15upx;

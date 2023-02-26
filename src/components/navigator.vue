@@ -35,7 +35,7 @@
         <view
             style="position: absolute;height: 17upx;left: 25upx;top: 37upx;transition: all .6s;background-color: white;"
             :style="{'width':length1+'rpx'}"></view>
-        <image class="image" :src="imgSrc[0]"></image>
+        <image class="location-button-image" :src="imgSrc[0]"></image>
 
 
       </view>
@@ -47,16 +47,16 @@
             style="position: absolute;height: 20upx;left: 25upx;top: 27upx;transition: all .6s;background-color: white;"
             :style="{'width':length2+'rpx'}"></view>
 
-        <image class="image" :src="imgSrc[1]"></image>
+        <image class="location-button-image" :src="imgSrc[1]"></image>
       </view>
       <view class="image-3" @click="tap(2)" :style="{'bottom':imageBottom[2]+'rpx'}">
-        <image class="image" src="../static/image/mark.png" :style="{'top':markTop+'rpx'}"></image>
-        <image class="image" :src="imgSrc[2]"></image>
+        <image class="location-button-image" src="../static/image/mark.png" :style="{'top':markTop+'rpx'}"></image>
+        <image class="location-button-image" :src="imgSrc[2]"></image>
       </view>
       <view class="image-4" @click="tap(3)" :style="{'bottom':imageBottom[3]+'rpx'}">
 
-        <image class="image" :src="imgSrc[3]" :style="{'opacity':opacity}"></image>
-        <image class="image" src="../static/image/eye.png"
+        <image class="location-button-image" :src="imgSrc[3]" :style="{'opacity':opacity}"></image>
+        <image class="location-button-image" src="../static/image/eye.png"
                :style="{'opacity':opacity,'left':eyeLeft+'rpx','top':eyeTop+'rpx'}"></image>
       </view>
     </view>
@@ -566,7 +566,7 @@ export default class Navigator extends Vue {
   transition: all .5s;
 }
 
-.image {
+.location-button-image {
   position: absolute;
   width: 80upx;
   height: 80upx;

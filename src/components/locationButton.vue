@@ -1,7 +1,7 @@
 <template>
   <view>
     <view>
-      <image :src="src" style="width: 100rpx;height:100rpx;transition: opacity .3s;margin:20rpx"
+      <image :src="src" class="location-button-image"
              :style="{'pointer-events':pointerEvents,'opacity':opacity}" @click="relocate"></image>
     </view>
   </view>
@@ -65,5 +65,11 @@ export default class LocationButton extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+.location-button-image {
+  width: 100rpx;
+  height: 100rpx;
+  transition: opacity .3s;
+  margin: 20rpx
+}
 </style>

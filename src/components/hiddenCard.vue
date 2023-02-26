@@ -55,7 +55,7 @@ export default class HiddenCard extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .card {
   position: absolute;
   margin: 20upx;

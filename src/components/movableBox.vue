@@ -18,7 +18,7 @@
             </view>
           </view>
 
-          <view class="touchline">
+          <view class="touch-line">
             <view class="line"></view>
           </view>
 
@@ -27,12 +27,12 @@
           <card>
             <total-button :text1="'租电桩'" :text2="'电桩共享'" :selected="isSelected1" :isLow="isLow" :type="1"
                           @tap="tapButton1()">
-              <image class="image1" src="../static/image/car&charger_color.png"
+              <image class="image1" src="/static/image/car&charger_color.png"
                      :style="{'filter':'grayscale('+imageFilter1+')','opacity':imageOpacity1}"></image>
             </total-button>
             <total-button :text1="'借电桩'" :text2="'出租电桩'" :selected="isSelected2" :isLow="isLow" :type="2"
                           @tap="tapButton2()">
-              <image class="image2" src="../static/image/park.png"
+              <image class="image2" src="/static/image/park.png"
                      :style="{'filter':'grayscale('+imageFilter2+')','opacity':imageOpacity2}"></image>
             </total-button>
           </card>
@@ -51,15 +51,14 @@
                        :price="order.price" :time="order.time" :detail="order.detail" :windowWidth="windowWidth"
                        @map="tapOrder(index)" @detail="detail()" @undetail="undetail()" @toLow="toLow">
                 </order>
-                <view class="scrollerview" v-if="orders.length!==0">
-                  <image :src="src1" style="width: 45rpx;height: 45rpx;" v-show="iconType==='download'"></image>
-                  <image :src="src2" style="width: 45rpx;height: 45rpx;" v-show="iconType==='warn'"></image>
+                <view class="scroller-view" v-if="orders.length!==0">
+                  <image :src="src1" class="small-icon" v-show="iconType==='download'"></image>
+                  <image :src="src2" class="small-icon" v-show="iconType==='warn'"></image>
                   <text>{{ iconText }}</text>
                 </view>
-                <view v-if="orders.length===0"
-                      style="width:100%;height:100%;display: flex;align-items: center;justify-content: center;flex-direction: column;">
+                <view v-if="orders.length===0" class="background-image">
                   <image src="/static/image/blank.png" style="width: 200rpx;height: 200rpx;"></image>
-                  <text style="font-weight: bold;color: rgba(102,205,170,1);">附近暂无电桩</text>
+                  <text class="info-text">附近暂无电桩</text>
                 </view>
               </scroller>
             </view>
@@ -73,13 +72,12 @@
                          :time="charger.time" :cid="charger.cid" :windowWidth="windowWidth" :detail="charger.detail"
                          @tap="tapCharger(index)" @chargerUndetail="chargerUndetail()">
                 </charger>
-                <view v-if="chargers.length===0"
-                      style="width:100%;height:100%;display: flex;align-items: center;justify-content: center;flex-direction: column;">
+                <view v-if="chargers.length===0" class="background-image">
                   <image src="/static/image/blank_blue.png" style="width: 200rpx;height: 200rpx;"></image>
-                  <text style="font-weight: bold;color: rgba(50,200,210,1);">暂无你的电桩</text>
+                  <text class="info-text">暂无你的电桩</text>
                 </view>
-                <view class="scrollerview">
-                  <image :src="src3" style="width: 45rpx;height: 45rpx;" @tap="addCharger"></image>
+                <view class="scroller-view">
+                  <image :src="src3" class="small-icon" @tap="addCharger"></image>
                   <text @tap="addCharger">添加你的电桩</text>
                 </view>
               </scroller>
@@ -450,7 +448,7 @@ export default class MovableBox extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .auto {
   pointer-events: auto;
 }
@@ -475,7 +473,26 @@ export default class MovableBox extends Vue {
   box-sizing: border-box;
 }
 
-.scrollerview {
+.small-icon {
+  width: 45rpx;
+  height: 45rpx;
+}
+
+.background-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.info-text {
+  font-weight: bold;
+  color: rgba(50, 200, 210, 1);
+}
+
+.scroller-view {
   display: flex;
   justify-content: center;
 }
@@ -486,7 +503,7 @@ export default class MovableBox extends Vue {
 
 }
 
-.touchline {
+.touch-line {
   margin-top: 20rpx;
   display: flex;
   justify-content: center;

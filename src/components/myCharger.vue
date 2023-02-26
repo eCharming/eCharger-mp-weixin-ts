@@ -5,7 +5,7 @@
 
     <view class="card" :style="{'width':width+'px'}">
       <image style="position: absolute;opacity: 0.25;height: 280upx;width: 328upx;right: 0;top: 0;"
-             src="../static/image/background-blue.png"></image>
+             src="/static/image/background-blue.png"></image>
 
       <view
           style="padding: 15upx;display: flex;flex-direction: column;justify-content: space-between;position: absolute;height: 100%;width: 100%;">
@@ -46,15 +46,15 @@
               返回
             </text>
           </view>
-          <view class="smalldetailview">
-            <image src="../static/image/chargerdetail.png" style="height: 125upx;width: 125upx;"
+          <view class="small-detail-view">
+            <image src="/static/image/chargerdetail.png" style="height: 125upx;width: 125upx;"
                    @click.native.stop.prevent="editCharger"></image>
-            <text class="smalldetail">修改</text>
+            <text class="small-detail">修改</text>
           </view>
-          <view class="smalldetailview">
-            <image src="../static/image/delete.png" style="height: 125upx;width: 125upx;"
+          <view class="small-detail-view">
+            <image src="/static/image/delete.png" style="height: 125upx;width: 125upx;"
                    @click.native.stop.prevent="deleteCharger"></image>
-            <text class="smalldetail">删除</text>
+            <text class="small-detail">删除</text>
           </view>
         </view>
 
@@ -189,7 +189,7 @@ export default class MyCharger extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .card {
   position: absolute;
 
@@ -255,7 +255,7 @@ export default class MyCharger extends Vue {
   letter-spacing: 3upx;
 }
 
-.smalldetailview {
+.small-detail-view {
   height: 180upx;
   display: flex;
   flex-direction: column;
@@ -263,7 +263,7 @@ export default class MyCharger extends Vue {
 
 }
 
-.smalldetail {
+.small-detail {
   font-size: 25upx;
   letter-spacing: 0.6upx;
   margin-left: 38upx;

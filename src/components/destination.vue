@@ -1,7 +1,8 @@
 <template>
   <view class="card">
     <view class="near">
-      <text class="text1" :style="{'color':dayColor,'transition':'color 0.5s'}">{{ month }}月{{ date }}日星期{{ day }}
+      <text class="text1" :style="{'color':dayColor,'transition':'color 0.5s'}">
+        {{ month }}月{{ date }}日星期{{ day }}
       </text>
 
       <view class="time1">
@@ -118,7 +119,7 @@ export default class Destination extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .image1 {
   position: absolute;
   top: 15upx;
