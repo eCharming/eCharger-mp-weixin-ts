@@ -5,7 +5,7 @@
       <view class="position" @click="tap(4)">
         <view style="display: flex;justify-content: space-between;align-items: center;">
           <text style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ position }}</text>
-          <image src="../static/image/select.png" style='width:20upx;height:20upx;flex-shrink:0;'></image>
+          <image src="/static/image/select.png" style='width:20upx;height:20upx;flex-shrink:0;'></image>
         </view>
         <view style="font-weight: 500;font-size: 20upx;">
           <text>{{ weather }}</text>
@@ -50,13 +50,13 @@
         <image class="location-button-image" :src="imgSrc[1]"></image>
       </view>
       <view class="image-3" @click="tap(2)" :style="{'bottom':imageBottom[2]+'rpx'}">
-        <image class="location-button-image" src="../static/image/mark.png" :style="{'top':markTop+'rpx'}"></image>
+        <image class="location-button-image" src="/static/image/mark.png" :style="{'top':markTop+'rpx'}"></image>
         <image class="location-button-image" :src="imgSrc[2]"></image>
       </view>
       <view class="image-4" @click="tap(3)" :style="{'bottom':imageBottom[3]+'rpx'}">
 
         <image class="location-button-image" :src="imgSrc[3]" :style="{'opacity':opacity}"></image>
-        <image class="location-button-image" src="../static/image/eye.png"
+        <image class="location-button-image" src="/static/image/eye.png"
                :style="{'opacity':opacity,'left':eyeLeft+'rpx','top':eyeTop+'rpx'}"></image>
       </view>
     </view>
@@ -370,7 +370,7 @@ export default class Navigator extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .search-box {
   height: 90upx;
   display: flex;

@@ -1,7 +1,7 @@
 <template>
   <view>
     <view>
-      <image :src="src" style="width: 100rpx;height:100rpx;transition: opacity .3s;margin:20rpx"
+      <image :src="src" class="navigate-image"
              :style="{'pointer-events':pointerEvents,'opacity':opacity}" @click="unnavigate"></image>
     </view>
   </view>
@@ -48,5 +48,11 @@ export default class NavigateButton extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+.navigate-image {
+  width: 100rpx;
+  height: 100rpx;
+  transition: opacity .3s;
+  margin: 20rpx;
+}
 </style>

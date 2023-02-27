@@ -18,7 +18,7 @@
     </view>
     <view id="lightning-wrapper">
       <view id="lightning" :style="{'transform':'scale('+scale+')'}">
-        <view class="view1" :style="{'bottom':bottom+'rpx','transform':'rotate('+rotate+'deg)'}"></view>
+        <view class="address-wrapper" :style="{'bottom':bottom+'rpx','transform':'rotate('+rotate+'deg)'}"></view>
         <view class="view2" :style="{'bottom':bottom+'rpx','transform':'rotate('+rotate+'deg)'}"></view>
       </view>
     </view>
@@ -179,7 +179,7 @@ export default class Loading extends Vue {
   }
 }
 
-.view1 {
+.address-wrapper {
   position: absolute;
   height: 750upx;
   width: 750upx;

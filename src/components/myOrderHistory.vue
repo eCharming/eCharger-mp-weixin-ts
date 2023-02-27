@@ -1,72 +1,34 @@
 <template>
-  <view style="margin: 30upx;padding: 25upx;border-radius: 40upx;
-	position: relative;transition: all .5s;border: 8upx solid rgb(102,205,170);">
-    <view
-        style="font-size: 32upx;font-weight: 700;letter-spacing: 1upx;margin-bottom: 15upx;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-      {{ address }}
+  <view class="card">
+    <view class="address">{{ address }}</view>
+    <view class="location">{{ location }}</view>
+    <view class="time-wrap">
+      <text class="time-text">下单时间：</text>
+      <text class="book-time">{{ timeText }}</text>
     </view>
-    <view style="font-size: 25upx;font-weight: 600;margin-bottom: 15upx;color: rgba(0,0,0,0.5);
-			overflow: hidden;-webkit-line-clamp: 3;text-overflow: ellipsis;display: -webkit-box;">
-      {{ location }}
+    <view class="time-wrap">
+      <text class="time-text">剩余时间：</text>
+      <text class="book-time">{{ timeRemain }}</text>
     </view>
-    <view style="margin-bottom: 15upx;">
-      <text style="font-size: 25upx;font-weight: 600;color: rgba(0,0,0,0.5);">
-        下单时间：
-      </text>
-      <text style="font-size: 25upx;letter-spacing: 1upx;color: rgba(0,0,0,0.5);font-weight: 600;">
-        {{ timeText }}
-      </text>
+    <view class="time-wrap">
+      <text class="time-text">预约时间：</text>
+      <text class="start-end-time">{{ startTime }}-{{ endTime }}</text>
     </view>
-    <view style="margin-bottom: 15upx;">
-      <text style="font-size: 25upx;font-weight: 600;color: rgba(0,0,0,0.5);">
-        剩余时间：
-      </text>
-      <text style="font-size: 25upx;letter-spacing: 1upx;color: rgba(0,0,0,0.5);font-weight: 600;">
-        {{ timeRemain }}
-      </text>
+    <view class="time-wrap">
+      <text class="time-text">预估价格：</text>
+      <text class="start-end-time">￥{{ predictedPrice }}</text>
     </view>
-    <view style="margin-bottom: 15upx;">
-      <text style="font-size: 25upx;font-weight: 600;color: rgba(0,0,0,0.5);">
-        预约时间：
-      </text>
-      <text style="font-size: 32upx;font-weight: 700;color:rgb(102,205,170) ;letter-spacing: 1upx;">
-        {{ startTime }}-{{ endTime }}
-      </text>
+    <view class="time-wrap">
+      <text class="time-text">状态：</text>
+      <text class="status-text" :style="{'color':statusColor}">{{ statusText }}</text>
     </view>
-    <view style="margin-bottom: 15upx;">
-      <text style="font-size: 25upx;font-weight: 600;color: rgba(0,0,0,0.5);">
-        预估价格：
-      </text>
-      <text style="font-size: 32upx;font-weight: 700;color:rgb(102,205,170) ;letter-spacing: 1upx;">
-        ￥{{ predictedPrice }}
-      </text>
-    </view>
-    <view style="margin-bottom: 15upx;">
-      <text style="font-size: 25upx;font-weight: 600;color: rgba(0,0,0,0.5);">
-        状态：
-      </text>
-      <text style="font-size: 32upx;font-weight: 700;letter-spacing: 1upx;" :style="{'color':statusColor}">
-        {{ statusText }}
-      </text>
-    </view>
-    <view style="display: flex;justify-content: center;">
-      <view style="width: 450upx;display: flex;justify-content: space-between;">
-        <view style="background-color:rgba(102,205,170,1);height: 70upx;width: 170upx;color: white;
-					font-size: 28upx;font-weight: 700;letter-spacing: 2upx;border-radius: 25upx;
-					display: flex;justify-content: center;align-items: center;" @tap="detail()">
-          电桩详情
-        </view>
-        <view style="height: 70upx;width: 170upx;color: white;
-					font-size: 28upx;font-weight: 700;letter-spacing: 2upx;border-radius: 25upx;
-					display: flex;justify-content: center;align-items: center;" :style="{'background-color':checkColor}"
-              @tap="check">
-          {{ checkStatus }}
-        </view>
+    <view class="charger-detail-wrapper">
+      <view class="charger-detail-wrap">
+        <view class="charge-detail" @tap="detail()">电桩详情</view>
+        <view class="check-status" :style="{'background-color':checkColor}" @tap="check">{{ checkStatus }}</view>
       </view>
-
     </view>
-    <image src="../static/image/orderHistory.png"
-           style="width: 300upx;height: 300upx;position: absolute;right: -10upx;bottom: 120upx;opacity: 0.3;"></image>
+    <image src="/static/image/orderHistory.png" class="history-image"></image>
   </view>
 </template>
 
@@ -283,5 +245,111 @@ export default class MyOrderHistory extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+.card {
+  margin: 30upx;
+  padding: 25upx;
+  border-radius: 40upx;
+  position: relative;
+  transition: all .5s;
+  border: 8upx solid rgb(102, 205, 170);
+}
+
+.address {
+  font-size: 32upx;
+  font-weight: 700;
+  letter-spacing: 1upx;
+  margin-bottom: 15upx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.location {
+  font-size: 25upx;
+  font-weight: 600;
+  margin-bottom: 15upx;
+  color: rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  -webkit-line-clamp: 3;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+}
+
+.time-wrap {
+  margin-bottom: 15upx;
+
+  .book-time {
+    font-size: 25upx;
+    letter-spacing: 1upx;
+    color: rgba(0, 0, 0, 0.5);
+    font-weight: 600;
+  }
+
+  .time-text {
+    font-size: 25upx;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.5);
+  }
+
+  .start-end-time {
+    font-size: 32upx;
+    font-weight: 700;
+    color: rgb(102, 205, 170);
+    letter-spacing: 1upx;
+  }
+
+  .status-text {
+    font-size: 32upx;
+    font-weight: 700;
+    letter-spacing: 1upx;
+  }
+}
+
+.charger-detail-wrapper {
+  display: flex;
+  justify-content: center;
+
+  .charger-detail-wrap {
+    width: 450upx;
+    display: flex;
+    justify-content: space-between;
+
+    .charge-detail {
+      background-color: rgba(102, 205, 170, 1);
+      height: 70upx;
+      width: 170upx;
+      color: white;
+      font-size: 28upx;
+      font-weight: 700;
+      letter-spacing: 2upx;
+      border-radius: 25upx;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .check-status {
+      height: 70upx;
+      width: 170upx;
+      color: white;
+      font-size: 28upx;
+      font-weight: 700;
+      letter-spacing: 2upx;
+      border-radius: 25upx;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
+.history-image {
+  width: 300upx;
+  height: 300upx;
+  position: absolute;
+  right: -10upx;
+  bottom: 120upx;
+  opacity: 0.3;
+}
 </style>

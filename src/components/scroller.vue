@@ -43,7 +43,7 @@ export default class Scroller extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .card {
   margin: 0 20upx 20upx;
   padding: 15upx;

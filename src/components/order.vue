@@ -12,12 +12,12 @@
       <view class="card" :style="{'width':width+'px'}" @tap="checkMap()">
 
         <image style="position: absolute;opacity: 0.25;height: 284upx;width: 333upx;right: -2upx;"
-               src="../static/image/background.png"></image>
+               src="/static/image/background.png"></image>
 
         <view
             style="display: flex;flex-direction: column;justify-content: space-between;position: absolute;height: 100%;width: 100%;padding: 15upx;">
           <view style="display: flex;flex-direction: column;">
-            <view class="view1">
+            <view class="address-wrapper">
               <text class="location">{{ address }}</text>
               <view>
                 <image class="location-button-image" src="../static/image/arrow.png"></image>
@@ -28,7 +28,7 @@
             <view style="display: flex;justify-content: space-between;position: relative;">
               <text class="text">{{ location }}</text>
               <image class="image1" :style="{'opacity':checkOpacity,'right':checkRight+'rpx'}"
-                     src='../static/image/checkdetail.png' v-if="check"
+                     src='/static/image/checkdetail.png' v-if="check"
                      @click.native.stop.prevent="checkDetail"></image>
             </view>
 
@@ -56,7 +56,7 @@
       <view
           style="position: relative;transition: .7s all;transform-style: preserve-3d;transform-origin: 50% 50% -150upx;"
           :style="{'transform':'rotateX('+buttonRotate+'deg)','height':height+'rpx'}">
-        <view class="button" :style="{'opacity':buttonOpacitty}">
+        <view class="button-wrapper" :style="{'opacity':buttonOpacitty}">
           <view style="position: absolute;right: 30upx;top: 20upx;">
             <text style="color:rgba(102,205,170,1) ;letter-spacing: 2upx;font-size: 28upx;"
                   @tap="unCheckDetail()">
@@ -64,22 +64,22 @@
             </text>
           </view>
           <view class="small-detail-view" :animation="animationBook">
-            <image src="../static/image/order.png" style="height: 125upx;width: 125upx;" @tap="book">
+            <image src="/static/image/order.png" style="height: 125upx;width: 125upx;" @tap="book">
             </image>
             <text class="small-detail">预约</text>
           </view>
           <view class="small-detail-view" :animation="animationContact">
-            <image src="../static/image/connection.png" style="height: 125upx;width: 125upx;" @tap="chat">
+            <image src="/static/image/connection.png" style="height: 125upx;width: 125upx;" @tap="chat">
             </image>
             <text class="small-detail">联系</text>
           </view>
           <view class="small-detail-view" :animation="animationNavigate">
-            <image src="../static/image/navigation.png" style="height: 125upx;width: 125upx;"
+            <image src="/static/image/navigation.png" style="height: 125upx;width: 125upx;"
                    @tap="navigate"></image>
             <text class="small-detail">导航</text>
           </view>
           <view class="small-detail-view" :animation="animationDetail">
-            <image src="../static/image/chargerdetail.png" style="height: 125upx;width: 125upx;"
+            <image src="/static/image/chargerdetail.png" style="height: 125upx;width: 125upx;"
                    @tap="orderDetail"></image>
             <text class="small-detail">详情</text>
           </view>
@@ -110,7 +110,7 @@
                 <view
                     style="margin-left:30upx;margin-right:30upx;margin-top: 10upx;display: flex;justify-content: space-between;">
                   <view>
-                    <image class="location-button-image" src="../static/image/arrow.png"></image>
+                    <image class="location-button-image" src="/static/image/arrow.png"></image>
                     <text
                         style="color:rgba(102,205,170,1) ;font-size: 30upx;letter-spacing: 1upx;">
                       距离您约{{ distance }}km
@@ -125,7 +125,7 @@
 
               </view>
               <view style="display: flex;justify-content: space-between;margin: 30upx;">
-                <view class="priceview">
+                <view class="price-view">
                   <text>价格</text>
                   <text class="yuan">￥</text>
                   <text class="price">{{ price }}</text>
@@ -158,7 +158,7 @@
                   </picker>
                 </view>
               </view>
-              <view class="priceview">
+              <view class="price-view">
                 <text>预估价格：</text>
                 <text class="time">￥{{ possiblePrice }}</text>
               </view>
@@ -660,7 +660,7 @@ export default class Order extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .card {
   position: absolute;
   background-color: white;
@@ -671,7 +671,7 @@ export default class Order extends Vue {
   height: 284upx;
 }
 
-.view1 {
+.address-wrapper {
   display: flex;
   justify-content: space-between;
 }
@@ -739,7 +739,7 @@ export default class Order extends Vue {
   text-overflow: ellipsis;
 }
 
-.button {
+.button-wrapper {
   position: absolute;
   width: 100%;
   height: 300upx;
@@ -808,7 +808,7 @@ export default class Order extends Vue {
   background-color: rgb(230, 230, 230);
 }
 
-.priceview {
+.price-view {
   margin-right: 30upx;
   margin-top: 15upx;
   display: flex;

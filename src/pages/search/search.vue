@@ -211,7 +211,7 @@
         <view class="suggestion" v-for="(suggestion,index) in suggestions" :key="index"
               @tap="tap(suggestion.id,suggestion.title,suggestion.location,suggestion.category)">
           <view style="display: flex;justify-content: space-between;">
-            <view class="view1">
+            <view class="address-wrapper">
               <image class="image2" src="../../static/image/landmark.png"></image>
               <rich-text :nodes="suggestion.strings" class="richtext"></rich-text>
             </view>
@@ -703,7 +703,7 @@ export default class Search extends Vue {
   position: relative;
 }
 
-.view1 {
+.address-wrapper {
   display: flex;
   margin: 20upx 20upx 10upx 30upx;
   font-size: 30upx;

@@ -5,7 +5,7 @@
       :plain="true"
       :style="{'border-color':borderColor}"
   >
-    <view class="view1">
+    <view class="address-wrapper">
       <text class="text1" :style="{'top':top+'rpx'}">{{ text1 }}</text>
     </view>
     <view class="view2">
@@ -93,7 +93,7 @@ export default class TotalButton extends Vue {
   transition-duration: .3s;
 }
 
-.view1 {
+.address-wrapper {
   font-weight: 700;
   font-size: 30upx;
 

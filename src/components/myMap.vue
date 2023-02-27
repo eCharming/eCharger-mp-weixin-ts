@@ -548,5 +548,5 @@ export default class MyMap extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 </style>
