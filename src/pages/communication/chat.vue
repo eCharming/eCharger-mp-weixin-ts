@@ -1,7 +1,7 @@
 <template>
   <view style="background-color: rgb(240,240,240);">
     <view class="navigator" :style="{'height':statusHeight+'px'}">
-      <image src="../../static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
+      <image src="/static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
              @tap="back"></image>
       <text :style="{'margin-bottom':friendBottom+'px'}">{{ name }}</text>
     </view>

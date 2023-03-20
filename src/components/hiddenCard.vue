@@ -72,7 +72,6 @@ export default class HiddenCard extends Vue {
   letter-spacing: 2upx;
   font-weight: 700;
   transition: all .3s;
-
 }
 
 .text1 {

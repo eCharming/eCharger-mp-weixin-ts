@@ -76,7 +76,7 @@ export default class TotalButton extends Vue {
 
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .btn {
   height: 120upx;
   width: 280upx;

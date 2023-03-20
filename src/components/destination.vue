@@ -7,13 +7,13 @@
 
       <view class="time1">
         <picker mode="time" :start="minTime1" :end="maxTime1" @change="changetime1">
-          <text class="timetext1" :style="{'opacity':opacity1}">{{ text1 }}</text>
+          <text class="time-text1" :style="{'opacity':opacity1}">{{ text1 }}</text>
         </picker>
       </view>
       <view class="line">-</view>
       <view class="time2">
         <picker mode="time" :start="minTime2" :end="maxTime2" @change="changetime2">
-          <text class="timetext2" :style="{'opacity':opacity2}">{{ text2 }}</text>
+          <text class="time-text2" :style="{'opacity':opacity2}">{{ text2 }}</text>
         </picker>
       </view>
     </view>
@@ -22,7 +22,6 @@
           @tap="navigate()">
       <image :src="src1" :class="changeImg===0?'image1':'image1_none'"></image>
       <image :src="src2" :class="changeImg===0?'image1_none':'image1'"></image>
-      <image class="image1" :src="src"></image>
       <text class="text2" :style="{'color':color}">{{ destination }}</text>
 
     </view>
@@ -48,8 +47,8 @@ export default class Destination extends Vue {
   private destination: string = "请输入你的目的地";
   private color: string = "rgba(0,0,0,0.5)";
   private dayColor: string = "rgb(102,205,170)";
-  private src1: string = "../static/image/lightning_green.png";
-  private src2: string = "../static/image/lightning_blue.png";
+  private src1: string = "/static/image/lightning_green.png";
+  private src2: string = "/static/image/lightning_blue.png";
   private changeImg: number = 0;
 
   public changetime1(e: { detail: { value: any } }): void {
@@ -195,7 +194,7 @@ export default class Destination extends Vue {
   background-color: rgb(230, 230, 230);
 }
 
-.timetext1 {
+.time-text1 {
   position: relative;
   top: 10upx;
   left: 18upx;
@@ -203,7 +202,7 @@ export default class Destination extends Vue {
   letter-spacing: 1upx;
 }
 
-.timetext2 {
+.time-text2 {
   position: relative;
   top: 10upx;
   left: 18upx;

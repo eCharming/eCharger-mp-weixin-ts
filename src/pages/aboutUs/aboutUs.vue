@@ -4,14 +4,14 @@
       <view :style="{'height':statusHeight+'px','width':'100%','top':0,'z-index':9999}">
         <view class="cityNavi"
               :style="{'height':statusHeight+'px','background':color,'position':'fixed','width':'100%','top':0}">
-          <image src="../../static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
+          <image src="/static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
                  @tap="back"></image>
           <text :style="{'margin-bottom':cityHeight+'px'}">关于我们</text>
         </view>
       </view>
       <view
           style='display: flex;justify-content: center;align-items: center;margin: 50upx;flex-direction: column;margin-top: 100upx;'>
-        <image src="../../static/image/icon.png" style="width: 150upx;height:150upx;border-radius: 20upx;">
+        <image src="/static/image/icon.png" style="width: 150upx;height:150upx;border-radius: 20upx;">
         </image>
         <view style='margin:10upx;letter-spacing: 2upx;'>易插 v1.0.0</view>
       </view>

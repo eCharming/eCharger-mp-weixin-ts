@@ -3,7 +3,7 @@
     <view :style="{'height':statusHeight+'px','width':'100%','top':0,'z-index':9999}">
       <view class="cityNavi"
             :style="{'height':statusHeight+'px','background':color,'position':'fixed','width':'100%','top':0}">
-        <image src="../../static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
+        <image src="/static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
                @tap="back"></image>
         <text :style="{'margin-bottom':cityHeight+'px'}">地点</text>
       </view>
@@ -14,7 +14,7 @@
         <view class="labeltext">当前定位</view>
         <view class="nowcol">
           <view class="popular">
-            <image src="../../static/image/landmark.png" style="height:40rpx;width:40upx;"></image>
+            <image src="/static/image/landmark.png" style="height:40rpx;width:40upx;"></image>
             <text class='populartext'>{{ city }}</text>
           </view>
         </view>

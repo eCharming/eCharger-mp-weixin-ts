@@ -2,7 +2,7 @@
   <view style="display: flex;flex-direction:column;justify-content: space-between;height:100vh;">
     <view>
       <view class="navigator" :style="{'height':statusHeight+'px'}">
-        <image src="../../static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
+        <image src="/static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
                @tap="back"></image>
         <text :style="{'margin-bottom':myBottom+'px'}">我的</text>
       </view>
@@ -21,15 +21,15 @@
       <add-card style='margin:10rpx;'>
         <view style="display: flex;justify-content: space-around;">
           <view @tap="navi(1)" class='funbutton'>
-            <image src='../../static/image/historyOrder.png' style="width: 100upx;height:100upx;"></image>
+            <image src='/static/image/historyOrder.png' style="width: 100upx;height:100upx;"></image>
             <view class='labeltext'>历史订单</view>
           </view>
           <view @tap="navi(2)" class='funbutton'>
-            <image src='../../static/image/myCharger.png' style="width: 100upx;height:100upx;"></image>
+            <image src='/static/image/myCharger.png' style="width: 100upx;height:100upx;"></image>
             <view class='labeltext'>我的电桩</view>
           </view>
           <view @tap="navi(3)" class='funbutton'>
-            <image src='../../static/image/faq.png' style="width: 100upx;height:100upx;"></image>
+            <image src='/static/image/faq.png' style="width: 100upx;height:100upx;"></image>
             <view class='labeltext'>常见问题</view>
           </view>
         </view>

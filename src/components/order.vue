@@ -1,108 +1,78 @@
 <template>
   <view
-      style="position: relative;height: 300upx;margin:20upx;margin-bottom: 40upx;transform-style: preserve-3d; transition: .7s all;"
+      class="order-wrapper"
       :style="{'transform':'rotateY('+rotate+'deg)','height':height+'rpx'}">
-
-    <view id="box" style="border-radius: 40upx;height: 300upx;width: 100%;position: absolute;transform: translateZ(300upx);
-		background:linear-gradient(to right bottom,rgb(102,205,170),#d4fce9) ;overflow: hidden;">
-      <view
-          style="position: absolute;background-color: #219779;border-radius: 40upx;height: 300upx;width:100%;left: 10upx;top: 10upx;transition: all .3s;"
-          :style="{'transform':translate}"></view>
-
+    <view id="box">
+      <view class="box-wrapper" :style="{'transform':translate}"></view>
       <view class="card" :style="{'width':width+'px'}" @tap="checkMap()">
-
-        <image style="position: absolute;opacity: 0.25;height: 284upx;width: 333upx;right: -2upx;"
-               src="/static/image/background.png"></image>
-
-        <view
-            style="display: flex;flex-direction: column;justify-content: space-between;position: absolute;height: 100%;width: 100%;padding: 15upx;">
-          <view style="display: flex;flex-direction: column;">
+        <image class="background-image" src="/static/image/background.png"></image>
+        <view class="card-container">
+          <view class="address-location-wrapper">
             <view class="address-wrapper">
               <text class="location">{{ address }}</text>
               <view>
-                <image class="location-button-image" src="../static/image/arrow.png"></image>
+                <image class="location-button-image" src="/static/image/arrow.png"></image>
                 <text class="distance">{{ distance }}km</text>
               </view>
-
             </view>
-            <view style="display: flex;justify-content: space-between;position: relative;">
-              <text class="text">{{ location }}</text>
+            <view class="location-wrapper">
+              <text class="location">{{ location }}</text>
               <image class="image1" :style="{'opacity':checkOpacity,'right':checkRight+'rpx'}"
                      src='/static/image/checkdetail.png' v-if="check"
                      @click.native.stop.prevent="checkDetail"></image>
             </view>
-
           </view>
-
-          <view style="margin-left: 10upx;">
+          <view class="price-wrapper">
             <text>价格</text>
             <text class="yuan">￥</text>
             <text class="price">{{ price }}</text>
           </view>
-          <view style="margin-left: 10upx;margin-bottom: 10upx;">
+          <view class="time-wrapper">
             <text>可用时间：</text>
             <text class="time">{{ showTime }}</text>
           </view>
-
         </view>
-
-
       </view>
     </view>
 
-    <view style="position: absolute;transform: rotateY(90deg) translateZ(300upx);width: 100%;
-		transition: .7s all;border-radius: 30upx;border-top: 10upx solid rgba(102,205,170,1);border-bottom: 10upx solid rgba(102,205,170,1);
-		transform-style: preserve-3d;overflow: hidden;" :style="{'height':height+'rpx'}">
+    <view class="box-outer" :style="{'height':height+'rpx'}">
       <view
-          style="position: relative;transition: .7s all;transform-style: preserve-3d;transform-origin: 50% 50% -150upx;"
+          class="box-outer-wrapper"
           :style="{'transform':'rotateX('+buttonRotate+'deg)','height':height+'rpx'}">
-        <view class="button-wrapper" :style="{'opacity':buttonOpacitty}">
-          <view style="position: absolute;right: 30upx;top: 20upx;">
-            <text style="color:rgba(102,205,170,1) ;letter-spacing: 2upx;font-size: 28upx;"
-                  @tap="unCheckDetail()">
-              返回
-            </text>
+        <view class="box-left-wrapper" :style="{'opacity':buttonOpacity}">
+          <view class="left-return-wrapper">
+            <text class="left-return" @tap="unCheckDetail()">返回</text>
           </view>
-          <view class="small-detail-view" :animation="animationBook">
+          <view class="small-detail-wrapper" :animation="animationBook">
             <image src="/static/image/order.png" style="height: 125upx;width: 125upx;" @tap="book">
             </image>
             <text class="small-detail">预约</text>
           </view>
-          <view class="small-detail-view" :animation="animationContact">
+          <view class="small-detail-wrapper" :animation="animationContact">
             <image src="/static/image/connection.png" style="height: 125upx;width: 125upx;" @tap="chat">
             </image>
             <text class="small-detail">联系</text>
           </view>
-          <view class="small-detail-view" :animation="animationNavigate">
+          <view class="small-detail-wrapper" :animation="animationNavigate">
             <image src="/static/image/navigation.png" style="height: 125upx;width: 125upx;"
                    @tap="navigate"></image>
             <text class="small-detail">导航</text>
           </view>
-          <view class="small-detail-view" :animation="animationDetail">
+          <view class="small-detail-wrapper" :animation="animationDetail">
             <image src="/static/image/chargerdetail.png" style="height: 125upx;width: 125upx;"
                    @tap="orderDetail"></image>
             <text class="small-detail">详情</text>
           </view>
         </view>
-
-        <view class="book" style="transform-origin: center;transform:rotateX(180deg);position: absolute;transform-style: preserve-3d;
-				height: 100%;width: 100%;">
-          <view style="position: relative;height: 100%;width: 100%;transform-style: preserve-3d;perspective: 500px;
-					transform:translateZ(300upx);">
-            <view style="height: 300upx;width: 100%;position: absolute;background-color: #edfdf6;
-						display: flex;flex-direction: column;justify-content: space-between;">
-
-              <view style="margin-right:30upx;margin-top: 20upx;display:flex;justify-content: flex-end;">
-                <text style="color:rgba(102,205,170,1) ;letter-spacing: 2upx;font-size: 28upx;"
-                      @tap="unbook()">
-                  返回
-                </text>
-
+        <view class="box-right-wrapper">
+          <view class="drawer-wrapper">
+            <view class="drawer-info">
+              <view class="right-return-wrapper">
+                <text class="right-return" @tap="unbook()">返回</text>
               </view>
-
               <view>
                 <view
-                    style="margin:30upx;margin-top: 0;width: 550upx;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                    style="margin: 0 30upx 30upx;width: 550upx;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                   <text style="font-size: 30upx;font-weight: 700;
 									">{{ location }}
                   </text>
@@ -130,17 +100,14 @@
                   <text class="yuan">￥</text>
                   <text class="price">{{ price }}</text>
                 </view>
-                <view class="timeview">
+                <view class="time-view">
                   <text>可用时间：</text>
                   <text class="time">{{ showTime }}</text>
                 </view>
               </view>
             </view>
 
-            <view style="height: 300upx;width: 100%;position: absolute;transform-origin: top;top: 300upx;
-						border-top: 2px solid rgba(0,0,0,0.3);transition: 0.7s all;background-color: #edfdf6;
-						display: flex;flex-direction: column;justify-content: space-between;"
-                  :style="{'transform':'rotateX('+bookRotate+'deg)'}">
+            <view class="drawer-reverse" :style="{'transform':'rotateX('+bookRotate+'deg)'}">
               <view
                   style="margin: 30upx;display: flex;letter-spacing: 3upx;font-weight: 700;font-size: 31upx;align-items: center;">
                 <text>
@@ -148,13 +115,13 @@
                 </text>
                 <view class="time1">
                   <picker mode="time" :start="minTime1" :end="maxTime1" @change="changetime1">
-                    <text class="timetext1" :style="{'opacity':opacity1}">{{ text1 }}</text>
+                    <text class="time-text1" :style="{'opacity':opacity1}">{{ text1 }}</text>
                   </picker>
                 </view>
                 <view class="line">-</view>
                 <view class="time2">
                   <picker mode="time" :start="minTime2" :end="maxTime2" @change="changetime2">
-                    <text class="timetext2" :style="{'opacity':opacity2}">{{ text2 }}</text>
+                    <text class="time-text2" :style="{'opacity':opacity2}">{{ text2 }}</text>
                   </picker>
                 </view>
               </view>
@@ -170,16 +137,12 @@
                         @tap="bookOrder">
                     预约
                   </text>
-
                 </view>
               </view>
-
             </view>
           </view>
-
         </view>
       </view>
-
     </view>
   </view>
 
@@ -661,85 +624,170 @@ export default class Order extends Vue {
 </script>
 
 <style lang="less" scoped>
-.card {
-  position: absolute;
-  background-color: white;
-  border-radius: 32upx;
-  transition: all .5s;
-  top: 9upx;
-  left: 8upx;
-  height: 284upx;
+.order-wrapper {
+  position: relative;
+  height: 300upx;
+  margin: 20upx 20upx 40upx;
+  transform-style: preserve-3d;
+  transition: .7s all;
+
+  #box {
+    border-radius: 40upx;
+    height: 300upx;
+    width: 100%;
+    position: absolute;
+    transform: translateZ(300upx);
+    background: linear-gradient(to right bottom, rgb(102, 205, 170), #d4fce9);
+    overflow: hidden;
+
+    .box-wrapper {
+      position: absolute;
+      background-color: #219779;
+      border-radius: 40upx;
+      height: 300upx;
+      width: 100%;
+      left: 10upx;
+      top: 10upx;
+      transition: all .3s;
+
+      .card {
+        position: absolute;
+        background-color: white;
+        border-radius: 32upx;
+        transition: all .5s;
+        top: 9upx;
+        left: 8upx;
+        height: 284upx;
+
+        .background-image {
+          position: absolute;
+          opacity: 0.25;
+          height: 284upx;
+          width: 333upx;
+          right: -2upx;
+        }
+
+        .card-container {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          position: absolute;
+          height: 100%;
+          width: 100%;
+          padding: 15upx;
+        }
+      }
+    }
+  }
 }
 
-.address-wrapper {
+.address-location-wrapper {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+
+  .address-wrapper {
+    display: flex;
+    justify-content: space-between;
+
+    .location {
+      margin: 15upx;
+      font-size: 30upx;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 350upx;
+    }
+
+    .location-button-image {
+      width: 40upx;
+      height: 40upx;
+      position: relative;
+      top: 11upx;
+      right: 5upx;
+    }
+
+    .distance {
+      margin-right: 15upx;
+      color: rgba(102, 205, 170, 1);
+    }
+  }
+
+  .location-wrapper {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+
+    .location {
+      margin-top: 10upx;
+      margin-left: 15upx;
+      opacity: 0.5;
+      width: 450upx;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .image1 {
+      position: absolute;
+      width: 80upx;
+      height: 80upx;
+      transition: all .5s;
+    }
+  }
 }
 
-.location {
-  margin: 15upx;
-  font-size: 30upx;
-  font-weight: 700;
-  white-space: nowrap;
+.price-wrapper {
+  margin-left: 10upx;
+
+  .yuan {
+    font-weight: 700;
+    color: #219779;
+  }
+
+  .price {
+    font-size: 40upx;
+    font-weight: 700;
+    color: #219779;
+  }
+}
+
+.time-wrapper {
+  margin-left: 10upx;
+  margin-bottom: 10upx;
+
+  .time {
+    font-size: 35upx;
+    font-weight: 700;
+    color: #219779;
+    letter-spacing: 3upx;
+  }
+}
+
+.box-outer {
+  position: absolute;
+  transform: rotateY(90deg) translateZ(300upx);
+  width: 100%;
+  transition: .7s all;
+  border-radius: 30upx;
+  border-top: 10upx solid rgba(102, 205, 170, 1);
+  border-bottom: 10upx solid rgba(102, 205, 170, 1);
+  transform-style: preserve-3d;
   overflow: hidden;
-  text-overflow: ellipsis;
-  width: 350upx;
+
+  .box-outer-wrapper {
+    position: relative;
+    transition: .7s all;
+    transform-style: preserve-3d;
+    transform-origin: 50% 50% -150upx;
+  }
 }
 
-.distance {
-  margin-right: 15upx;
-  color: rgba(102, 205, 170, 1);
-}
-
-.yuan {
-  font-weight: 700;
-  color: #219779;
-}
-
-.price {
-  font-size: 40upx;
-  font-weight: 700;
-  color: #219779;
-}
-
-.time {
-  font-size: 35upx;
-  font-weight: 700;
-  color: #219779;
-  letter-spacing: 3upx;
-}
-
-.timeview {
+.time-view {
   margin-top: 15upx;
 }
 
-.location-button-image {
-  width: 40upx;
-  height: 40upx;
-  position: relative;
-  top: 11upx;
-  right: 5upx;
-
-}
-
-.image1 {
-  position: absolute;
-  width: 80upx;
-  height: 80upx;
-  transition: all .5s;
-}
-
-.text {
-  margin-top: 10upx;
-  margin-left: 15upx;
-  opacity: 0.5;
-  width: 450upx;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.button-wrapper {
+.box-left-wrapper {
   position: absolute;
   width: 100%;
   height: 300upx;
@@ -749,21 +797,88 @@ export default class Order extends Vue {
   transform: translateZ(5upx);
   background-color: rgba(250, 255, 250, 1);
   transition: all .7s;
+
+  .left-return-wrapper {
+    position: absolute;
+    right: 30upx;
+    top: 20upx;
+
+    .left-return {
+      color: rgba(102, 205, 170, 1);
+      letter-spacing: 2upx;
+      font-size: 28upx;
+    }
+  }
+
+  .small-detail-wrapper {
+    height: 180upx;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .small-detail {
+      font-size: 25upx;
+      letter-spacing: 0.6upx;
+      margin-left: 38upx;
+      position: relative;
+      bottom: 10upx;
+    }
+  }
 }
 
-.small-detail {
-  font-size: 25upx;
-  letter-spacing: 0.6upx;
-  margin-left: 38upx;
-  position: relative;
-  bottom: 10upx;
-}
+.box-right-wrapper {
+  transform-origin: center;
+  transform: rotateX(180deg);
+  position: absolute;
+  transform-style: preserve-3d;
+  height: 100%;
+  width: 100%;
 
-.small-detail-view {
-  height: 180upx;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  .drawer-wrapper {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    transform-style: preserve-3d;
+    perspective: 500px;
+    transform: translateZ(300upx);
+
+    .drawer-info {
+      height: 300upx;
+      width: 100%;
+      position: absolute;
+      background-color: #edfdf6;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .right-return-wrapper {
+        margin-right: 30upx;
+        margin-top: 20upx;
+        display: flex;
+        justify-content: flex-end;
+
+        .right-return {
+          color: rgba(102, 205, 170, 1);
+          letter-spacing: 2upx;
+          font-size: 28upx;
+        }
+      }
+    }
+
+    .drawer-reverse {
+      height: 300upx;
+      width: 100%;
+      position: absolute;
+      transform-origin: top;
+      top: 300upx;
+      border-top: 2px solid rgba(0, 0, 0, 0.3);
+      transition: 0.7s all;
+      background-color: #edfdf6;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
 }
 
 .time1 {
@@ -776,7 +891,7 @@ export default class Order extends Vue {
   background-color: rgb(230, 230, 230);
 }
 
-.timetext1 {
+.time-text1 {
   position: relative;
   top: 10upx;
   left: 18upx;
@@ -784,7 +899,7 @@ export default class Order extends Vue {
   letter-spacing: 1upx;
 }
 
-.timetext2 {
+.time-text2 {
   position: relative;
   top: 10upx;
   left: 18upx;
@@ -815,4 +930,6 @@ export default class Order extends Vue {
   justify-content: flex-end;
   align-items: center;
 }
+
+
 </style>

@@ -10,7 +10,7 @@
             <text class="state2" v-if="!state">使用中</text>
           </view>
           <view class="location-wrapper">
-            <text class="text">{{ location }}</text>
+            <text class="location">{{ location }}</text>
           </view>
         </view>
         <view class="charger-inner-middle">
@@ -25,21 +25,21 @@
       </view>
     </view>
 
-    <view class="drawer" :style="{'height':height+'rpx'}">
+    <view class="box-right-wrapper" :style="{'height':height+'rpx'}">
       <view class="drawer-wrapper" :style="{'transform':'rotateX('+buttonRotate+'deg)','height':height+'rpx'}">
-        <view class="button-wrapper" :style="{'opacity':buttonOpacitty}">
+        <view class="box-left-wrapper" :style="{'opacity':buttonOpacitty}">
           <view style="position: absolute;right: 30upx;top: 20upx;">
             <text style="color:rgba(50,200,210,1) ;letter-spacing: 2upx;font-size: 28upx;"
                   @click.native.stop.prevent="untap">
               返回
             </text>
           </view>
-          <view class="small-detail-view">
+          <view class="small-detail-wrapper">
             <image src="/static/image/chargerdetail.png" class="small-icon"
                    @click.native.stop.prevent="editCharger"></image>
             <text class="small-detail">修改</text>
           </view>
-          <view class="small-detail-view">
+          <view class="small-detail-wrapper">
             <image src="/static/image/delete.png" class="small-icon"
                    @click.native.stop.prevent="deleteCharger"></image>
             <text class="small-detail">删除</text>
@@ -248,7 +248,7 @@ export default class MyCharger extends Vue {
     }
   }
 
-  .drawer {
+  .box-right-wrapper {
     position: absolute;
     transform: rotateY(90deg) translateZ(300upx);
     width: 100%;
@@ -265,7 +265,7 @@ export default class MyCharger extends Vue {
       transform-style: preserve-3d;
       transform-origin: 50% 50% -150upx;
 
-      .button-wrapper {
+      .box-left-wrapper {
         position: absolute;
         width: 100%;
         height: 300upx;
@@ -276,7 +276,7 @@ export default class MyCharger extends Vue {
         background-color: rgba(250, 255, 250, 1);
         transition: all .7s;
 
-        .small-detail-view {
+        .small-detail-wrapper {
           height: 180upx;
           display: flex;
           flex-direction: column;
@@ -310,7 +310,7 @@ export default class MyCharger extends Vue {
   width: 350upx;
 }
 
-.text {
+.location {
   margin-top: 10upx;
   margin-left: 15upx;
   opacity: 0.5;

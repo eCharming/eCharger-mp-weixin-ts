@@ -3,7 +3,7 @@
     <view :style="{'height':statusHeight+'px','width':'100%','top':0,'z-index':9999}">
       <view class="detailNavi"
             :style="{'height':statusHeight+'px','background':color,'position':'fixed','width':'100%','top':0}">
-        <image src="../../static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
+        <image src="/static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
                @tap="back"></image>
         <text :style="{'margin-bottom':detailHeight+'px'}">电桩详情</text>
       </view>

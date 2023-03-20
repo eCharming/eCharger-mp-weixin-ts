@@ -3,7 +3,7 @@
     <view :style="{'height':statusHeight+'px','width':'100%','top':0,'z-index':9999}">
       <view class="addChargerNavi"
             :style="{'height':statusHeight+'px','background':color,'position':'fixed','width':'100%','top':0}">
-        <image src="../../static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
+        <image src="/static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
                @tap="back"></image>
         <text :style="{'margin-bottom':addChargerHeight+'px'}">修改电桩</text>
       </view>
@@ -67,7 +67,7 @@
           <view style="display:flex;justify-content: space-between;align-items:center;">
             <view class="timer1">
               <picker mode="time" :start="minTime[0]" :end="maxTime[0]" @change="changetime1($event,0)">
-                <text class="timetext1" :style="{'opacity':opacity[0]}">{{ text[0] }}</text>
+                <text class="time-text1" :style="{'opacity':opacity[0]}">{{ text[0] }}</text>
               </picker>
             </view>
 
@@ -75,7 +75,7 @@
 
             <view class="timer1">
               <picker mode="time" :start="minTime[1]" :end="maxTime[1]" @change="changetime2($event,1)">
-                <text class="timetext1" :style="{'opacity':opacity[1]}">{{ text[1] }}</text>
+                <text class="time-text1" :style="{'opacity':opacity[1]}">{{ text[1] }}</text>
               </picker>
             </view>
           </view>
@@ -85,7 +85,7 @@
           <view style="display:flex;justify-content: space-between;align-items:center;">
             <view class="timer1">
               <picker mode="time" :start="minTime[2]" :end="maxTime[2]" @change="changetime1($event,2)">
-                <text class="timetext1" :style="{'opacity':opacity[2]}">{{ text[2] }}</text>
+                <text class="time-text1" :style="{'opacity':opacity[2]}">{{ text[2] }}</text>
               </picker>
             </view>
 
@@ -93,7 +93,7 @@
 
             <view class="timer1">
               <picker mode="time" :start="minTime[3]" :end="maxTime[3]" @change="changetime2($event,3)">
-                <text class="timetext1" :style="{'opacity':opacity[3]}">{{ text[3] }}</text>
+                <text class="time-text1" :style="{'opacity':opacity[3]}">{{ text[3] }}</text>
               </picker>
             </view>
           </view>
@@ -103,7 +103,7 @@
           <view style="display:flex;justify-content: space-between;align-items:center;">
             <view class="timer1">
               <picker mode="time" :start="minTime[4]" :end="maxTime[4]" @change="changetime1($event,4)">
-                <text class="timetext1" :style="{'opacity':opacity[4]}">{{ text[4] }}</text>
+                <text class="time-text1" :style="{'opacity':opacity[4]}">{{ text[4] }}</text>
               </picker>
             </view>
 
@@ -111,7 +111,7 @@
 
             <view class="timer1">
               <picker mode="time" :start="minTime[5]" :end="maxTime[5]" @change="changetime2($event,5)">
-                <text class="timetext1" :style="{'opacity':opacity[5]}">{{ text[5] }}</text>
+                <text class="time-text1" :style="{'opacity':opacity[5]}">{{ text[5] }}</text>
               </picker>
             </view>
           </view>
@@ -121,7 +121,7 @@
           <view style="display:flex;justify-content: space-between;align-items:center;">
             <view class="timer1">
               <picker mode="time" :start="minTime[6]" :end="maxTime[6]" @change="changetime1($event,6)">
-                <text class="timetext1" :style="{'opacity':opacity[6]}">{{ text[6] }}</text>
+                <text class="time-text1" :style="{'opacity':opacity[6]}">{{ text[6] }}</text>
               </picker>
             </view>
 
@@ -129,7 +129,7 @@
 
             <view class="timer1">
               <picker mode="time" :start="minTime[7]" :end="maxTime[7]" @change="changetime2($event,7)">
-                <text class="timetext1" :style="{'opacity':opacity[7]}">{{ text[7] }}</text>
+                <text class="time-text1" :style="{'opacity':opacity[7]}">{{ text[7] }}</text>
               </picker>
             </view>
           </view>
@@ -139,7 +139,7 @@
           <view style="display:flex;justify-content: space-between;align-items:center;">
             <view class="timer1">
               <picker mode="time" :start="minTime[8]" :end="maxTime[8]" @change="changetime1($event,8)">
-                <text class="timetext1" :style="{'opacity':opacity[8]}">{{ text[8] }}</text>
+                <text class="time-text1" :style="{'opacity':opacity[8]}">{{ text[8] }}</text>
               </picker>
             </view>
 
@@ -147,7 +147,7 @@
 
             <view class="timer1">
               <picker mode="time" :start="minTime[9]" :end="maxTime[9]" @change="changetime2($event,9)">
-                <text class="timetext1" :style="{'opacity':opacity[9]}">{{ text[9] }}</text>
+                <text class="time-text1" :style="{'opacity':opacity[9]}">{{ text[9] }}</text>
               </picker>
             </view>
           </view>
@@ -158,7 +158,7 @@
             <view class="timer1">
               <picker mode="time" :start="minTime[10]" :end="maxTime[10]"
                       @change="changetime1($event,10)">
-                <text class="timetext1" :style="{'opacity':opacity[10]}">{{ text[10] }}</text>
+                <text class="time-text1" :style="{'opacity':opacity[10]}">{{ text[10] }}</text>
               </picker>
             </view>
 
@@ -167,7 +167,7 @@
             <view class="timer1">
               <picker mode="time" :start="minTime[11]" :end="maxTime[11]"
                       @change="changetime2($event,11)">
-                <text class="timetext1" :style="{'opacity':opacity[11]}">{{ text[11] }}</text>
+                <text class="time-text1" :style="{'opacity':opacity[11]}">{{ text[11] }}</text>
               </picker>
             </view>
           </view>
@@ -178,7 +178,7 @@
             <view class="timer1">
               <picker mode="time" :start="minTime[12]" :end="maxTime[12]"
                       @change="changetime1($event,12)">
-                <text class="timetext1" :style="{'opacity':opacity[12]}">{{ text[12] }}</text>
+                <text class="time-text1" :style="{'opacity':opacity[12]}">{{ text[12] }}</text>
               </picker>
             </view>
 
@@ -187,7 +187,7 @@
             <view class="timer1">
               <picker mode="time" :start="minTime[13]" :end="maxTime[13]"
                       @change="changetime2($event,13)">
-                <text class="timetext1" :style="{'opacity':opacity[13]}">{{ text[13] }}</text>
+                <text class="time-text1" :style="{'opacity':opacity[13]}">{{ text[13] }}</text>
               </picker>
             </view>
           </view>
@@ -206,7 +206,7 @@
             <icon @tap='deletePic(index)' class='close' color='rgb(199, 0, 3)' type='clear' size='15'>
             </icon>
           </view>
-          <image @tap='uploadPic' class='add-img' src='../../static/image/addImg.png' v-show="isAdd"></image>
+          <image @tap='uploadPic' class='add-img' src='/static/image/addImg.png' v-show="isAdd"></image>
         </view>
         <view class="divLine"></view>
         <view class="display">

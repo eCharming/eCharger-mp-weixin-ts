@@ -1,7 +1,7 @@
 <template>
   <view>
     <view :style="{'height':statusHeight+'px','background':doubleColor}">
-      <image src="../../static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
+      <image src="/static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
              @tap="back"></image>
     </view>
     <view class="searchbox">
@@ -21,12 +21,12 @@
               @tap="tap(suggestion.id,suggestion.title,suggestion.location,suggestion.category)">
           <view style="display: flex;justify-content: space-between;">
             <view class="address-wrapper">
-              <image class="image2" src="../../static/image/landmark.png"></image>
+              <image class="image2" src="/static/image/landmark.png"></image>
               <rich-text :nodes="suggestion.strings" class="richtext"></rich-text>
             </view>
             <view
                 style="position: absolute;right: 40upx;top: 5upx;display: flex;flex-direction: column;justify-content: center;">
-              <image src='../../static/image/distance.png' style="width: 80upx;height: 80upx;"></image>
+              <image src='/static/image/distance.png' style="width: 80upx;height: 80upx;"></image>
               <text
                   style="font-size: 23upx;color: rgb(0,0,0,0.6);margin-top: 5upx;">{{ suggestion.distance }}km
               </text>
@@ -81,8 +81,8 @@ export default class AddFrePlace extends Vue {
   private changeImg: number = 0;
   private color: string = 'rgba(102,205,170,1)';
   private doubleColor: string = "linear-gradient(to right bottom,rgb(102,205,170) 0% 100%,rgb(50,200,210))";
-  private src1: string = "../../static/image/lightning_green.png";
-  private src2: string = "../../static/image/lightning_blue.png";
+  private src1: string = "/static/image/lightning_green.png";
+  private src2: string = "/static/image/lightning_blue.png";
 
   public back(): void {
     wx.navigateBack({})

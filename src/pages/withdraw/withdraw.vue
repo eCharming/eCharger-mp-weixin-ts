@@ -4,7 +4,7 @@
       <view :style="{'height':statusHeight+'px','width':'100%','top':0,'z-index':9999}">
         <view class="cityNavi"
               :style="{'height':statusHeight+'px','background':color,'position':'fixed','width':'100%','top':0}">
-          <image src="../../static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
+          <image src="/static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
                  @tap="back"></image>
           <text :style="{'margin-bottom':cityHeight+'px'}">申请提现</text>
         </view>
@@ -40,7 +40,7 @@
             <icon @tap='deletePic(index)' class='close' color='rgb(199, 0, 3)' type='clear' size='15'>
             </icon>
           </view>
-          <image @tap='uploadPic' class='add-img' src='../../static/image/addImg.png' v-show="isAdd"></image>
+          <image @tap='uploadPic' class='add-img' src='/static/image/addImg.png' v-show="isAdd"></image>
         </view>
       </add-card> -->
     </view>

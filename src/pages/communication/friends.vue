@@ -1,7 +1,7 @@
 <template>
   <view>
     <view class="navigator" :style="{'height':statusHeight+'px'}">
-      <image src="../../static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
+      <image src="/static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
              @tap="back"></image>
       <text :style="{'margin-bottom':contacterBottom+'px'}">联系人</text>
     </view>
@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import friendList from '../../components/friendList.vue'
+import friendList from '@/components/friendList.vue'
 import {Component, Vue} from "vue-property-decorator";
 import SocketTask = WechatMiniprogram.SocketTask;
 import {infoReturn} from "@/apis/user/user";

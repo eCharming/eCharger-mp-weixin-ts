@@ -1,7 +1,7 @@
 <template>
   <view>
     <view class="searchNavi" :style="{'height':statusHeight+'px','background':doubleColor}">
-      <image src="../../static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
+      <image src="/static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
              @tap="back"></image>
       <text :style="{'margin-bottom':searchHeight+'px'}">搜索</text>
     </view>
@@ -60,7 +60,7 @@
                 <view class="storage" @tap="tapStorage(storage.title,storage.location)">
 
                   <view class="view5">
-                    <image src="../../static/image/search.png" class="image3"></image>
+                    <image src="/static/image/search.png" class="image3"></image>
                     <text class="text3">{{ storage.title }}</text>
                   </view>
 
@@ -85,20 +85,20 @@
             <view style="display: flex;justify-content: space-between;margin: 30upx;">
               <view style="width: 230upx;display: flex;justify-content:center; align-items:center;"
                     @tap="tapStorageIcon(0)">
-                <image src="../../static/image/home.png"
+                <image src="/static/image/home.png"
                        style="height:40upx;width:40upx;margin-right:20upx;"></image>
                 回家
               </view>
               <view style="width: 230upx;display: flex;justify-content: center;
 							border-left:2upx solid rgba(0,0,0,0.1);border-right:2upx solid rgba(0,0,0,0.1);align-items:center;"
                     @tap="tapStorageIcon(1)">
-                <image src="../../static/image/work.png"
+                <image src="/static/image/work.png"
                        style="height:40upx;width:40upx;margin-right:20upx;"></image>
                 公司
               </view>
               <view style="width: 230upx;display: flex;justify-content: center;align-items:center;"
                     @tap="tapStorageIcon(2)">
-                <image src="../../static/image/school.png"
+                <image src="/static/image/school.png"
                        style="height:40upx;width:40upx;margin-right:20upx;"></image>
                 学校
               </view>
@@ -117,7 +117,7 @@
                 <view class="storage" @tap="tapStorage(frePlace.freHome.title,frePlace.freHome.location)">
 
                   <view class="view5">
-                    <image src="../../static/image/search_blue.png" class="image3"></image>
+                    <image src="/static/image/search_blue.png" class="image3"></image>
                     <text class="text3">{{ frePlace.freHome.title }}</text>
                   </view>
 
@@ -138,7 +138,7 @@
                 <view class="storage" @tap="tapStorage(frePlace.freCompany.title,frePlace.freCompany.location)">
 
                   <view class="view5">
-                    <image src="../../static/image/search_blue.png" class="image3"></image>
+                    <image src="/static/image/search_blue.png" class="image3"></image>
                     <text class="text3">{{ frePlace.freCompany.title }}</text>
                   </view>
 
@@ -159,7 +159,7 @@
                 <view class="storage" @tap="tapStorage(frePlace.freSchool.title,frePlace.freSchool.location)">
 
                   <view class="view5">
-                    <image src="../../static/image/search_blue.png" class="image3"></image>
+                    <image src="/static/image/search_blue.png" class="image3"></image>
                     <text class="text3">{{ frePlace.freSchool.title }}</text>
                   </view>
 
@@ -181,7 +181,7 @@
                 <view class="storage" @tap="tapStorage(storage.title,storage.location)">
 
                   <view class="view5">
-                    <image src="../../static/image/search_blue.png" class="image3"></image>
+                    <image src="/static/image/search_blue.png" class="image3"></image>
                     <text class="text3">{{ storage.title }}</text>
                   </view>
 
@@ -212,12 +212,12 @@
               @tap="tap(suggestion.id,suggestion.title,suggestion.location,suggestion.category)">
           <view style="display: flex;justify-content: space-between;">
             <view class="address-wrapper">
-              <image class="image2" src="../../static/image/landmark.png"></image>
+              <image class="image2" src="/static/image/landmark.png"></image>
               <rich-text :nodes="suggestion.strings" class="richtext"></rich-text>
             </view>
             <view
                 style="position: absolute;right: 40upx;top: 5upx;display: flex;flex-direction: column;justify-content: center;">
-              <image src='../../static/image/distance.png' style="width: 80upx;height: 80upx;"></image>
+              <image src='/static/image/distance.png' style="width: 80upx;height: 80upx;"></image>
               <text
                   style="font-size: 23upx;color: rgb(0,0,0,0.6);margin-top: 5upx;">{{ suggestion.distance }}km
               </text>
@@ -285,8 +285,8 @@ export default class Search extends Vue {
   private buttonOpacity2: number = 0;
   private color: string = 'rgba(102,205,170,1)';
   private doubleColor: string = "linear-gradient(to right bottom,rgb(102,205,170) 0% 100%,rgb(50,200,210))";
-  private src1: string = "../../static/image/lightning_green.png";
-  private src2: string = "../../static/image/lightning_blue.png";
+  private src1: string = "/static/image/lightning_green.png";
+  private src2: string = "/static/image/lightning_blue.png";
 
   public back(): void {
     wx.navigateBack({})

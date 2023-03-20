@@ -1,7 +1,7 @@
 <template>
   <view>
     <view class="orderHistoryNavi" :style="{'height':statusHeight+'px','background':doubleColor}">
-      <image src="../../static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
+      <image src="/static/image/back.png" class="backimg" :style="{'top':statusBarHeight+12.5+'px'}"
              @tap="back"></image>
       <text :style="{'margin-bottom':orderHistoryHeight+'px'}">订单</text>
     </view>
